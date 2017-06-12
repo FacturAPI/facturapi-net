@@ -5,13 +5,13 @@
     <version>$version$</version>
     <title>$title$</title>
     <authors>Javier Rosas</authors>
-    <owners>$author$</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
-    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <owners>Javier Rosas</owners>
+    <licenseUrl>https://raw.githubusercontent.com/FacturAPI/facturapi-net/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/facturapi/facturapi-net</projectUrl>
+    <iconUrl>https://github.com/FacturAPI/facturapi-net/raw/master/facturapi-net/facturapi.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <releaseNotes>Initial release</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>factura factura-electronica cfdi facturapi mexico conekta</tags>
   </metadata>
