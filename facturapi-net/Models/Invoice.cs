@@ -9,6 +9,7 @@ namespace Facturapi
 {
     public class Invoice
     {
+        public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool Livemode { get; set; }
         public Customer Customer { get; set; }
