@@ -108,7 +108,7 @@ namespace FacturapiTest
         {
             try
             {
-                var stream = Facturapi.Invoice.DownloadZip(invoiceId).GetAwaiter().GetResult();
+                var stream = Facturapi.Invoice.DownloadZipAsync(invoiceId).GetAwaiter().GetResult();
                 var file = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\factura.zip", FileMode.Create);
                 stream.CopyTo(file);
                 file.Close();
