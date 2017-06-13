@@ -1,6 +1,7 @@
 ﻿using Facturapi;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +16,11 @@ namespace FacturapiTest
             var apiKey = Console.ReadLine();
             Facturapi.Settings.ApiKey = apiKey;
             //CreateCustomer();
-            ListCustomers();
+            //ListCustomers();
             //CreateProduct();
+            Console.WriteLine("Invoice Id?");
+            var invoiceId = Console.ReadLine();
+            DownloadZip(invoiceId);
             Console.WriteLine("Done fetching!");
             Console.Read();
         }
@@ -97,6 +101,23 @@ namespace FacturapiTest
             catch (FacturapiException exception)
             {
                 Console.WriteLine(exception.Message);
+            }
+        }
+
+        static void DownloadZip (string invoiceId)
+        {
+            try
+            {
+                var stream = Facturapi.Invoice.DownloadZip(invoiceId).GetAwaiter().GetResult();
+                var file = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\factura.zip", FileMode.Create);
+                stream.CopyTo(file);
+                file.Close();
+                Console.WriteLine("Invoice saved!");
+            }
+            catch (FacturapiException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
     }
