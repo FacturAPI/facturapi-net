@@ -36,22 +36,22 @@ namespace Facturapi
             return new Wrapper().CancelInvoice(id);
         }
 
-        public static Task SendByEmail(string id)
+        public static Task SendByEmailAsync(string id)
         {
             return new Wrapper().SendInvoiceByEmail(id);
         }
 
-        public static Task<Stream> DownloadXml(string id)
+        public static Task<Stream> DownloadXmlAsync(string id)
         {
             return new Wrapper().DownloadInvoice(id, "xml");
         }
 
-        public static Task<Stream> DownloadPdf(string id)
+        public static Task<Stream> DownloadPdfAsync(string id)
         {
             return new Wrapper().DownloadInvoice(id, "pdf");
         }
 
-        public static Task<Stream> DownloadZip(string id)
+        public static Task<Stream> DownloadZipAsync(string id)
         {
             return new Wrapper().DownloadInvoice(id, "zip");
         }
