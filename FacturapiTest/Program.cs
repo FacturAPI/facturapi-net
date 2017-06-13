@@ -16,6 +16,7 @@ namespace FacturapiTest
             Facturapi.Settings.ApiKey = apiKey;
             //CreateCustomer();
             ListCustomers();
+            //CreateProduct();
             Console.WriteLine("Done fetching!");
             Console.Read();
         }
@@ -47,6 +48,51 @@ namespace FacturapiTest
                 }).GetAwaiter().GetResult();
                 Console.WriteLine(customer.LegalName);
                 Console.WriteLine(customer.Email);
+            }
+            catch (FacturapiException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+        }
+
+        static void CreateProduct ()
+        {
+            try
+            {
+                var product = Facturapi.Product.CreateAsync(new Dictionary<string, object>
+                {
+                    ["description"] = "Macbook Pro 15''",
+                    ["product_key"] = "43211508",
+                    ["price"] = 45000,
+                    ["sku"] = "MAC12345"
+                }).GetAwaiter().GetResult();
+                Console.WriteLine($"Product created with Id {product.Id}");
+                CreateInvoice(product.Id);
+            }
+            catch (FacturapiException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+        }
+
+        static void CreateInvoice (string productId)
+        {
+            try
+            {
+                var invoice = Facturapi.Invoice.CreateAsync(new Dictionary<string, object>
+                {
+                    ["customer"] = "592deb5ce815c1296c950d02",
+                    ["payment_form"] = Facturapi.PaymentForm.DINERO_ELECTRONICO,
+                    ["items"] = new Dictionary<string, object>[]
+                    {
+                        new Dictionary<string, object>
+                        {
+                            ["quantity"] = 2,
+                            ["product"] = productId
+                        }
+                    }
+                }).GetAwaiter().GetResult();
+                Console.WriteLine($"invoice created with Id {invoice.Id}");
             }
             catch (FacturapiException exception)
             {
