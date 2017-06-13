@@ -28,24 +28,14 @@ namespace Facturapi
             return RetrieveInvoice(id);
         }
 
-        public static string DownloadXml(string id)
+        public static string DownloadInvoice(string id, string format)
         {
-            return RetrieveInvoice(id);
-        }
-
-        public static string DownloadPdf(string id)
-        {
-            return RetrieveInvoice(id);
-        }
-
-        public static string DownloadZip(string id)
-        {
-            return RetrieveInvoice(id);
+            return $"invoices/{id}/{format}";
         }
 
         public static string SendByEmail(string id)
         {
-            return RetrieveInvoice(id);
+            return $"invoice/{id}/email";
         }
     }
 }

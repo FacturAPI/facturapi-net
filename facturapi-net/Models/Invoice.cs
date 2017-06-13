@@ -43,17 +43,17 @@ namespace Facturapi
 
         public static Task<Stream> DownloadXml(string id)
         {
-            return new Wrapper().DownloadXml(id);
+            return new Wrapper().DownloadInvoice(id, "xml");
         }
 
         public static Task<Stream> DownloadPdf(string id)
         {
-            return new Wrapper().DownloadPdf(id);
+            return new Wrapper().DownloadInvoice(id, "pdf");
         }
 
         public static Task<Stream> DownloadZip(string id)
         {
-            return new Wrapper().DownloadZip(id);
+            return new Wrapper().DownloadInvoice(id, "zip");
         }
     }
 }

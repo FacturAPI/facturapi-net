@@ -77,35 +77,9 @@ namespace Facturapi
             }
         }
 
-        public async Task<Stream> DownloadXml(string id)
+        public async Task<Stream> DownloadInvoice(string id, string format)
         {
-            var response = await client.GetAsync(Router.DownloadXml(id));
-            if (!response.IsSuccessStatusCode)
-            {
-                var resultString = await response.Content.ReadAsStringAsync();
-                var error = JsonConvert.DeserializeObject<JObject>(resultString);
-                throw new FacturapiException(error["message"].ToString());
-            }
-            var stream = await response.Content.ReadAsStreamAsync();
-            return stream;
-        }
-
-        public async Task<Stream> DownloadPdf(string id)
-        {
-            var response = await client.GetAsync(Router.DownloadPdf(id));
-            if (!response.IsSuccessStatusCode)
-            {
-                var resultString = await response.Content.ReadAsStringAsync();
-                var error = JsonConvert.DeserializeObject<JObject>(resultString);
-                throw new FacturapiException(error["message"].ToString());
-            }
-            var stream = await response.Content.ReadAsStreamAsync();
-            return stream;
-        }
-
-        public async Task<Stream> DownloadZip(string id)
-        {
-            var response = await client.GetAsync(Router.DownloadZip(id));
+            var response = await client.GetAsync(Router.DownloadInvoice(id, format));
             if (!response.IsSuccessStatusCode)
             {
                 var resultString = await response.Content.ReadAsStringAsync();
