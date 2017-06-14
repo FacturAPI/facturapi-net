@@ -18,11 +18,13 @@ namespace FacturapiTest
             //CreateCustomer();
             //ListCustomers();
             //CreateProduct();
-            Console.WriteLine("Invoice Id?");
-            var invoiceId = Console.ReadLine();
+            //Console.WriteLine("Invoice Id?");
+            //var invoiceId = Console.ReadLine();
             //DownloadZip(invoiceId);
-            RetrieveInvoice(invoiceId);
-            Console.WriteLine("Done fetching!");
+            //RetrieveInvoice("5940e8a59778e41fc95f294d");
+            //CreateInvoiceEphimeral();
+            ListInvoices();
+            Console.WriteLine("Done!");
             Console.Read();
         }
 
@@ -139,6 +141,48 @@ namespace FacturapiTest
             {
                 Console.WriteLine(ex.Message);
                 throw;
+            }
+        }
+
+        static void CreateInvoiceEphimeral()
+        {
+            try
+            {
+                var invoice = Facturapi.Invoice.CreateAsync(new Dictionary<string, object>
+                {
+                    ["customer"] = "592deb5ce815c1296c950d02",
+                    ["payment_form"] = Facturapi.PaymentForm.DINERO_ELECTRONICO,
+                    ["items"] = new Dictionary<string, object>[]
+                    {
+                        new Dictionary<string, object>
+                        {
+                            ["quantity"] = 2,
+                            ["product"] = new Dictionary<string, object>
+                            {
+                                ["description"] = "iPhone 8",
+                                ["product_key"] = "43211508",
+                                ["price"] = "30000"
+                            }
+                        }
+                    }
+                }).GetAwaiter().GetResult();
+            }
+            catch (FacturapiException exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+        }
+
+        static void ListInvoices()
+        {
+            try
+            {
+                var invoice = Facturapi.Invoice.ListAsync().GetAwaiter().GetResult();
+                Console.WriteLine(invoice.Data.Length);
+            }
+            catch (FacturapiException exception)
+            {
+                Console.WriteLine(exception.Message);
             }
         }
     }
