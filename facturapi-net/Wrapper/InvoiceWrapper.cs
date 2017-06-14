@@ -44,7 +44,6 @@ namespace Facturapi
         {
             var response = await client.GetAsync(Router.RetrieveInvoice(id));
             var resultString = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(resultString);
             if (!response.IsSuccessStatusCode)
             {
                 var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
