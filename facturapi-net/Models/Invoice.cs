@@ -12,9 +12,14 @@ namespace Facturapi
         public string Id { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool Livemode { get; set; }
+        public string Status { get; set; }
         public Customer Customer { get; set; }
-        public List<InvoiceItem> Items { get; set; }
+        public Decimal Total { get; set; }
+        public string Uuid { get; set; }
+        public long FolioNumber { get; set; }
+        public string Series { get; set; }
         public string PaymentForm { get; set; }
+        public List<InvoiceItem> Items { get; set; }
 
         public static Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null)
         {
