@@ -20,7 +20,8 @@ namespace FacturapiTest
             //CreateProduct();
             Console.WriteLine("Invoice Id?");
             var invoiceId = Console.ReadLine();
-            DownloadZip(invoiceId);
+            //DownloadZip(invoiceId);
+            RetrieveInvoice(invoiceId);
             Console.WriteLine("Done fetching!");
             Console.Read();
         }
@@ -113,6 +114,26 @@ namespace FacturapiTest
                 stream.CopyTo(file);
                 file.Close();
                 Console.WriteLine("Invoice saved!");
+            }
+            catch (FacturapiException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        static void RetrieveInvoice(string invoiceId)
+        {
+            try
+            {
+                var invoice = Facturapi.Invoice.RetrieveAsync(invoiceId).GetAwaiter().GetResult();
+                Console.WriteLine("Invoice data");
+                Console.WriteLine(invoice.Id);
+                Console.WriteLine(invoice.Total);
+                Console.WriteLine(invoice.PaymentForm);
+                Console.WriteLine(invoice.Status);
+                Console.WriteLine(invoice.Livemode);
+                Console.WriteLine("stop");
             }
             catch (FacturapiException ex)
             {
