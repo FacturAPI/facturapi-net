@@ -19,7 +19,7 @@ namespace Facturapi
 
             if (!response.IsSuccessStatusCode)
             {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
 
@@ -33,7 +33,7 @@ namespace Facturapi
             var resultString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
             var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
@@ -44,9 +44,10 @@ namespace Facturapi
         {
             var response = await client.GetAsync(Router.RetrieveInvoice(id));
             var resultString = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(resultString);
             if (!response.IsSuccessStatusCode)
             {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
             var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
@@ -59,7 +60,7 @@ namespace Facturapi
             var resultString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
             var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
@@ -72,7 +73,7 @@ namespace Facturapi
             if (!response.IsSuccessStatusCode)
             {
                 var resultString = await response.Content.ReadAsStringAsync();
-                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
         }
@@ -83,7 +84,7 @@ namespace Facturapi
             if (!response.IsSuccessStatusCode)
             {
                 var resultString = await response.Content.ReadAsStringAsync();
-                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
             var stream = await response.Content.ReadAsStreamAsync();
