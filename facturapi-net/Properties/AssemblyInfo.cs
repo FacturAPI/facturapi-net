@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Facturapi")]
-[assembly: AssemblyDescription("Crea Facturas Electrónicas válidas en México lo más fácil posible (CFDI)")]
+[assembly: AssemblyDescription("Factura electrónica para desarrolladores")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Facturapi")]
 [assembly: AssemblyProduct("Facturapi")]
-[assembly: AssemblyCopyright("Copyright © 2017")]
+[assembly: AssemblyCopyright("Copyright © Facturapi 2017")]
 [assembly: AssemblyTrademark("Facturapi")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.3.*")]
-[assembly: AssemblyFileVersion("0.1.3.0")]
+[assembly: AssemblyVersion("0.1.4.*")]
+[assembly: AssemblyFileVersion("0.1.4.0")]
