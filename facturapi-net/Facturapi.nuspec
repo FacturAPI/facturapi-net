@@ -15,4 +15,8 @@
     <copyright>Copyright © Facturapi 2017</copyright>
     <tags>factura factura-electronica cfdi facturapi mexico conekta</tags>
   </metadata>
+  <!-- A readme.txt will be displayed when the package is installed -->
+  <files>
+    <file src="readme.txt" target="" />
+  </files>
 </package>
