@@ -27,7 +27,7 @@ Asegúrate de haber creado tu cuenta gratuita en [Facturapi](https://www.factura
 Coloca este código en tu bloque de inicialización (para ASP.NET MVC, sería en el método `Application_Start`, en el archivo `Global.asax`):
 
 ```csharp
-const facturapi = require('facturapi')('TU_API_KEY');
+Facturapi.Settings.ApiKey = "TU_API_KEY";
 ```
 
 ### Métodos asíncronos (async, await)
