@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Facturapi.Wrappers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,42 +24,42 @@ namespace Facturapi
 
         public static Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null)
         {
-            return new Wrapper().ListInvoices(query);
+            return new InvoiceWrapper().ListAsync(query);
         }
 
         public static Task<Invoice> CreateAsync(Dictionary<string, object> data)
         {
-            return new Wrapper().CreateInvoice(data);
+            return new InvoiceWrapper().CreateAsync(data);
         }
 
         public static Task<Invoice> RetrieveAsync(string id)
         {
-            return new Wrapper().RetrieveInvoice(id);
+            return new InvoiceWrapper().RetrieveAsync(id);
         }
 
         public static Task<Invoice> CancelAsync(string id)
         {
-            return new Wrapper().CancelInvoice(id);
+            return new InvoiceWrapper().CancelAsync(id);
         }
 
         public static Task SendByEmailAsync(string id)
         {
-            return new Wrapper().SendInvoiceByEmail(id);
+            return new InvoiceWrapper().SendByEmailAsync(id);
         }
 
         public static Task<Stream> DownloadXmlAsync(string id)
         {
-            return new Wrapper().DownloadInvoice(id, "xml");
+            return new InvoiceWrapper().DownloadXmlAsync(id);
         }
 
         public static Task<Stream> DownloadPdfAsync(string id)
         {
-            return new Wrapper().DownloadInvoice(id, "pdf");
+            return new InvoiceWrapper().DownloadPdfAsync(id);
         }
 
         public static Task<Stream> DownloadZipAsync(string id)
         {
-            return new Wrapper().DownloadInvoice(id, "zip");
+            return new InvoiceWrapper().DownloadZipAsync(id);
         }
     }
 }

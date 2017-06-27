@@ -14,7 +14,7 @@ namespace FacturapiTest
         {
             Console.WriteLine("Please enter your test API Key");
             var apiKey = Console.ReadLine();
-            Facturapi.Settings.ApiKey = apiKey;
+            //Facturapi.Settings.ApiKey = apiKey;
             //CreateCustomer();
             //ListCustomers();
             //CreateProduct();
@@ -23,7 +23,7 @@ namespace FacturapiTest
             //DownloadZip(invoiceId);
             //RetrieveInvoice("5940e8a59778e41fc95f294d");
             //CreateInvoiceEphimeral();
-            ListInvoices();
+            ListInvoices(apiKey);
             Console.WriteLine("Done!");
             Console.Read();
         }
@@ -173,11 +173,11 @@ namespace FacturapiTest
             }
         }
 
-        static void ListInvoices()
+        static void ListInvoices(string apiKey)
         {
             try
             {
-                var invoice = Facturapi.Invoice.ListAsync().GetAwaiter().GetResult();
+                var invoice = (new Facturapi.Wrappers.InvoiceWrapper(apiKey)).ListAsync().GetAwaiter().GetResult();
                 Console.WriteLine(invoice.Data.Length);
             }
             catch (FacturapiException exception)

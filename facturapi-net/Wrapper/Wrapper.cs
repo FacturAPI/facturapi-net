@@ -7,20 +7,23 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Facturapi
+namespace Facturapi.Wrappers
 {
-    internal partial class Wrapper
+    public class Wrapper
     {
-        private const string BASE_URL = "https://www.facturapi.io/v1/";
-        HttpClient client = new HttpClient()
+        protected const string BASE_URL = "https://www.facturapi.io/v1/";
+        protected HttpClient client = new HttpClient()
         {
             BaseAddress = new Uri(BASE_URL)
         };
-        private JsonSerializerSettings jsonSettings { get; set; }
+        protected JsonSerializerSettings jsonSettings { get; set; }
+        public string apiKey { get; set; }
 
-        public Wrapper()
+        public Wrapper() : this(Settings.ApiKey) { }
+
+        public Wrapper(string apiKey)
         {
-            var apiKeyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(Settings.ApiKey + ":"));
+            var apiKeyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(apiKey + ":"));
             this.client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", apiKeyBase64);
             this.jsonSettings = new JsonSerializerSettings
             {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json;
+using Facturapi.Wrappers;
 
 namespace Facturapi
 {
@@ -24,22 +25,22 @@ namespace Facturapi
 
         public static Task<SearchResult<Product>> ListAsync(Dictionary<string, object> query = null)
         {
-            return new Wrapper().ListProducts(query);
+            return new ProductWrapper().ListAsync(query);
         }
 
         public static Task<Product> CreateAsync(Dictionary<string, object> data)
         {
-            return new Wrapper().CreateProduct(data);
+            return new ProductWrapper().CreateAsync(data);
         }
 
         public static Task<Product> RetrieveAsync(string id)
         {
-            return new Wrapper().RetrieveProduct(id);
+            return new ProductWrapper().RetrieveAsync(id);
         }
 
         public static Task<Product> DeleteAsync(string id)
         {
-            return new Wrapper().DeleteProduct(id);
+            return new ProductWrapper().DeleteAsync(id);
         }
     }
 }

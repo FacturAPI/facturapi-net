@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Facturapi.Wrappers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,22 +20,22 @@ namespace Facturapi
 
         public static Task<SearchResult<Customer>> ListAsync (Dictionary<string, object> query = null)
         {
-            return new Wrapper().ListCustomers(query);
+            return new CustomerWrapper().ListAsync(query);
         }
 
         public static Task<Customer> CreateAsync (Dictionary<string, object> data)
         {
-            return new Wrapper().CreateCustomer(data);
+            return new CustomerWrapper().CreateAsync(data);
         }
 
         public static Task<Customer> RetrieveAsync (string id)
         {
-            return new Wrapper().RetrieveCustomer(id);
+            return new CustomerWrapper().RetrieveAsync(id);
         }
 
         public static Task<Customer> DeleteAsync (string id)
         {
-            return new Wrapper().DeleteCustomer(id);
+            return new CustomerWrapper().DeleteAsync(id);
         }
     }
 }

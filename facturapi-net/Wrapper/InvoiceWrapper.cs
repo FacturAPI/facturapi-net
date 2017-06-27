@@ -8,11 +8,15 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Facturapi
+namespace Facturapi.Wrappers
 {
-    internal partial class Wrapper
+    public class InvoiceWrapper : Wrapper
     {
-        public async Task<SearchResult<Invoice>> ListInvoices(Dictionary<string, object> query)
+        public InvoiceWrapper() : base() { }
+
+        public InvoiceWrapper(string apiKey) : base(apiKey) { }
+
+        public async Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null)
         {
             var response = await client.GetAsync(Router.ListInvoices(query));
             var resultString = await response.Content.ReadAsStringAsync();
@@ -27,7 +31,7 @@ namespace Facturapi
             return searchResult;
         }
 
-        public async Task<Invoice> CreateInvoice(Dictionary<string, object> data)
+        public async Task<Invoice> CreateAsync(Dictionary<string, object> data)
         {
             var response = await client.PostAsync(Router.CreateInvoice(), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
             var resultString = await response.Content.ReadAsStringAsync();
@@ -40,7 +44,7 @@ namespace Facturapi
             return customer;
         }
 
-        public async Task<Invoice> RetrieveInvoice(string id)
+        public async Task<Invoice> RetrieveAsync(string id)
         {
             var response = await client.GetAsync(Router.RetrieveInvoice(id));
             var resultString = await response.Content.ReadAsStringAsync();
@@ -53,7 +57,7 @@ namespace Facturapi
             return customer;
         }
 
-        public async Task<Invoice> CancelInvoice(string id)
+        public async Task<Invoice> CancelAsync(string id)
         {
             var response = await client.DeleteAsync(Router.CancelInvoice(id));
             var resultString = await response.Content.ReadAsStringAsync();
@@ -66,7 +70,7 @@ namespace Facturapi
             return customer;
         }
 
-        public async Task SendInvoiceByEmail(string id)
+        public async Task SendByEmailAsync(string id)
         {
             var response = await client.PostAsync(Router.SendByEmail(id), null);
             if (!response.IsSuccessStatusCode)
@@ -77,7 +81,7 @@ namespace Facturapi
             }
         }
 
-        public async Task<Stream> DownloadInvoice(string id, string format)
+        private async Task<Stream> DownloadAsync(string id, string format)
         {
             var response = await client.GetAsync(Router.DownloadInvoice(id, format));
             if (!response.IsSuccessStatusCode)
@@ -88,6 +92,21 @@ namespace Facturapi
             }
             var stream = await response.Content.ReadAsStreamAsync();
             return stream;
+        }
+
+        public Task<Stream> DownloadZipAsync(string id)
+        {
+            return this.DownloadAsync(id, "zip");
+        }
+
+        public Task<Stream> DownloadPdfAsync(string id)
+        {
+            return this.DownloadAsync(id, "pdf");
+        }
+
+        public Task<Stream> DownloadXmlAsync(string id)
+        {
+            return this.DownloadAsync(id, "xml");
         }
     }
 }
