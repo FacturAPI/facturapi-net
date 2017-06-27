@@ -34,14 +34,13 @@ Facturapi.Settings.ApiKey = "TU_API_KEY";
 
 #### Para multi-organizaciones
 
-Puedes usar múltiples Api Keys creando instancias del wrapper correspondiente antes de usarlo y pasando como parámetro la ApiKey de la organización que va a facturar:
+Puedes usar múltiples Api Keys en un mismo proyecto creando instancias de Facturapi.Wrapper y pasando como parámetro la ApiKey de la organización que quieres utilizar en ese momento:
 
 ```csharp
-var customerWrapperForOrgOne = new Facturapi.Wrappers.CustomerWrapper('API_KEY_ORG_1');
-var customerWrapperForOrgTwo = new Facturapi.Wrappers.CustomerWrapper('API_KEY_ORG_2');
-// Esto asegura que puedas usar diferentes ApiKeys para obtener y crear datos para diferentes organizaciones
-var customersInOrgOne = await customerWrapperForOrgOne.ListAsync();
-var customersInOrgTwo = await customerWrapperForOrgTwo.ListAsync();
+// Esto asegura que puedas usar diferentes ApiKeys en diferentes instancias de Wrapper
+var facturapi = new Facturapi.Wrapper('TU_API_KEY');
+// Después, procede a llamar a los métodos como muestra la documentación, pero usando el objeto que acabas de crear.
+var customers = await facturapi.Customer.ListAsync();
 ```
 
 Si usas este método de identificación, no necesitas asignar un valor a `Facturapi.Settings.ApiKey`.

@@ -67,12 +67,13 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Util\SnakeCasePropertyNamesContractResolver.cs" />
     <Compile Include="Router\CustomerRouter.cs" />
+    <Compile Include="Wrapper.cs" />
     <Compile Include="Wrapper\CustomerWrapper.cs" />
     <Compile Include="Router\ProductRouter.cs" />
     <Compile Include="Router\Router.cs" />
     <Compile Include="Wrapper\InvoiceWrapper.cs" />
     <Compile Include="Wrapper\ProductWrapper.cs" />
-    <Compile Include="Wrapper\Wrapper.cs" />
+    <Compile Include="Wrapper\BaseWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

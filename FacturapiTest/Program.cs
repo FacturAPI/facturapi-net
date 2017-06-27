@@ -177,7 +177,8 @@ namespace FacturapiTest
         {
             try
             {
-                var invoice = (new Facturapi.Wrappers.InvoiceWrapper(apiKey)).ListAsync().GetAwaiter().GetResult();
+                var facturapi = new Facturapi.Wrapper(apiKey);
+                var invoice = facturapi.Invoice.ListAsync().GetAwaiter().GetResult();
                 Console.WriteLine(invoice.Data.Length);
             }
             catch (FacturapiException exception)
