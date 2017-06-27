@@ -7,11 +7,14 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Facturapi
+namespace Facturapi.Wrappers
 {
-    internal partial class Wrapper
+    public class ProductWrapper : Wrapper
     {
-        public async Task<SearchResult<Product>> ListProducts(Dictionary<string, object> query)
+        public ProductWrapper() : base() { }
+        public ProductWrapper(string apiKey) : base(apiKey) { }
+
+        public async Task<SearchResult<Product>> ListAsync(Dictionary<string, object> query = null)
         {
             var response = await client.GetAsync(Router.ListProducts(query));
             var resultString = await response.Content.ReadAsStringAsync();
@@ -26,7 +29,7 @@ namespace Facturapi
             return searchResult;
         }
 
-        public async Task<Product> CreateProduct(Dictionary<string, object> data)
+        public async Task<Product> CreateAsync(Dictionary<string, object> data)
         {
             var response = await client.PostAsync(Router.CreateProduct(), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
             var resultString = await response.Content.ReadAsStringAsync();
@@ -39,7 +42,7 @@ namespace Facturapi
             return customer;
         }
 
-        public async Task<Product> RetrieveProduct(string id)
+        public async Task<Product> RetrieveAsync(string id)
         {
             var response = await client.GetAsync(Router.RetrieveProduct(id));
             var resultString = await response.Content.ReadAsStringAsync();
@@ -52,7 +55,7 @@ namespace Facturapi
             return customer;
         }
 
-        public async Task<Product> DeleteProduct(string id)
+        public async Task<Product> DeleteAsync(string id)
         {
             var response = await client.DeleteAsync(Router.DeleteProduct(id));
             var resultString = await response.Content.ReadAsStringAsync();
