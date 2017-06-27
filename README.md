@@ -24,11 +24,27 @@ Asegúrate de haber creado tu cuenta gratuita en [Facturapi](https://www.factura
 
 ### Inicializa la librería usando tus llaves secretas
 
+#### Para una sola organización
+
 Coloca este código en tu bloque de inicialización (para ASP.NET MVC, sería en el método `Application_Start`, en el archivo `Global.asax`):
 
 ```csharp
 Facturapi.Settings.ApiKey = "TU_API_KEY";
 ```
+
+#### Para multi-organizaciones
+
+Puedes usar múltiples Api Keys creando instancias del wrapper correspondiente antes de usarlo y pasando como parámetro la ApiKey de la organización que va a facturar:
+
+```csharp
+var customerWrapperForOrgOne = new Facturapi.Wrappers.CustomerWrapper('API_KEY_ORG_1');
+var customerWrapperForOrgTwo = new Facturapi.Wrappers.CustomerWrapper('API_KEY_ORG_2');
+// Esto asegura que puedas usar diferentes ApiKeys para obtener y crear datos para diferentes organizaciones
+var customersInOrgOne = await customerWrapperForOrgOne.List();
+var customersInOrgTwo = await customerWrapperForOrgTwo.List();
+```
+
+Si usas este método de identificación, no necesitas asignar un valor a `Facturapi.Settings.ApiKey`.
 
 ### Métodos asíncronos (async, await)
 
