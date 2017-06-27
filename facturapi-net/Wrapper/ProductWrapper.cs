@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Facturapi.Wrappers
 {
-    public class ProductWrapper : Wrapper
+    public class ProductWrapper : BaseWrapper
     {
         public ProductWrapper() : base() { }
         public ProductWrapper(string apiKey) : base(apiKey) { }
