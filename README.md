@@ -40,8 +40,8 @@ Puedes usar múltiples Api Keys creando instancias del wrapper correspondiente a
 var customerWrapperForOrgOne = new Facturapi.Wrappers.CustomerWrapper('API_KEY_ORG_1');
 var customerWrapperForOrgTwo = new Facturapi.Wrappers.CustomerWrapper('API_KEY_ORG_2');
 // Esto asegura que puedas usar diferentes ApiKeys para obtener y crear datos para diferentes organizaciones
-var customersInOrgOne = await customerWrapperForOrgOne.List();
-var customersInOrgTwo = await customerWrapperForOrgTwo.List();
+var customersInOrgOne = await customerWrapperForOrgOne.ListAsync();
+var customersInOrgTwo = await customerWrapperForOrgTwo.ListAsync();
 ```
 
 Si usas este método de identificación, no necesitas asignar un valor a `Facturapi.Settings.ApiKey`.
