@@ -27,5 +27,9 @@ namespace Facturapi
         {
             return RetrieveCustomer(id);
         }
+
+        public static string UpdateCustomer(string id) {
+            return RetrieveCustomer(id);
+        }
     }
 }

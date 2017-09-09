@@ -68,5 +68,18 @@ namespace Facturapi.Wrappers
             var customer = JsonConvert.DeserializeObject<Customer>(resultString, this.jsonSettings);
             return customer;
         }
+
+        public async Task<Customer> UpdateAsync(string id, Dictionary<string, object> data)
+        {
+            var response = await client.PutAsync(Router.UpdateCustomer(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            var resultString = await response.Content.ReadAsStringAsync();
+			if (!response.IsSuccessStatusCode)
+			{
+				var error = JsonConvert.DeserializeObject<JObject>(resultString);
+				throw new FacturapiException(error["message"].ToString());
+			}
+			var customer = JsonConvert.DeserializeObject<Customer>(resultString, this.jsonSettings);
+			return customer;
+        }
     }
 }
