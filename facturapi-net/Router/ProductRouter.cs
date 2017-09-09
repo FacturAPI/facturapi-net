@@ -27,5 +27,10 @@ namespace Facturapi
         {
             return RetrieveProduct(id);
         }
+
+        public static string UpdateProduct(string id)
+        {
+            return RetrieveProduct(id);
+        }
     }
 }

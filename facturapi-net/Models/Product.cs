@@ -42,5 +42,10 @@ namespace Facturapi
         {
             return new ProductWrapper().DeleteAsync(id);
         }
+
+        public static Task<Product> UpdateAsync(string id, Dictionary<string, object> data)
+        {
+            return new ProductWrapper().UpdateAsync(id, data);
+        }
     }
 }

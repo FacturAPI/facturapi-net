@@ -51,8 +51,8 @@ namespace Facturapi.Wrappers
                 var error = JsonConvert.DeserializeObject<JObject>(resultString);
                 throw new FacturapiException(error["message"].ToString());
             }
-            var customer = JsonConvert.DeserializeObject<Product>(resultString, this.jsonSettings);
-            return customer;
+            var product = JsonConvert.DeserializeObject<Product>(resultString, this.jsonSettings);
+            return product;
         }
 
         public async Task<Product> DeleteAsync(string id)
@@ -64,8 +64,21 @@ namespace Facturapi.Wrappers
                 var error = JsonConvert.DeserializeObject<JObject>(resultString);
                 throw new FacturapiException(error["message"].ToString());
             }
-            var customer = JsonConvert.DeserializeObject<Product>(resultString, this.jsonSettings);
-            return customer;
+            var product = JsonConvert.DeserializeObject<Product>(resultString, this.jsonSettings);
+            return product;
         }
+
+		public async Task<Product> UpdateAsync(string id, Dictionary<string, object> data)
+		{
+			var response = await client.PutAsync(Router.UpdateProduct(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+			var resultString = await response.Content.ReadAsStringAsync();
+			if (!response.IsSuccessStatusCode)
+			{
+				var error = JsonConvert.DeserializeObject<JObject>(resultString);
+				throw new FacturapiException(error["message"].ToString());
+			}
+			var product = JsonConvert.DeserializeObject<Product>(resultString, this.jsonSettings);
+			return product;
+		}
     }
 }
