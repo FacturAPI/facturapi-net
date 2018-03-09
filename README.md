@@ -135,10 +135,10 @@ var invoice = await Facturapi.Product.CreateAsync(new Dictionary<string, object>
 ```csharp
 // Una vez creada la factura, puedes descargar el PDF y el XML comprimidos
 // en un archivo ZIP.
-var zipStream = await Facturapi.Invoice.DownloadZipAsync("58e93bd8e86eb318b019743d");
+var zipStream = await Facturapi.Invoice.DownloadZipAsync(invoice.Id);
 // O bien, el XML y el PDF por separado
-var xmlStream = await Facturapi.Invoice.DownloadXmlAsync("58e93bd8e86eb318b019743d");
-var pdfStream = await Facturapi.Invoice.DownloadPdfAsync("58e93bd8e86eb318b019743d");
+var xmlStream = await Facturapi.Invoice.DownloadXmlAsync(invoice.Id);
+var pdfStream = await Facturapi.Invoice.DownloadPdfAsync(invoice.Id);
 // Y luego guardarlo en un archivo del disco duro
 var file = new System.IO.FileStrem("C:\\route\\to\\save\\invoice.zip", FileMode.Create);
 zipStream.CopyTo(file);
@@ -148,7 +148,7 @@ file.Close();
 #### Envía la factura por correo electrónico
 
 ```csharp
-await Facturapi.Invoice.SendByEmailAsync("ID_DEL_CLIENTE");
+await Facturapi.Invoice.SendByEmailAsync(invoice.Id);
 ```
 
 ## Documentación
