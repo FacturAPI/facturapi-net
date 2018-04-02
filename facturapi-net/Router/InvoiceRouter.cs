@@ -35,7 +35,7 @@ namespace Facturapi
 
         public static string SendByEmail(string id)
         {
-            return $"invoice/{id}/email";
+            return $"invoices/{id}/email";
         }
     }
 }
