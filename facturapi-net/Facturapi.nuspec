@@ -11,12 +11,12 @@
     <iconUrl>https://github.com/FacturAPI/facturapi-net/raw/master/facturapi-net/facturapi.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Genera facturas electrónicas válidas en México (CFDI) lo más fácil posible. Obtén tus API Keys creando una cuenta gratuita en https://www.facturapi.io</description>
-    <releaseNotes>Initial release</releaseNotes>
-    <copyright>Copyright © Facturapi 2017</copyright>
+    <releaseNotes>New features and bug fixes</releaseNotes>
+    <copyright>Copyright © Facturapi 2018</copyright>
     <tags>factura factura-electronica cfdi facturapi mexico conekta</tags>
   </metadata>
   <!-- A readme.txt will be displayed when the package is installed -->
   <files>
-    <file src="readme.txt" target="" />
+    <file src="README.txt" target="" />
   </files>
 </package>
