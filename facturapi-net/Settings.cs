@@ -8,6 +8,7 @@ namespace Facturapi
 {
     public static class Settings
     {
+        [Obsolete("Setting your ApiKey globally is deprecated and will be removed in the next major release. Create an instance of Facturapi.Wrapper instead.")]
         public static string ApiKey { get; set; }
     }
 }

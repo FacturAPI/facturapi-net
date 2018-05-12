@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NuGet.Build.Packaging.0.2.2\build\NuGet.Build.Packaging.props" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.2\build\NuGet.Build.Packaging.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -12,6 +13,23 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <PackOnBuild>true</PackOnBuild>
+    <Authors>Javier Rosas</Authors>
+    <PackageIconUrl>https://github.com/FacturAPI/facturapi-net/raw/master/facturapi-net/facturapi.png</PackageIconUrl>
+    <NeutralLanguage>es-MX</NeutralLanguage>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/FacturAPI/facturapi-net/master/LICENSE</PackageLicenseUrl>
+    <Owners>Facturapi</Owners>
+    <PackageProjectUrl>https://www.facturapi.io</PackageProjectUrl>
+    <Summary>Genera facturas electrónicas válidas en México (CFDI) lo más fácil posible. Obtén tus API Keys creando una cuenta gratuita en https://www.facturapi.io</Summary>
+    <PackageTags>factura factura-electronica cfdi facturapi mexico conekta</PackageTags>
+    <Title>Facturapi</Title>
+    <Description>Genera facturas electrónicas válidas en México (CFDI) lo más fácil posible. Obtén tus API Keys creando una cuenta gratuita en https://www.facturapi.io</Description>
+    <PackageId>Facturapi</PackageId>
+    <ReleaseVersion>0.3.0</ReleaseVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
+    <PackageVersion>0.3.1</PackageVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,9 +40,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>Build</type>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>
+    </DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -57,17 +83,26 @@
     <Compile Include="Constants\InvoiceUse.cs" />
     <Compile Include="Constants\PaymentMethod.cs" />
     <Compile Include="Constants\PaymentForm.cs" />
+    <Compile Include="Constants\TaxSystem.cs" />
     <Compile Include="FacturapiException.cs" />
     <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\ApiKeys.cs" />
+    <Compile Include="Models\Certificate.cs" />
+    <Compile Include="Models\CompletionStep.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Customization.cs" />
     <Compile Include="Models\Invoice.cs" />
     <Compile Include="Models\InvoiceItem.cs" />
+    <Compile Include="Models\Legal.cs" />
+    <Compile Include="Models\Organization.cs" />
+    <Compile Include="Models\PdfExtra.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Constants\TaxType.cs" />
     <Compile Include="Models\SearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Tax.cs" />
     <Compile Include="Router\InvoiceRouter.cs" />
+    <Compile Include="Router\OrganizationRouter.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Util\SnakeCasePropertyNamesContractResolver.cs" />
     <Compile Include="Router\CustomerRouter.cs" />
@@ -76,6 +111,7 @@
     <Compile Include="Router\ProductRouter.cs" />
     <Compile Include="Router\Router.cs" />
     <Compile Include="Wrapper\InvoiceWrapper.cs" />
+    <Compile Include="Wrapper\OrganizationWrapper.cs" />
     <Compile Include="Wrapper\ProductWrapper.cs" />
     <Compile Include="Wrapper\BaseWrapper.cs" />
   </ItemGroup>
@@ -88,4 +124,12 @@
     <Content Include="facturapi.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NuGet.Build.Packaging.0.2.2\build\NuGet.Build.Packaging.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NuGet.Build.Packaging.0.2.2\build\NuGet.Build.Packaging.props'))" />
+    <Error Condition="!Exists('..\packages\NuGet.Build.Packaging.0.2.2\build\NuGet.Build.Packaging.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NuGet.Build.Packaging.0.2.2\build\NuGet.Build.Packaging.targets'))" />
+  </Target>
+  <Import Project="..\packages\NuGet.Build.Packaging.0.2.2\build\NuGet.Build.Packaging.targets" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.2\build\NuGet.Build.Packaging.targets')" />
 </Project>

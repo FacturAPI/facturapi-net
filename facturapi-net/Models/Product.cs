@@ -23,26 +23,31 @@ namespace Facturapi
         public string UnitName { get; set; }
         public string Sku { get; set; }
 
+        [Obsolete("Methods requiring you to set ApiKeys globally are deprecated and will be removed in the next major release. Use methods from the Facturapi.Wrapper instance instead.")]
         public static Task<SearchResult<Product>> ListAsync(Dictionary<string, object> query = null)
         {
             return new ProductWrapper().ListAsync(query);
         }
 
+        [Obsolete("Methods requiring you to set ApiKeys globally are deprecated and will be removed in the next major release. Use methods from the Facturapi.Wrapper instance instead.")]
         public static Task<Product> CreateAsync(Dictionary<string, object> data)
         {
             return new ProductWrapper().CreateAsync(data);
         }
 
+        [Obsolete("Methods requiring you to set ApiKeys globally are deprecated and will be removed in the next major release. Use methods from the Facturapi.Wrapper instance instead.")]
         public static Task<Product> RetrieveAsync(string id)
         {
             return new ProductWrapper().RetrieveAsync(id);
         }
 
+        [Obsolete("Methods requiring you to set ApiKeys globally are deprecated and will be removed in the next major release. Use methods from the Facturapi.Wrapper instance instead.")]
         public static Task<Product> DeleteAsync(string id)
         {
             return new ProductWrapper().DeleteAsync(id);
         }
 
+        [Obsolete("Methods requiring you to set ApiKeys globally are deprecated and will be removed in the next major release. Use methods from the Facturapi.Wrapper instance instead.")]
         public static Task<Product> UpdateAsync(string id, Dictionary<string, object> data)
         {
             return new ProductWrapper().UpdateAsync(id, data);

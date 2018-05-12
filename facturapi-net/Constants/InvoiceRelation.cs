@@ -1,6 +1,6 @@
 ﻿namespace Facturapi
 {
-    class InvoiceRelation
+    public static class InvoiceRelation
     {
         public const string NOTA_DE_CREDITO = "01";
         public const string NOTA_DE_DEBITO = "02";
