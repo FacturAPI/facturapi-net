@@ -10,10 +10,12 @@ namespace FacturapiTest
 {
     class Program
     {
+        static Facturapi.Wrapper facturapi { get; set; }
         static void Main(string[] args)
         {
             Console.WriteLine("Please enter your test API Key");
             var apiKey = Console.ReadLine();
+            facturapi = new Facturapi.Wrapper(apiKey);
             //Facturapi.Settings.ApiKey = apiKey;
             //CreateCustomer();
             //ListCustomers();
@@ -22,15 +24,16 @@ namespace FacturapiTest
             //var invoiceId = Console.ReadLine();
             //DownloadZip(invoiceId);
             //RetrieveInvoice("5940e8a59778e41fc95f294d");
-            //CreateInvoiceEphimeral();
-            ListInvoices(apiKey);
+            var invoice = CreateInvoiceEphimeral();
+            ListInvoices();
+            facturapi.Invoice.SendByEmailAsync(invoice.Id).GetAwaiter().GetResult();
             Console.WriteLine("Done!");
             Console.Read();
         }
 
         static void ListCustomers ()
         {
-            var list = Facturapi.Customer.ListAsync().GetAwaiter().GetResult();
+            var list = facturapi.Customer.ListAsync().GetAwaiter().GetResult();
             Console.WriteLine($"total: {list.TotalPages}");
             foreach (var c in list.Data)
             {
@@ -42,7 +45,7 @@ namespace FacturapiTest
         {
             try
             {
-                var customer = Facturapi.Customer.CreateAsync(new Dictionary<string, object>
+                var customer = facturapi.Customer.CreateAsync(new Dictionary<string, object>
                 {
                     ["legal_name"] = "María de los Ángeles Buenavista Rodriguez",
                     ["tax_id"] = "ROBJ881103B24",
@@ -66,7 +69,7 @@ namespace FacturapiTest
         {
             try
             {
-                var product = Facturapi.Product.CreateAsync(new Dictionary<string, object>
+                var product = facturapi.Product.CreateAsync(new Dictionary<string, object>
                 {
                     ["description"] = "Macbook Pro 15''",
                     ["product_key"] = "43211508",
@@ -86,9 +89,9 @@ namespace FacturapiTest
         {
             try
             {
-                var invoice = Facturapi.Invoice.CreateAsync(new Dictionary<string, object>
+                var invoice = facturapi.Invoice.CreateAsync(new Dictionary<string, object>
                 {
-                    ["customer"] = "592deb5ce815c1296c950d02",
+                    ["customer"] = "5a7b6739df947d13ad4eea79",
                     ["payment_form"] = Facturapi.PaymentForm.DINERO_ELECTRONICO,
                     ["items"] = new Dictionary<string, object>[]
                     {
@@ -111,7 +114,7 @@ namespace FacturapiTest
         {
             try
             {
-                var stream = Facturapi.Invoice.DownloadZipAsync(invoiceId).GetAwaiter().GetResult();
+                var stream = facturapi.Invoice.DownloadZipAsync(invoiceId).GetAwaiter().GetResult();
                 var file = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\factura.zip", FileMode.Create);
                 stream.CopyTo(file);
                 file.Close();
@@ -144,13 +147,13 @@ namespace FacturapiTest
             }
         }
 
-        static void CreateInvoiceEphimeral()
+        static Invoice CreateInvoiceEphimeral()
         {
             try
             {
-                var invoice = Facturapi.Invoice.CreateAsync(new Dictionary<string, object>
+                var invoice = facturapi.Invoice.CreateAsync(new Dictionary<string, object>
                 {
-                    ["customer"] = "592deb5ce815c1296c950d02",
+                    ["customer"] = "5a7b6739df947d13ad4eea79",
                     ["payment_form"] = Facturapi.PaymentForm.DINERO_ELECTRONICO,
                     ["items"] = new Dictionary<string, object>[]
                     {
@@ -166,18 +169,19 @@ namespace FacturapiTest
                         }
                     }
                 }).GetAwaiter().GetResult();
+                return invoice;
             }
             catch (FacturapiException exception)
             {
                 Console.WriteLine(exception.Message);
+                return null;
             }
         }
 
-        static void ListInvoices(string apiKey)
+        static void ListInvoices()
         {
             try
             {
-                var facturapi = new Facturapi.Wrapper(apiKey);
                 var invoice = facturapi.Invoice.ListAsync().GetAwaiter().GetResult();
                 Console.WriteLine(invoice.Data.Length);
             }

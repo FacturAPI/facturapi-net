@@ -78,6 +78,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\InvoiceRelation.cs" />
+    <Compile Include="Constants\InvoiceType.cs" />
+    <Compile Include="Constants\InvoiceUse.cs" />
+    <Compile Include="Constants\PaymentMethod.cs" />
     <Compile Include="Constants\PaymentForm.cs" />
     <Compile Include="FacturapiException.cs" />
     <Compile Include="Models\Address.cs" />
