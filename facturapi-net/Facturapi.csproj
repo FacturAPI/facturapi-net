@@ -83,6 +83,7 @@
     <Compile Include="Constants\InvoiceUse.cs" />
     <Compile Include="Constants\PaymentMethod.cs" />
     <Compile Include="Constants\PaymentForm.cs" />
+    <Compile Include="Constants\TaxSystem.cs" />
     <Compile Include="FacturapiException.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ApiKeys.cs" />
