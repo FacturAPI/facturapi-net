@@ -25,20 +25,29 @@ namespace Facturapi
             return RetrieveOrganization(id);
         }
 
-        public static string UpdateLegal(string id) {
+        public static string UpdateLegal(string id)
+        {
             return $"{RetrieveOrganization(id)}/legal";
         }
         
-        public static string UpdateCustomization(string id) {
+        public static string UpdateCustomization(string id)
+        {
             return $"{RetrieveOrganization(id)}/customization";
         }
 
-        public static string UploadLogo(string id) {
+        public static string UploadLogo(string id)
+        {
             return $"{RetrieveOrganization(id)}/logo";
         }
         
-        public static string UploadCertificate(string id) {
+        public static string UploadCertificate(string id)
+        {
             return $"{RetrieveOrganization(id)}/certificate";
+        }
+
+        public static string GetApiKeys(string id)
+        {
+            return $"{RetrieveOrganization(id)}/apikeys";
         }
     }
 }

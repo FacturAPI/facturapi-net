@@ -11,12 +11,14 @@ namespace Facturapi
         public Wrappers.CustomerWrapper Customer { get; private set; }
         public Wrappers.ProductWrapper Product { get; private set; }
         public Wrappers.InvoiceWrapper Invoice { get; private set; }
+        public Wrappers.OrganizationWrapper Organization { get; private set; }
 
         public Wrapper(string apiKey)
         {
             this.Customer = new Wrappers.CustomerWrapper(apiKey);
             this.Product = new Wrappers.ProductWrapper(apiKey);
             this.Invoice = new Wrappers.InvoiceWrapper(apiKey);
+            this.Organization = new Wrappers.OrganizationWrapper(apiKey);
         }
     }
 }

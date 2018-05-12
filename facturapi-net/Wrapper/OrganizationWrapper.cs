@@ -111,8 +111,34 @@ namespace Facturapi.Wrappers
 				var error = JsonConvert.DeserializeObject<JObject>(resultString);
 				throw new FacturapiException(error["message"].ToString());
 			}
-			var customer = JsonConvert.DeserializeObject<Customer>(resultString, this.jsonSettings);
-			return customer;
+			var organization = JsonConvert.DeserializeObject<Organization>(resultString, this.jsonSettings);
+			return organization;
+        }
+
+        public async Task<Organization> UpdateCustomizationAsync(string id, Dictionary<string, object> data)
+        {
+            var response = await client.PutAsync(Router.UpdateCustomization(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var organization = JsonConvert.DeserializeObject<Organization>(resultString, this.jsonSettings);
+            return organization;
+        }
+
+        public async Task<ApiKeys> GetApiKeysAsync(string id)
+        {
+            var response = await client.GetAsync(Router.GetApiKeys(id));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var organization = JsonConvert.DeserializeObject<ApiKeys>(resultString, this.jsonSettings);
+            return organization;
         }
     }
 }
