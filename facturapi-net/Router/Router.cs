@@ -15,7 +15,7 @@ namespace Facturapi
             var url = path;
             if (query != null)
             {
-                return $"{path}{DictionaryToQueryString(query)}";
+                return $"{path}?{DictionaryToQueryString(query)}";
             }
             else
             {
