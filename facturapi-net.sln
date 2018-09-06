@@ -6,12 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Facturapi", "facturapi-net\Facturapi.csproj", "{A91D3CF3-1051-41F4-833E-C52EE8FBCE20}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturapiTest", "FacturapiTest\FacturapiTest.csproj", "{B0D06A08-74DC-449A-9C42-376FF3A6C1F4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A91D3CF3-1051-41F4-833E-C52EE8FBCE20} = {A91D3CF3-1051-41F4-833E-C52EE8FBCE20}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7375A381-9AA2-4E14-95DF-89068A6EBF76}"
 	ProjectSection(SolutionItems) = preProject
+		facturapi-net\Facturapi.nuspec = facturapi-net\Facturapi.nuspec
+		facturapi-net\packages.config = facturapi-net\packages.config
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -32,5 +31,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D208232D-2FEB-4917-8DF6-E68C242F2EA5}
 	EndGlobalSection
 EndGlobal

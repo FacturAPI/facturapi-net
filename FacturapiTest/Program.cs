@@ -24,9 +24,9 @@ namespace FacturapiTest
             //var invoiceId = Console.ReadLine();
             //DownloadZip(invoiceId);
             //RetrieveInvoice("5940e8a59778e41fc95f294d");
-            var invoice = CreateInvoiceEphimeral();
+            //var invoice = CreateInvoiceEphimeral();
             ListInvoices();
-            facturapi.Invoice.SendByEmailAsync(invoice.Id).GetAwaiter().GetResult();
+            //facturapi.Invoice.SendByEmailAsync(invoice.Id).GetAwaiter().GetResult();
             Console.WriteLine("Done!");
             Console.Read();
         }
@@ -131,7 +131,7 @@ namespace FacturapiTest
         {
             try
             {
-                var invoice = Facturapi.Invoice.RetrieveAsync(invoiceId).GetAwaiter().GetResult();
+                var invoice = facturapi.Invoice.RetrieveAsync(invoiceId).GetAwaiter().GetResult();
                 Console.WriteLine("Invoice data");
                 Console.WriteLine(invoice.Id);
                 Console.WriteLine(invoice.Total);
@@ -182,8 +182,16 @@ namespace FacturapiTest
         {
             try
             {
-                var invoice = facturapi.Invoice.ListAsync().GetAwaiter().GetResult();
-                Console.WriteLine(invoice.Data.Length);
+                var invoices = facturapi.Invoice.ListAsync(new Dictionary<string, object>
+                {
+                    ["limit"] = 5,
+                    ["page"] = 3
+                }
+            ).GetAwaiter().GetResult();
+                foreach (var invoice in invoices.Data)
+                {
+                    Console.WriteLine(invoice.Id);
+                }
             }
             catch (FacturapiException exception)
             {

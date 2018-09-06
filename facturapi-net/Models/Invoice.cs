@@ -20,6 +20,7 @@ namespace Facturapi
         public long FolioNumber { get; set; }
         public string Series { get; set; }
         public string PaymentForm { get; set; }
+        public string CancellationReceipt { get; set; }
         public List<InvoiceItem> Items { get; set; }
 
         [Obsolete("Methods requiring you to set ApiKeys globally are deprecated and will be removed in the next major release. Use methods from the Facturapi.Wrapper instance instead.")]
