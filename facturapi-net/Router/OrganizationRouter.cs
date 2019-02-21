@@ -7,7 +7,7 @@ namespace Facturapi
     {
         public static string ListOrganizations(Dictionary<string, object> query = null)
         {
-            return UriWithQuery("organization", query);
+            return UriWithQuery("organizations", query);
         }
 
         public static string RetrieveOrganization(string id)
