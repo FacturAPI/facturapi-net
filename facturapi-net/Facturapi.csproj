@@ -27,7 +27,7 @@
     <PackageId>Facturapi</PackageId>
     <ReleaseVersion>0.3.0</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
-    <PackageVersion>0.3.1</PackageVersion>
+    <PackageVersion>$(Version)</PackageVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -61,9 +61,12 @@
   <PropertyGroup>
     <ApplicationIcon>facturapi.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json.ContractResolverExtentions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Json.NET.ContractResolverExtentions.1.0.1\lib\net45\Newtonsoft.Json.ContractResolverExtentions.dll</HintPath>
@@ -91,10 +94,12 @@
     <Compile Include="Models\CompletionStep.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Customization.cs" />
+    <Compile Include="Models\ForeignTrade.cs" />
     <Compile Include="Models\Invoice.cs" />
     <Compile Include="Models\InvoiceItem.cs" />
     <Compile Include="Models\Legal.cs" />
     <Compile Include="Models\Organization.cs" />
+    <Compile Include="Models\Payment.cs" />
     <Compile Include="Models\PdfExtra.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Constants\TaxType.cs" />
@@ -103,21 +108,22 @@
     <Compile Include="Models\Tax.cs" />
     <Compile Include="Router\InvoiceRouter.cs" />
     <Compile Include="Router\OrganizationRouter.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="Util\SnakeCasePropertyNamesContractResolver.cs" />
     <Compile Include="Router\CustomerRouter.cs" />
-    <Compile Include="Wrapper.cs" />
-    <Compile Include="Wrapper\CustomerWrapper.cs" />
+    <Compile Include="FacturapiClient.cs" />
+    <Compile Include="Wrappers\CustomerWrapper.cs" />
     <Compile Include="Router\ProductRouter.cs" />
     <Compile Include="Router\Router.cs" />
-    <Compile Include="Wrapper\InvoiceWrapper.cs" />
-    <Compile Include="Wrapper\OrganizationWrapper.cs" />
-    <Compile Include="Wrapper\ProductWrapper.cs" />
-    <Compile Include="Wrapper\BaseWrapper.cs" />
+    <Compile Include="Wrappers\InvoiceWrapper.cs" />
+    <Compile Include="Wrappers\OrganizationWrapper.cs" />
+    <Compile Include="Wrappers\ProductWrapper.cs" />
+    <Compile Include="Wrappers\BaseWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Facturapi.nuspec" />
+    <None Include="Facturapi.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

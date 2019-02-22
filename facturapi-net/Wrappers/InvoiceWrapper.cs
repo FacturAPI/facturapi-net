@@ -12,8 +12,6 @@ namespace Facturapi.Wrappers
 {
     public class InvoiceWrapper : BaseWrapper
     {
-        public InvoiceWrapper() : base() { }
-
         public InvoiceWrapper(string apiKey) : base(apiKey) { }
 
         public async Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null)
@@ -70,9 +68,9 @@ namespace Facturapi.Wrappers
             return customer;
         }
 
-        public async Task SendByEmailAsync(string id)
+        public async Task SendByEmailAsync(string id, Dictionary<string, object> data)
         {
-            var response = await client.PostAsync(Router.SendByEmail(id), null);
+            var response = await client.PostAsync(Router.SendByEmail(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
             if (!response.IsSuccessStatusCode)
             {
                 var resultString = await response.Content.ReadAsStringAsync();

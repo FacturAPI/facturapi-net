@@ -9,9 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturapiTest", "FacturapiT
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7375A381-9AA2-4E14-95DF-89068A6EBF76}"
 	ProjectSection(SolutionItems) = preProject
+		CHANGELOG.txt = CHANGELOG.txt
 		facturapi-net\Facturapi.nuspec = facturapi-net\Facturapi.nuspec
 		facturapi-net\packages.config = facturapi-net\packages.config
-		README.md = README.md
+		README.txt = README.txt
 	EndProjectSection
 EndProject
 Global

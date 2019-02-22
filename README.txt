@@ -24,26 +24,16 @@ Asegúrate de haber creado tu cuenta gratuita en [Facturapi](https://www.factura
 
 ### Inicializa la librería usando tus llaves secretas
 
-#### Para una sola organización
-
-Coloca este código en tu bloque de inicialización (para ASP.NET MVC, sería en el método `Application_Start`, en el archivo `Global.asax`):
+Empieza por crear una instancia del Wrapper de Facturapi usando tu llave secreta.
 
 ```csharp
-Facturapi.Settings.ApiKey = "TU_API_KEY";
-```
+using Facturapi;
 
-#### Para multi-organizaciones
-
-Puedes usar múltiples Api Keys en un mismo proyecto creando instancias de Facturapi.Wrapper y pasando como parámetro la ApiKey de la organización que quieres utilizar en ese momento:
-
-```csharp
 // Esto asegura que puedas usar diferentes ApiKeys en diferentes instancias de Wrapper
-var facturapi = new Facturapi.Wrapper('TU_API_KEY');
-// Después, procede a llamar a los métodos como muestra la documentación, pero usando el objeto que acabas de crear.
-var customers = await facturapi.Customer.ListAsync();
+var facturapi = new FacturapiClient('TU_API_KEY');
+// Después, procede a llamar a los métodos como muestra la documentación.
+var invoice = await facturapi.Invoices.Create(...);
 ```
-
-Si usas este método de identificación, no necesitas asignar un valor a `Facturapi.Settings.ApiKey`.
 
 ### Métodos asíncronos (async, await)
 
@@ -116,14 +106,15 @@ var product = await Facturapi.Product.CreateAsync(new Dictionary<string, object>
 ```csharp
 var invoice = await Facturapi.Product.CreateAsync(new Dictionary<string, object>
 {
-  ["customer"] = "ID_DEL_CLIENTE",
+  ["customer"] = "ID_DEL_CLIENTE",	  // Para clientes no registrados, puedes asignar
+									  // un Dictionary con los datos del cliente.
   ["items"] = new Dictionary<string, object>[]
   { // Puedes agregar tantos items como necesites a este arreglo
     new Dictionary<string, object>
     {
       ["quantity"] = 2,               // Opcional. Default: 1.
       ["product"] = "ID_DEL_PRODUCTO" // Para productos no registrados, puedes asignar
-                                      // un Dictionary con los datos del producto
+                                      // un Dictionary con los datos del producto.
     }
   }
   ["payment_form"] = Facturapi.PaymentForm.DINERO_ELECTRONICO

@@ -1,11 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Facturapi.Wrappers
 {
@@ -18,8 +14,6 @@ namespace Facturapi.Wrappers
         };
         protected JsonSerializerSettings jsonSettings { get; set; }
         public string apiKey { get; set; }
-
-        public BaseWrapper() : this(Settings.ApiKey) { }
 
         public BaseWrapper(string apiKey)
         {

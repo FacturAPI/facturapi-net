@@ -12,8 +12,6 @@ namespace Facturapi.Wrappers
 {
     public class OrganizationWrapper : BaseWrapper
     {
-        public OrganizationWrapper() : base() { }
-
         public OrganizationWrapper(string apiKey) : base (apiKey) { }
 
         public async Task<SearchResult<Organization>> ListAsync(Dictionary<string, object> query = null)
