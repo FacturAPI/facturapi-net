@@ -32,7 +32,7 @@ using Facturapi;
 // Esto asegura que puedas usar diferentes ApiKeys en diferentes instancias de Wrapper
 var facturapi = new FacturapiClient('TU_API_KEY');
 // Después, procede a llamar a los métodos como muestra la documentación.
-var invoice = await facturapi.Invoices.Create(...);
+var invoice = await facturapi.Invoice.Create(...);
 ```
 
 ### Métodos asíncronos (async, await)
@@ -41,10 +41,10 @@ Esta librería utiliza métodos asíncronos. Si tu aplicación no tiene código 
 
 ```csharp
 // Asíncrono
-var customers = await Facturapi.Customer.List();
+var customers = await facturapi.Customer.List();
 
 // Síncrono
-var customers = Facturapi.Customer.List().GetAwaiter().GetResult();
+var customers = facturapi.Customer.List().GetAwaiter().GetResult();
 ```
 
 ## Uso de la librería
@@ -52,7 +52,7 @@ var customers = Facturapi.Customer.List().GetAwaiter().GetResult();
 ### Crear un cliente
 
 ```csharp
-var customer = await Facturapi.Customer.CreateAsync(new Dictionary<string, object>
+var customer = await facturapi.Customer.CreateAsync(new Dictionary<string, object>
 {
   ["legal_name"] = "Walter White",    // Razón social
   ["tax_id"] = "ABCD101010XYZ",       // RFC
@@ -75,7 +75,7 @@ var customer = await Facturapi.Customer.CreateAsync(new Dictionary<string, objec
 ### Crear un producto
 
 ```csharp
-var product = await Facturapi.Product.CreateAsync(new Dictionary<string, object>
+var product = await facturapi.Product.CreateAsync(new Dictionary<string, object>
 {
   ["description"] = "iPhone 8",
   ["product_key"] = "4319150114",   // Clave Producto/Servicio del catálogo del SAT. Para obtenerla más fácilmente
@@ -104,7 +104,7 @@ var product = await Facturapi.Product.CreateAsync(new Dictionary<string, object>
 ### Crear una factura
 
 ```csharp
-var invoice = await Facturapi.Product.CreateAsync(new Dictionary<string, object>
+var invoice = await facturapi.Product.CreateAsync(new Dictionary<string, object>
 {
   ["customer"] = "ID_DEL_CLIENTE",	  // Para clientes no registrados, puedes asignar
 									  // un Dictionary con los datos del cliente.
@@ -126,10 +126,10 @@ var invoice = await Facturapi.Product.CreateAsync(new Dictionary<string, object>
 ```csharp
 // Una vez creada la factura, puedes descargar el PDF y el XML comprimidos
 // en un archivo ZIP.
-var zipStream = await Facturapi.Invoice.DownloadZipAsync(invoice.Id);
+var zipStream = await facturapi.Invoice.DownloadZipAsync(invoice.Id);
 // O bien, el XML y el PDF por separado
-var xmlStream = await Facturapi.Invoice.DownloadXmlAsync(invoice.Id);
-var pdfStream = await Facturapi.Invoice.DownloadPdfAsync(invoice.Id);
+var xmlStream = await facturapi.Invoice.DownloadXmlAsync(invoice.Id);
+var pdfStream = await facturapi.Invoice.DownloadPdfAsync(invoice.Id);
 // Y luego guardarlo en un archivo del disco duro
 var file = new System.IO.FileStrem("C:\\route\\to\\save\\invoice.zip", FileMode.Create);
 zipStream.CopyTo(file);
@@ -139,7 +139,7 @@ file.Close();
 #### Envía la factura por correo electrónico
 
 ```csharp
-await Facturapi.Invoice.SendByEmailAsync(invoice.Id);
+await facturapi.Invoice.SendByEmailAsync(invoice.Id);
 ```
 
 ## Documentación
