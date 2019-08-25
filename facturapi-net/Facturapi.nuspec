@@ -6,7 +6,7 @@
     <title>$title$</title>
     <authors>Javier Rosas</authors>
     <owners>Javier Rosas</owners>
-    <licenseUrl>https://raw.githubusercontent.com/FacturAPI/facturapi-net/master/LICENSE</licenseUrl>
+    <license type="expression">MIT</license>
     <projectUrl>https://github.com/facturapi/facturapi-net</projectUrl>
     <iconUrl>https://github.com/FacturAPI/facturapi-net/raw/master/facturapi-net/facturapi.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -18,6 +18,6 @@
   <!-- A readme.txt will be displayed when the package is installed -->
   <files>
     <file src="README.txt" target="" />
-    <file src="CHANGELOG.txt" target="" />
+    <file src="../CHANGELOG.md" target="" />
   </files>
 </package>

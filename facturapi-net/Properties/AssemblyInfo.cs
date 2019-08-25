@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Facturapi")]
 [assembly: AssemblyDescription("Genera facturas electrónicas de la manera más sencilla")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Facturapi SAS")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Facturapi")]
 [assembly: AssemblyCopyright("Copyright © Facturapi 2019")]
 [assembly: AssemblyTrademark("Facturapi")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.*")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1.*")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
