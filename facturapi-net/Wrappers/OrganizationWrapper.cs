@@ -71,7 +71,7 @@ namespace Facturapi.Wrappers
         public async Task<Organization> UploadLogoAsync(string id, Stream file)
         {
             var form = new MultipartFormDataContent();
-            form.Add(new StreamContent(file), "file");
+            form.Add(new StreamContent(file), "file", "logo.jpg");
             var response = await client.PutAsync(Router.UploadLogo(id), form);
             var resultString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
@@ -86,8 +86,8 @@ namespace Facturapi.Wrappers
         public async Task<Organization> UploadCertificateAsync(string id, Stream cerFile, Stream keyFile, string password)
         {
             var form = new MultipartFormDataContent();
-            form.Add(new StreamContent(cerFile), "cer");
-            form.Add(new StreamContent(keyFile), "key");
+            form.Add(new StreamContent(cerFile), "cer", "certificate.cer");
+            form.Add(new StreamContent(keyFile), "key", "key.key");
             form.Add(new StringContent(password));
             var response = await client.PutAsync(Router.UploadCertificate(id), form);
             var resultString = await response.Content.ReadAsStringAsync();

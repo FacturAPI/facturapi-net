@@ -10,22 +10,31 @@ namespace FacturapiTest
 {
     class Program
     {
-        static Facturapi.Wrapper facturapi { get; set; }
+        static FacturapiClient facturapiUser { get; set; }
+        static FacturapiClient facturapi { get; set; }
         static void Main(string[] args)
         {
-            Console.WriteLine("Please enter your test API Key");
+            Console.WriteLine("Please enter your user API Key");
             var apiKey = Console.ReadLine();
-            facturapi = new Facturapi.Wrapper(apiKey);
-            //Facturapi.Settings.ApiKey = apiKey;
+            facturapiUser = new FacturapiClient(apiKey);
+            var organization = facturapiUser.Organization.RetrieveAsync("5d627747cfd03f37574a57d8").GetAwaiter().GetResult();
+            Console.WriteLine("Organization created with id " + organization.Id);
+            Console.WriteLine("Uploading logo...");
+
+            var fileStream = File.OpenRead(@".\logo.jpg");
+            Console.WriteLine("File is of size " + fileStream.Length.ToString());
+            organization = facturapiUser.Organization.UploadLogoAsync(organization.Id, fileStream).GetAwaiter().GetResult();
+            
             //CreateCustomer();
             //ListCustomers();
-            //CreateProduct();
+            //var productId = CreateProduct();
+            //CreateInvoice(productId);
             //Console.WriteLine("Invoice Id?");
             //var invoiceId = Console.ReadLine();
             //DownloadZip(invoiceId);
             //RetrieveInvoice("5940e8a59778e41fc95f294d");
             //var invoice = CreateInvoiceEphimeral();
-            ListInvoices();
+            // ListInvoices();
             //facturapi.Invoice.SendByEmailAsync(invoice.Id).GetAwaiter().GetResult();
             Console.WriteLine("Done!");
             Console.Read();
@@ -65,7 +74,7 @@ namespace FacturapiTest
             }
         }
 
-        static void CreateProduct ()
+        static string CreateProduct ()
         {
             try
             {
@@ -77,11 +86,12 @@ namespace FacturapiTest
                     ["sku"] = "MAC12345"
                 }).GetAwaiter().GetResult();
                 Console.WriteLine($"Product created with Id {product.Id}");
-                CreateInvoice(product.Id);
+                return product.Id;
             }
             catch (FacturapiException exception)
             {
                 Console.WriteLine(exception.Message);
+                return null;
             }
         }
 
