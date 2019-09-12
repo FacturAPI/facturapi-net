@@ -88,7 +88,7 @@ namespace Facturapi.Wrappers
             var form = new MultipartFormDataContent();
             form.Add(new StreamContent(cerFile), "cer", "certificate.cer");
             form.Add(new StreamContent(keyFile), "key", "key.key");
-            form.Add(new StringContent(password));
+            form.Add(new StringContent(password), "password");
             var response = await client.PutAsync(Router.UploadCertificate(id), form);
             var resultString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
