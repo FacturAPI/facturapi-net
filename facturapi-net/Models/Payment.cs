@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Facturapi
 {
@@ -8,7 +9,7 @@ namespace Facturapi
         public string Currency { get; set; }
         public Decimal Exchange { get; set; }
         public DateTime Date { get; set; }
-        public PaymentRelated Related {get;set;}
+        public List<PaymentRelated> Related {get;set;}
     }
 
     public class PaymentRelated
