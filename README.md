@@ -8,7 +8,7 @@ Librería oficial para .NET de https://www.facturapi.io
 
 Facturapi ayuda a generar facturas electrónicas válidas en México (CFDI) de la manera más fácil posible.
 
-Si alguna vez has usado [Stripe](https://stripe.com) o [Conekta](https://conekta.io), verás que Facturapi es igual de sencillo de entender e implementar en tu servidor.
+Si alguna vez has usado [Stripe](https://stripe.com) o [Conekta](https://conekta.io), verás que Facturapi es igual de sencillo de entender e integrar a tu aplicación.
 
 ## Instalación
 

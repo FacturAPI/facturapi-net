@@ -16,15 +16,45 @@ namespace FacturapiTest
         {
             Console.WriteLine("Please enter your user API Key");
             var apiKey = Console.ReadLine();
-            facturapiUser = new FacturapiClient(apiKey);
-            var organization = facturapiUser.Organization.RetrieveAsync("5d627747cfd03f37574a57d8").GetAwaiter().GetResult();
-            Console.WriteLine("Organization created with id " + organization.Id);
-            Console.WriteLine("Uploading logo...");
+            facturapi = new FacturapiClient(apiKey);
 
-            var fileStream = File.OpenRead(@".\logo.jpg");
-            Console.WriteLine("File is of size " + fileStream.Length.ToString());
-            organization = facturapiUser.Organization.UploadLogoAsync(organization.Id, fileStream).GetAwaiter().GetResult();
-            
+            var invoice = facturapi.Invoice.CreateAsync(new Dictionary<string, object>
+            {
+                ["customer"] = new Dictionary<string, object>
+                {
+                    ["legal_name"] = "Javier Espinoza Morales",
+                    ["email"] = "javier_superman@hotmail.com",
+                    ["tax_id"] = "EIMJ7811248B3"
+                },
+
+                ["items"] = new Dictionary<string, object>[]
+                {
+                    new Dictionary<string, object>
+                    {
+                            ["product"] = new Dictionary<string, object>
+                              {
+                                ["description"] = "VIOLETA AFRICANA",
+                                ["product_key"] = "60131324",
+                                ["price"] = 25.50
+                              }
+                    }
+                },
+
+                ["payment_form"] = Facturapi.PaymentForm.EFECTIVO
+            }).GetAwaiter().GetResult();
+
+            Console.WriteLine("Created invoice with Id = %s", invoice.Id);
+
+
+            //facturapiUser = new FacturapiClient(apiKey);
+            //var organization = facturapiUser.Organization.RetrieveAsync("5d627747cfd03f37574a57d8").GetAwaiter().GetResult();
+            //Console.WriteLine("Organization created with id " + organization.Id);
+            //Console.WriteLine("Uploading logo...");
+
+            //var fileStream = File.OpenRead(@".\logo.jpg");
+            //Console.WriteLine("File is of size " + fileStream.Length.ToString());
+            //organization = facturapiUser.Organization.UploadLogoAsync(organization.Id, fileStream).GetAwaiter().GetResult();
+
             //CreateCustomer();
             //ListCustomers();
             //var productId = CreateProduct();
