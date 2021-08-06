@@ -90,6 +90,7 @@
     <Compile Include="FacturapiException.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ApiKeys.cs" />
+    <Compile Include="Models\CatalogItem.cs" />
     <Compile Include="Models\Certificate.cs" />
     <Compile Include="Models\CompletionStep.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -106,15 +107,19 @@
     <Compile Include="Models\Retention.cs" />
     <Compile Include="Models\SearchResult.cs" />
     <Compile Include="Models\Stamp.cs" />
+    <Compile Include="Models\TaxIdValidation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Tax.cs" />
+    <Compile Include="Router\CatalogRouter.cs" />
     <Compile Include="Router\InvoiceRouter.cs" />
     <Compile Include="Router\OrganizationRouter.cs" />
     <Compile Include="Router\ReceiptRouter.cs" />
     <Compile Include="Router\RetentionRouter.cs" />
+    <Compile Include="Router\ToolRouter.cs" />
     <Compile Include="Util\SnakeCasePropertyNamesContractResolver.cs" />
     <Compile Include="Router\CustomerRouter.cs" />
     <Compile Include="FacturapiClient.cs" />
+    <Compile Include="Wrappers\CatalogWrapper.cs" />
     <Compile Include="Wrappers\CustomerWrapper.cs" />
     <Compile Include="Router\ProductRouter.cs" />
     <Compile Include="Router\Router.cs" />
@@ -124,6 +129,7 @@
     <Compile Include="Wrappers\BaseWrapper.cs" />
     <Compile Include="Wrappers\ReceiptWrapper.cs" />
     <Compile Include="Wrappers\RetentionWrapper.cs" />
+    <Compile Include="Wrappers\ToolWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

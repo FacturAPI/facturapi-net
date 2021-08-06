@@ -14,6 +14,8 @@ namespace Facturapi
         public Wrappers.OrganizationWrapper Organization { get; private set; }
         public Wrappers.ReceiptWrapper Receipt { get; private set; }
         public Wrappers.RetentionWrapper Retention { get; private set; }
+        public Wrappers.CatalogWrapper Catalog { get; private set; }
+        public Wrappers.ToolWrapper Tool { get; private set; }
 
         public FacturapiClient(string apiKey)
         {
@@ -23,6 +25,8 @@ namespace Facturapi
             this.Organization = new Wrappers.OrganizationWrapper(apiKey);
             this.Receipt = new Wrappers.ReceiptWrapper(apiKey);
             this.Retention = new Wrappers.RetentionWrapper(apiKey);
+            this.Catalog = new Wrappers.CatalogWrapper(apiKey);
+            this.Tool = new Wrappers.ToolWrapper(apiKey);
         }
     }
 }
