@@ -28,7 +28,7 @@ namespace Facturapi.Wrappers
 
         public async Task<SearchResult<CatalogItem>> SearchUnits(Dictionary<string, object> query = null)
         {
-            var response = await client.GetAsync(Router.SearchProductKeys(query));
+            var response = await client.GetAsync(Router.SearchUnitKeys(query));
             var resultString = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
