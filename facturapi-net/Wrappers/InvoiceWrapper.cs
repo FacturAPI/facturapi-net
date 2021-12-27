@@ -55,9 +55,9 @@ namespace Facturapi.Wrappers
             return customer;
         }
 
-        public async Task<Invoice> CancelAsync(string id)
+        public async Task<Invoice> CancelAsync(string id, Dictionary<string, object> query = null)
         {
-            var response = await client.DeleteAsync(Router.CancelInvoice(id));
+            var response = await client.DeleteAsync(Router.CancelInvoice(id, query));
             var resultString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {

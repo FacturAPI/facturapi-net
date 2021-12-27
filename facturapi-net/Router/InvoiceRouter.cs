@@ -23,9 +23,9 @@ namespace Facturapi
             return "invoices";
         }
 
-        public static string CancelInvoice(string id)
+        public static string CancelInvoice(string id, Dictionary<string, object> query = null)
         {
-            return RetrieveInvoice(id);
+            return UriWithQuery(RetrieveInvoice(id), query);
         }
 
         public static string DownloadInvoice(string id, string format)
