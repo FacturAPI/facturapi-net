@@ -89,7 +89,6 @@
     <Compile Include="Constants\TaxSystem.cs" />
     <Compile Include="FacturapiException.cs" />
     <Compile Include="Models\Address.cs" />
-    <Compile Include="Models\ApiKeys.cs" />
     <Compile Include="Models\CatalogItem.cs" />
     <Compile Include="Models\Certificate.cs" />
     <Compile Include="Models\CompletionStep.cs" />
