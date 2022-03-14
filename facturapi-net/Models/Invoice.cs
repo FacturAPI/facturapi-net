@@ -13,6 +13,8 @@ namespace Facturapi
         public string Type { get; set; }
         public string VerificationUrl { get; set; }
         public string CancellationStatus { get; set; }
+        public DateTime Date { get; set; }
+        public Address Address { get; set; }
         public Customer Customer { get; set; }
         public decimal Total { get; set; }
         public string Uuid { get; set; }
