@@ -14,6 +14,11 @@ namespace Facturapi
             return $"customers/{id}";
         }
 
+        public static string ValidateCustomerTaxInfo(string id)
+        {
+            return $"customers/{id}/tax-info-validation";
+        }
+
         public static string CreateCustomer()
         {
             return "customers";

@@ -12,5 +12,6 @@ namespace Facturapi
         public Address Address { get; set; }
         public string LegalName { get; set; }
         public string TaxId { get; set; }
+        public string TaxSystem { get; set; }
     }
 }
