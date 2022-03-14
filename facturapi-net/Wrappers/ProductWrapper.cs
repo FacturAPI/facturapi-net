@@ -11,7 +11,9 @@ namespace Facturapi.Wrappers
 {
     public class ProductWrapper : BaseWrapper
     {
-        public ProductWrapper(string apiKey) : base(apiKey) { }
+        public ProductWrapper(string apiKey, string apiVersion = "v2") : base(apiKey, apiVersion)
+        {
+        }
 
         public async Task<SearchResult<Product>> ListAsync(Dictionary<string, object> query = null)
         {

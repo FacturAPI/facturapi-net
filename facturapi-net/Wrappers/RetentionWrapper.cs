@@ -12,7 +12,9 @@ namespace Facturapi.Wrappers
 {
     public class RetentionWrapper : BaseWrapper
     {
-        public RetentionWrapper(string apiKey) : base(apiKey) { }
+        public RetentionWrapper(string apiKey, string apiVersion = "v2") : base(apiKey, apiVersion)
+        {
+        }
 
         public async Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null)
         {

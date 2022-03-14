@@ -17,16 +17,16 @@ namespace Facturapi
         public Wrappers.CatalogWrapper Catalog { get; private set; }
         public Wrappers.ToolWrapper Tool { get; private set; }
 
-        public FacturapiClient(string apiKey)
+        public FacturapiClient(string apiKey, string apiVersion = "v2")
         {
-            this.Customer = new Wrappers.CustomerWrapper(apiKey);
-            this.Product = new Wrappers.ProductWrapper(apiKey);
-            this.Invoice = new Wrappers.InvoiceWrapper(apiKey);
-            this.Organization = new Wrappers.OrganizationWrapper(apiKey);
-            this.Receipt = new Wrappers.ReceiptWrapper(apiKey);
-            this.Retention = new Wrappers.RetentionWrapper(apiKey);
-            this.Catalog = new Wrappers.CatalogWrapper(apiKey);
-            this.Tool = new Wrappers.ToolWrapper(apiKey);
+            this.Customer = new Wrappers.CustomerWrapper(apiKey, apiVersion);
+            this.Product = new Wrappers.ProductWrapper(apiKey, apiVersion);
+            this.Invoice = new Wrappers.InvoiceWrapper(apiKey, apiVersion);
+            this.Organization = new Wrappers.OrganizationWrapper(apiKey, apiVersion);
+            this.Receipt = new Wrappers.ReceiptWrapper(apiKey, apiVersion);
+            this.Retention = new Wrappers.RetentionWrapper(apiKey, apiVersion);
+            this.Catalog = new Wrappers.CatalogWrapper(apiKey, apiVersion);
+            this.Tool = new Wrappers.ToolWrapper(apiKey, apiVersion);
         }
     }
 }

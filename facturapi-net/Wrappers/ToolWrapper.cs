@@ -9,7 +9,9 @@ namespace Facturapi.Wrappers
 {
     public class ToolWrapper : BaseWrapper
     {
-        public ToolWrapper(string apiKey) : base(apiKey) { }
+        public ToolWrapper(string apiKey, string apiVersion = "v2") : base(apiKey, apiVersion)
+        {
+        }
 
         public async Task<TaxIdValidation> ValidateTaxId(string taxId)
         {

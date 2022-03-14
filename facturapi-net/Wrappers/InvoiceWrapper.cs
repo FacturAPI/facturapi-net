@@ -12,7 +12,9 @@ namespace Facturapi.Wrappers
 {
     public class InvoiceWrapper : BaseWrapper
     {
-        public InvoiceWrapper(string apiKey) : base(apiKey) { }
+        public InvoiceWrapper(string apiKey, string apiVersion = "v2") : base(apiKey, apiVersion)
+        {
+        }
 
         public async Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null)
         {
