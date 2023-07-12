@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,6 +88,30 @@ namespace Facturapi.Wrappers
                 var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
+        }
+
+        public async Task SendByEmailAsync(string id, Dictionary<string, object> data)
+        {
+            var response = await client.PostAsync(Router.SendReceiptByEmail(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            if (!response.IsSuccessStatusCode)
+            {
+                var resultString = await response.Content.ReadAsStringAsync();
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
+                throw new FacturapiException(error["message"].ToString());
+            }
+        }
+
+        public async Task<Stream> DownloadPdfAsync(string id)
+        {
+            var response = await client.GetAsync(Router.DownloadReceiptPdf(id));
+            if (!response.IsSuccessStatusCode)
+            {
+                var resultString = await response.Content.ReadAsStringAsync();
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var stream = await response.Content.ReadAsStreamAsync();
+            return stream;
         }
     }
 }

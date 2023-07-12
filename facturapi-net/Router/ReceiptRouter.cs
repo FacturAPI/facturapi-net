@@ -37,5 +37,15 @@ namespace Facturapi
         {
             return $"receipts/global-invoice";
         }
+
+        public static string DownloadReceiptPdf(string id)
+        {
+            return $"receipts/(id)/pdf";
+        }
+
+        public static string SendReceiptByEmail(string id)
+        {
+            return $"receipts/(id)/email";
+        }
     }
 }
