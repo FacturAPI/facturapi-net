@@ -24,6 +24,7 @@ namespace Facturapi
         public const string ACTIVIDADES_AGRICOLAS_GANADERAS_SILVICOLAS_Y_PESQUERAS = "622";
         public const string OPCIONAL_PARA_GRUPOS_DE_SOCIEDADES = "623";
         public const string COORDINADOS = "624";
+        public const string RESICO = "626";
         public const string HIDROCARBUROS = "628";
         public const string REGIMEN_DE_ENAJENACION_O_ADQUISICION_DE_BIENES = "607";
         public const string PREFERENTES_Y_EMPRESAS_MULTINACIONALES = "629";

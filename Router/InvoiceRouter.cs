@@ -33,6 +33,11 @@ namespace Facturapi
             return $"invoices/{id}/{format}";
         }
 
+        public static string DownloadCancellationReceipt(string id, string format)
+        {
+            return $"invoices/{id}/cancellation_receipt/{format}";
+        }
+
         public static string SendByEmail(string id)
         {
             return $"invoices/{id}/email";

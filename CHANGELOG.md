@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0] - 2023-12-06
+
+### Breaking changes
+
+- We now target .NET standard 2.0 instead of .NET framework 4.5.
+
+### Added
+
+- RESICO Tax system
+- Download cancellation receipt XML and PDF
+
 ## [3.2.0] - 2023-07-12
 
 ### Added

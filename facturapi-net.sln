@@ -1,19 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Facturapi", "facturapi-net\Facturapi.csproj", "{A91D3CF3-1051-41F4-833E-C52EE8FBCE20}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacturapiTest", "FacturapiTest\FacturapiTest.csproj", "{B0D06A08-74DC-449A-9C42-376FF3A6C1F4}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7375A381-9AA2-4E14-95DF-89068A6EBF76}"
-	ProjectSection(SolutionItems) = preProject
-		CHANGELOG.md = CHANGELOG.md
-		facturapi-net\Facturapi.nuspec = facturapi-net\Facturapi.nuspec
-		facturapi-net\packages.config = facturapi-net\packages.config
-		README.md = README.md
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "facturapi-net", "facturapi-net.csproj", "{11E14BFA-6A9B-43D6-828F-B493E1617326}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,19 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A91D3CF3-1051-41F4-833E-C52EE8FBCE20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A91D3CF3-1051-41F4-833E-C52EE8FBCE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A91D3CF3-1051-41F4-833E-C52EE8FBCE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A91D3CF3-1051-41F4-833E-C52EE8FBCE20}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B0D06A08-74DC-449A-9C42-376FF3A6C1F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0D06A08-74DC-449A-9C42-376FF3A6C1F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0D06A08-74DC-449A-9C42-376FF3A6C1F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0D06A08-74DC-449A-9C42-376FF3A6C1F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11E14BFA-6A9B-43D6-828F-B493E1617326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11E14BFA-6A9B-43D6-828F-B493E1617326}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11E14BFA-6A9B-43D6-828F-B493E1617326}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11E14BFA-6A9B-43D6-828F-B493E1617326}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D208232D-2FEB-4917-8DF6-E68C242F2EA5}
+		SolutionGuid = {CD724334-BBC7-429A-907D-D09644F4444F}
 	EndGlobalSection
 EndGlobal
