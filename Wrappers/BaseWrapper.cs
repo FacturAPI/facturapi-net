@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Facturapi.Wrappers
 {
-    abstract public class BaseWrapper
+    public abstract class BaseWrapper
     {
         protected const string BASE_URL = "https://www.facturapi.io/";
         protected HttpClient client;

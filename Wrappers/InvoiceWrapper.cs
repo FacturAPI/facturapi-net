@@ -31,9 +31,9 @@ namespace Facturapi.Wrappers
             return searchResult;
         }
 
-        public async Task<Invoice> CreateAsync(Dictionary<string, object> data)
+        public async Task<Invoice> CreateAsync(Dictionary<string, object> data, Dictionary<string, object> options = null)
         {
-            var response = await client.PostAsync(Router.CreateInvoice(), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            var response = await client.PostAsync(Router.CreateInvoice(options), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
             var resultString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
@@ -107,6 +107,29 @@ namespace Facturapi.Wrappers
         public Task<Stream> DownloadXmlAsync(string id)
         {
             return this.DownloadAsync(id, "xml");
+        }
+
+        private async Task<Stream> DownloadCancellationReceiptAsync(string id, string format)
+        {
+            var response = await client.GetAsync(Router.DownloadCancellationReceipt(id, format));
+            if (!response.IsSuccessStatusCode)
+            {
+                var resultString = await response.Content.ReadAsStringAsync();
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var stream = await response.Content.ReadAsStreamAsync();
+            return stream;
+        }
+
+        public Task<Stream> DownloadCancellationReceiptXmlAsync(string id)
+        {
+            return DownloadCancellationReceiptAsync(id, "xml");
+        }
+
+        public Task<Stream> DownloadCancellationReceiptPdfAsync(string id)
+        {
+            return DownloadCancellationReceiptAsync(id, "pdf");
         }
     }
 }

@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net5.0;net452</TargetFrameworks>
+    <RootNamespace>Facturapi</RootNamespace>
+    <AssemblyName>Facturapi</AssemblyName>
+	  <PackageId>Facturapi</PackageId>
+    <Authors>Javier Rosas</Authors>
+    <PackageIcon>icon.png</PackageIcon>
+    <Summary>Genera facturas electrónicas válidas en México (CFDI) lo más fácil posible. Obtén tus API Keys creando una cuenta gratuita en https://www.facturapi.io</Summary>
+    <PackageTags>factura factura-electronica cfdi facturapi mexico conekta</PackageTags>
+    <Title>Facturapi</Title>
+    <Version>4.1.0</Version>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Owners>Facturapi</Owners>
+    <ApplicationIcon>facturapi.ico</ApplicationIcon>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Company>Facturación Espacial</Company>
+    <Copyright>Facturación Espacial © 2023</Copyright>
+    <PackageProjectUrl>www.facturapi.io</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/facturapi/facturapi-net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="facturapi.ico" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icon.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project>
