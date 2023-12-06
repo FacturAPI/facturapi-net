@@ -18,9 +18,9 @@ namespace Facturapi
             return $"invoices/{id}";
         }
 
-        public static string CreateInvoice()
+        public static string CreateInvoice(Dictionary<string, object> query = null)
         {
-            return "invoices";
+            return UriWithQuery("invoices", query);
         }
 
         public static string CancelInvoice(string id, Dictionary<string, object> query = null)

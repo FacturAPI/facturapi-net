@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net5.0;net452</TargetFrameworks>
     <RootNamespace>Facturapi</RootNamespace>
     <AssemblyName>Facturapi</AssemblyName>
 	  <PackageId>Facturapi</PackageId>
@@ -10,7 +10,7 @@
     <Summary>Genera facturas electrónicas válidas en México (CFDI) lo más fácil posible. Obtén tus API Keys creando una cuenta gratuita en https://www.facturapi.io</Summary>
     <PackageTags>factura factura-electronica cfdi facturapi mexico conekta</PackageTags>
     <Title>Facturapi</Title>
-    <Version>4.0.0</Version>
+    <Version>4.1.0</Version>
     <PackageVersion>$(Version)</PackageVersion>
     <Owners>Facturapi</Owners>
     <ApplicationIcon>facturapi.ico</ApplicationIcon>
@@ -28,19 +28,19 @@
     <Content Include="facturapi.ico" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net452'">
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="icon.png" Pack="true" PackagePath="" />
+    <Resource Include="icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
+    <Resource Include="README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

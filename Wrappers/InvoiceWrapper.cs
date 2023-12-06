@@ -31,9 +31,9 @@ namespace Facturapi.Wrappers
             return searchResult;
         }
 
-        public async Task<Invoice> CreateAsync(Dictionary<string, object> data)
+        public async Task<Invoice> CreateAsync(Dictionary<string, object> data, Dictionary<string, object> options = null)
         {
-            var response = await client.PostAsync(Router.CreateInvoice(), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            var response = await client.PostAsync(Router.CreateInvoice(options), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
             var resultString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
