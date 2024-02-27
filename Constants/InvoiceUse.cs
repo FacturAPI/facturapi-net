@@ -23,6 +23,9 @@
         public const string GASTOS_TRANSPORTACION_ESCOLAR = "D08";
         public const string CUENTAS_AHORRO_PENSIONES = "D09";
         public const string SERVICIOS_EDUCATIVOS = "D10";
+        public const string SIN_EFECTOS_FISCALES = "S01";
+        public const string PAGOS = "CP01";
+        public const string NOMINA = "CN01";
         public const string POR_DEFINIR = "P01";
     }
 }
