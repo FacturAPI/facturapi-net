@@ -27,6 +27,8 @@ namespace Facturapi
         public const string A_SATISFACCION_DEL_ACREEDOR = "27";
         public const string TARJETA_DE_DEBITO = "28";
         public const string TERJETA_DE_SERVICIOS = "29";
-        public const string POR_DEFINIR = "99";          
+        public const string APLICACION_ANTICIPOS = "30";
+        public const string INTERMEDIARIO_PAGOS = "31";
+        public const string POR_DEFINIR = "99";
     }
 }
