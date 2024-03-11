@@ -1,9 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,6 +98,19 @@ namespace Facturapi.Wrappers
             }
             var organization = JsonConvert.DeserializeObject<Organization>(resultString, this.jsonSettings);
             return organization;
+        }
+
+        public async Task<Certificate> DeleteCertificateAsync(string id)
+        {
+            var response = await client.DeleteAsync(Router.DeleteCertificate(id));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var certificateInfo = JsonConvert.DeserializeObject<Certificate>(resultString, this.jsonSettings);
+            return certificateInfo;
         }
 
         public async Task<Organization> UpdateLegalAsync(string id, Dictionary<string, object> data)

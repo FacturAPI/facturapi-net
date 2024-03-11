@@ -45,6 +45,11 @@ namespace Facturapi
             return $"{RetrieveOrganization(id)}/certificate";
         }
 
+        public static string DeleteCertificate(string id)
+        {
+            return $"{RetrieveOrganization(id)}/certificate";
+        }
+
         public static string GetTestApiKey(string id)
         {
             return $"{RetrieveOrganization(id)}/apikeys/test";
