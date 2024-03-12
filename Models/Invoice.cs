@@ -33,6 +33,7 @@ namespace Facturapi
         public List<Payment> Payments { get; set; }
         public List<Namespace> Namespaces { get; set; }
         public Stamp Stamp { get; set; }
+        public Global Global { get; set; }
     }
 
     public class Namespace
