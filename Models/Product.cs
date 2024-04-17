@@ -16,5 +16,6 @@ namespace Facturapi
         public string UnitKey { get; set; }
         public string UnitName { get; set; }
         public string Sku { get; set; }
+        public string Taxability { get;set }
     }
 }
