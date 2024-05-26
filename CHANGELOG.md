@@ -8,11 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.4.0] - 2024-05-27
 
 ### Added
-- Add Series types and series group method
-- Add new method Organizations.ListSeriesGroupAsync
-- Add new method Organizations.CreateSeriesGroupAsync
-- Add new method Organizations.UpdateSeriesGroupAsync
-- Add new method Organizations.DeleteSeriesGroupAsync
+- New methods to manage Series: `Organizations.ListSeriesGroupAsync`, `Organizations.CreateSeriesGroupAsync`, `Organizations.UpdateSeriesGroupAsync`, `Organizations.DeleteSeriesGroupAsync`,
+- New methods for invoice drafts: `Invoices.UpdateStatusAsync`, `Invoices.UpdateDraftAsync`, `Invoices.StampDraftAsync` and `Invoices.CopyToDraftAsync`.
 
 ## [4.3.0] - 2024-04-17
 
