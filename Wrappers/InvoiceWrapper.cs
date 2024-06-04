@@ -40,8 +40,8 @@ namespace Facturapi.Wrappers
                 var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
-            var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
-            return customer;
+            var invoice = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+            return invoice;
         }
 
         public async Task<Invoice> RetrieveAsync(string id)
@@ -53,8 +53,8 @@ namespace Facturapi.Wrappers
                 var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
-            var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
-            return customer;
+            var invoice = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+            return invoice;
         }
 
         public async Task<Invoice> CancelAsync(string id, Dictionary<string, object> query = null)
@@ -66,8 +66,8 @@ namespace Facturapi.Wrappers
                 var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
                 throw new FacturapiException(error["message"].ToString());
             }
-            var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
-            return customer;
+            var invoice = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+            return invoice;
         }
 
         public async Task SendByEmailAsync(string id, Dictionary<string, object> data)
@@ -130,6 +130,58 @@ namespace Facturapi.Wrappers
         public Task<Stream> DownloadCancellationReceiptPdfAsync(string id)
         {
             return DownloadCancellationReceiptAsync(id, "pdf");
+        }
+
+        public async Task<Invoice> UpdateStatus(string id)
+        {
+            var response = await client.PutAsync(Router.UpdateStatus(id), new StringContent("", Encoding.UTF8, "application/json"));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var invoice = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+            return invoice;
+        }
+
+        public async Task<Invoice> UpdateDraftAsync(string id, Dictionary<string, object> data)
+        {
+            var response = await client.PutAsync(Router.UpdateDraftInvoice(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var invoice = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+            return invoice;
+        }
+
+        public async Task<Invoice> StampDraft(string id, Dictionary<string, object> options = null)
+        {
+            var response = await client.PostAsync(Router.StampDraftInvoice(id, options), new StringContent("", Encoding.UTF8, "application/json"));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var invoice = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+            return invoice;
+        }
+
+        public async Task<Invoice> CopyToDraftAsync(string id)
+        {
+            var response = await client.PostAsync(Router.CopyInvoice(id), new StringContent("", Encoding.UTF8, "application/json"));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var invoice = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+            return invoice;
         }
     }
 }
