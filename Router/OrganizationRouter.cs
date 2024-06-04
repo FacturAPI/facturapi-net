@@ -64,5 +64,25 @@ namespace Facturapi
         {
             return $"{RetrieveOrganization(id)}/apikeys/live";
         }
+
+        public static string ListSeriesGroup (string id)
+        {
+            return $"{RetrieveOrganization(id)}/series-group";
+        }
+        
+        public static string CreateSeriesGroup (string id)
+        {
+            return $"{RetrieveOrganization(id)}/series-group";
+        }
+
+        public static string UpdateSeriesGroup (string id, string series_name)
+        {
+            return $"{RetrieveOrganization(id)}/series-group/{series_name}";
+        }
+        public static string DeleteSeriesGroup (string id, string series_name)
+        {
+            return $"{RetrieveOrganization(id)}/series-group/{series_name}";
+        }
+        
     }
 }
