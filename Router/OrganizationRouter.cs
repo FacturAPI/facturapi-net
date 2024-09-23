@@ -54,13 +54,14 @@ namespace Facturapi
         {
             return $"{RetrieveOrganization(id)}/apikeys/test";
         }
+      
 
         public static string RenewTestApiKey(string id)
         {
             return $"{RetrieveOrganization(id)}/apikeys/test";
         }
         
-        public static string ListAsynciveApiKey(string id)
+        public static string ListAsyncLiveApiKeys(string id)
         {
             return $"{RetrieveOrganization(id)}/apikeys/live";
         }
@@ -69,10 +70,31 @@ namespace Facturapi
         {
             return $"{RetrieveOrganization(id)}/apikeys/live";
         }
-
-        public static string DeleteLiveApiKey(string id, string first_12)
+      
+        public static string DeleteLiveApiKey(string organizationId, string apiKeyId)
         {
-            return $"{RetrieveOrganization(id)}/apikeys/live/{first_12}";
+            return $"{RetrieveOrganization(organizationId)}/apikeys/live/{apiKeyId}";
         }
+
+
+        public static string ListSeriesGroup (string id)
+        {
+            return $"{RetrieveOrganization(id)}/series-group";
+        }
+        
+        public static string CreateSeriesGroup (string id)
+        {
+            return $"{RetrieveOrganization(id)}/series-group";
+        }
+
+        public static string UpdateSeriesGroup (string id, string series_name)
+        {
+            return $"{RetrieveOrganization(id)}/series-group/{series_name}";
+        }
+        public static string DeleteSeriesGroup (string id, string series_name)
+        {
+            return $"{RetrieveOrganization(id)}/series-group/{series_name}";
+        }
+        
     }
 }

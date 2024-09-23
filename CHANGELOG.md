@@ -5,12 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.2.0] - 2024-23-09
+## [4.6.0] - 2024-23-09
 
 ### Added
 
-- Add List of Live Api Keys
-- Add Delete of a Live Api Key
+- Add List of Live Api Keys `Organizations.ListAsyncLiveApiKey`
+- Add Delete of a Live Api Key `Organization.DeleteAsyncLiveApiKey`
+
+## [4.5.0] - 2024-06-05
+
+### Added
+
+- New methods to manage Series: `Organizations.ListSeriesGroupAsync`, `Organizations.CreateSeriesGroupAsync`, `Organizations.UpdateSeriesGroupAsync`, `Organizations.DeleteSeriesGroupAsync`.
+
+## [4.4.0] - 2024-05-27
+
+### Added
+
+- New methods for invoice drafts: `Invoices.UpdateStatusAsync`, `Invoices.UpdateDraftAsync`, `Invoices.StampDraftAsync` and `Invoices.CopyToDraftAsync`.
+
+## [4.3.0] - 2024-04-17
+
+### Added
+
+- Global constants of taxability
+- Taxability type in product type
+
+## [4.2.0] - 2024-03-12
+
+### Added
+
+- Global types in invoice model
+- Update invoice uses constants
+- Update payment form constants
+- Add new method for delete certs in organization
+
 
 ## [4.1.0] - 2023-12-06
 

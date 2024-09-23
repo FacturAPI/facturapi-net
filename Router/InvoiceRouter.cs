@@ -42,5 +42,25 @@ namespace Facturapi
         {
             return $"invoices/{id}/email";
         }
+
+        public static string UpdateStatus(string id)
+        {
+            return $"invoices/{id}/status";
+        }
+
+        public static string UpdateDraftInvoice(string id)
+        {
+            return $"invoices/{id}";
+        }
+
+        public static string StampDraftInvoice(string id, Dictionary<string, object> query = null)
+        {
+            return UriWithQuery($"invoices/{id}/stamp", query);
+        }
+
+        public static string CopyInvoice(string id)
+        {
+            return $"invoices/{id}/copy";
+        }
     }
 }
