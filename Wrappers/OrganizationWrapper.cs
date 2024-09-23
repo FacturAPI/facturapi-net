@@ -151,6 +151,7 @@ namespace Facturapi.Wrappers
             return resultString;
         }
 
+
         public async Task<string> RenewTestApiKeyAsync(string id)
         {
             var response = await client.PutAsync(Router.RenewTestApiKey(id), new StringContent(""));
@@ -163,6 +164,20 @@ namespace Facturapi.Wrappers
             return resultString;
         }
 
+        public async Task<LiveApiKey> ListLiveApiKeyAsync(string id)
+        {
+            var response = await client.GetAsync(Router.ListAsynciveApiKey(id));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var listResult = JsonConvert.DeserializeObject<LiveApiKey>(resultString, this.jsonSettings);
+
+            return listResult;
+        }
+
         public async Task<string> RenewLiveApiKeyAsync(string id)
         {
             var response = await client.PutAsync(Router.RenewLiveApiKey(id), new StringContent(""));
@@ -173,6 +188,19 @@ namespace Facturapi.Wrappers
                 throw new FacturapiException(error["message"].ToString());
             }
             return resultString;
+        }
+
+        public async Task<bool> DeleteLiveApiKeyAsync(string id, string first_12)
+        {
+            var response = await client.DeleteAsync(Router.DeleteLiveApiKey(id, first_12));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var booleanResponse = JsonConvert.DeserializeObject<bool>(resultString, this.jsonSettings);
+            return booleanResponse;
         }
     }
 }
