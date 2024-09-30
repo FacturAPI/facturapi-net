@@ -12,5 +12,7 @@ namespace Facturapi
         public Legal Legal { get; set; }
         public Customization Customization { get; set; }
         public Certificate Certificate { get; set; }
+
+        public List<LiveApiKey> ApiKeys { get; set; }
     }
 }

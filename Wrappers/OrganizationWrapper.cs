@@ -151,6 +151,7 @@ namespace Facturapi.Wrappers
             return resultString;
         }
 
+
         public async Task<string> RenewTestApiKeyAsync(string id)
         {
             var response = await client.PutAsync(Router.RenewTestApiKey(id), new StringContent(""));
@@ -161,6 +162,20 @@ namespace Facturapi.Wrappers
                 throw new FacturapiException(error["message"].ToString());
             }
             return resultString;
+        }
+
+        public async Task<LiveApiKey> ListLiveApiKeysAsync(string id)
+        {
+            var response = await client.GetAsync(Router.ListAsyncLiveApiKeys(id));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var listResult = JsonConvert.DeserializeObject<LiveApiKey>(resultString, this.jsonSettings);
+
+            return listResult;
         }
 
         public async Task<string> RenewLiveApiKeyAsync(string id)
@@ -174,6 +189,7 @@ namespace Facturapi.Wrappers
             }
             return resultString;
         }
+
 
         public async Task<List<SeriesGroup>> ListSeriesGroupAsync(string id)
         {
@@ -215,9 +231,11 @@ namespace Facturapi.Wrappers
             var series = JsonConvert.DeserializeObject<SeriesGroup>(resultString, this.jsonSettings);
             return series;
         }
-                public async Task<SeriesGroup> DeleteSeriesGroupAsync(string id, string seriesName)
+        
+        public async Task<SeriesGroup> DeleteSeriesGroupAsync(string id, string seriesName)
         {
             var response = await client.DeleteAsync(Router.UpdateSeriesGroup(id, seriesName));
+
             var resultString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
@@ -226,6 +244,19 @@ namespace Facturapi.Wrappers
             }
             var series = JsonConvert.DeserializeObject<SeriesGroup>(resultString, this.jsonSettings);
             return series;
+        }
+        
+        public async Task<List<LiveApiKey>> DeleteLiveApiKeyAsync(string id, string apiKeyId)
+        {
+            var response = await client.DeleteAsync(Router.DeleteLiveApiKey(id, apiKeyId));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var deserializeJson = JsonConvert.DeserializeObject<List<LiveApiKey>>(resultString, this.jsonSettings);
+            return deserializeJson;
         }
     }
 }

@@ -54,16 +54,28 @@ namespace Facturapi
         {
             return $"{RetrieveOrganization(id)}/apikeys/test";
         }
+      
 
         public static string RenewTestApiKey(string id)
         {
             return $"{RetrieveOrganization(id)}/apikeys/test";
+        }
+        
+        public static string ListAsyncLiveApiKeys(string id)
+        {
+            return $"{RetrieveOrganization(id)}/apikeys/live";
         }
 
         public static string RenewLiveApiKey(string id)
         {
             return $"{RetrieveOrganization(id)}/apikeys/live";
         }
+      
+        public static string DeleteLiveApiKey(string organizationId, string apiKeyId)
+        {
+            return $"{RetrieveOrganization(organizationId)}/apikeys/live/{apiKeyId}";
+        }
+
 
         public static string ListSeriesGroup (string id)
         {
