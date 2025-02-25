@@ -13,5 +13,8 @@ namespace Facturapi
         public string LegalName { get; set; }
         public string TaxId { get; set; }
         public string TaxSystem { get; set; }
+        public DateTime SatValidatedAt { get; set; }
+        public string EditLink { get; set; }
+        public DateTime EditLinkExpiresAt { get; set; }
     }
 }

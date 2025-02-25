@@ -30,9 +30,9 @@ namespace Facturapi.Wrappers
             return searchResult;
         }
 
-        public async Task<Customer> CreateAsync(Dictionary<string, object> data)
+        public async Task<Customer> CreateAsync(Dictionary<string, object> data, Dictionary<string, object> queryParams = null)
         {
-            var response = await client.PostAsync(Router.CreateCustomer(), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            var response = await client.PostAsync(Router.CreateCustomer(queryParams), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
             var resultString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
@@ -69,9 +69,9 @@ namespace Facturapi.Wrappers
             return customer;
         }
 
-        public async Task<Customer> UpdateAsync(string id, Dictionary<string, object> data)
+        public async Task<Customer> UpdateAsync(string id, Dictionary<string, object> data, Dictionary<string, object> queryParams = null)
         {
-            var response = await client.PutAsync(Router.UpdateCustomer(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            var response = await client.PutAsync(Router.UpdateCustomer(id, queryParams), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
             var resultString = await response.Content.ReadAsStringAsync();
 			if (!response.IsSuccessStatusCode)
 			{

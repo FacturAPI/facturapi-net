@@ -9,9 +9,9 @@ namespace Facturapi
             return UriWithQuery("customers", query);
         }
 
-        public static string RetrieveCustomer(string id)
+        public static string RetrieveCustomer(string id, Dictionary<string, object> query = null)
         {
-            return $"customers/{id}";
+            return $"{UriWithQuery($"customers/{id}", query)}";
         }
 
         public static string ValidateCustomerTaxInfo(string id)
@@ -19,9 +19,9 @@ namespace Facturapi
             return $"customers/{id}/tax-info-validation";
         }
 
-        public static string CreateCustomer()
+        public static string CreateCustomer(Dictionary<string, object> query = null)
         {
-            return "customers";
+            return UriWithQuery("customers", query);
         }
 
         public static string DeleteCustomer(string id)
@@ -29,8 +29,8 @@ namespace Facturapi
             return RetrieveCustomer(id);
         }
 
-        public static string UpdateCustomer(string id) {
-            return RetrieveCustomer(id);
+        public static string UpdateCustomer(string id, Dictionary<string, object> query = null) {
+            return RetrieveCustomer(id, query);
         }
     }
 }
