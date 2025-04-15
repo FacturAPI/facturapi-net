@@ -32,5 +32,10 @@ namespace Facturapi
         public static string UpdateCustomer(string id, Dictionary<string, object> query = null) {
             return RetrieveCustomer(id, query);
         }
+
+        public static string SendEditLinkByEmail(string id)
+        {
+            return $"{UriWithQuery($"customers/{id}/email-edit-link")}";
+        }
     }
 }
