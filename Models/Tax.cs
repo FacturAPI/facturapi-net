@@ -13,5 +13,7 @@ namespace Facturapi
         public string Type { get; set; }
         public decimal Rate { get; set; }
         public bool Withholding { get; set; }
+        public string Factor {get; set;}
+        public string IepsMode { get; set; }
     }
 }
