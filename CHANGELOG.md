@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Type IepsMode for Tax model 
 - Type Factor for Tax model
 
-## [4.7.0] = 2025-25-02
+## [4.7.0] = 2025-02-25
 
 ### Added
 
