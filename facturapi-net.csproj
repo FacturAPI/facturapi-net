@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net5.0;net452</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1;net5.0;net6.0;net7.0;net452</TargetFrameworks>
     <RootNamespace>Facturapi</RootNamespace>
     <AssemblyName>Facturapi</AssemblyName>
     <PackageId>Facturapi</PackageId>
@@ -11,7 +11,7 @@
       API Keys creando una cuenta gratuita en https://www.facturapi.io</Summary>
     <PackageTags>factura factura-electronica cfdi facturapi mexico conekta</PackageTags>
     <Title>Facturapi</Title>
-    <Version>4.6.0</Version>
+    <Version>4.7.1</Version>
     <PackageVersion>$(Version)</PackageVersion>
     <Owners>Facturapi</Owners>
     <ApplicationIcon>facturapi.ico</ApplicationIcon>

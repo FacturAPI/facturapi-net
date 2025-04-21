@@ -5,12 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.6.0] - 2024-17-10
+## [4.8.0] - 2025-04-21
 
 ### Added
 
-- Add List of Live Api Keys `Organizations.ListAsyncLiveApiKey`
-- Add Delete of a Live Api Key `Organization.DeleteAsyncLiveApiKey`
 - Add Create Webhook `Webhooks.CreateAsync`
 - Add Update Webhook `Webhooks.UpdateAsync`
 - Add Retrieve Webhook `Webhooks.RetrieveAsync`
@@ -18,8 +16,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add List Webhooks `Webhooks.ListAsync`
 - Add Validate Signature Webhook `Webhooks.ValidateSignatureAsync`
 
+## [4.7.1] - 2025-04-16
 
-## [4.5.0] - 2024-06-05
+### Added
+
+- Type IepsMode for Tax model 
+- Type Factor for Tax model
+
+## [4.7.0] = 2025-25-02
+
+### Added
+
+- Support sending query params to `Customers.CreateAsync` and `Customers.UpdateAsync` methods.
+- Added fields to `Customer` model: `SatValidatedAt`, `EditLink` and `EditLinkExpiresAt`.
+- Added targets for .NET 6.0 and .NET 7.0.
+
+## [4.6.0] - 2024-09-23
+
+### Added
+
+- Add List of Live Api Keys `Organizations.ListAsyncLiveApiKey`
+- Add Delete of a Live Api Key `Organization.DeleteAsyncLiveApiKey`
+
+
+## [4.5.0] - 2024-05-06
 
 ### Added
 
