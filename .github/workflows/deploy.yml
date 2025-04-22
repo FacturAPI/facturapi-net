@@ -31,7 +31,7 @@ jobs:
       id: version-check
       run: |
         PACKAGE_ID="Facturapi"
-        VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" *.csproj)
+        VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" facturapi-net.csproj)
         echo "Checking NuGet for $PACKAGE_ID $VERSION"
         if curl -sSf "https://api.nuget.org/v3-flatcontainer/${PACKAGE_ID,,}/$VERSION/${PACKAGE_ID,,}.$VERSION.nupkg" > /dev/null; then
           echo "Version $VERSION already exists. Skipping push."
