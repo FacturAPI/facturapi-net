@@ -27,16 +27,21 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./nupkg
 
+    - name: Install xmllint
+      run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
     - name: Check if version exists on NuGet
       id: version-check
       run: |
         PACKAGE_ID="Facturapi"
-        VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" facturapi-net.csproj)
-        echo "Checking NuGet for $PACKAGE_ID $VERSION"
+        VERSION=$(xmllint --xpath "string(//Project/PropertyGroup/Version)" facturapi-net.csproj)
+        echo "Detected version: $VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
         if curl -sSf "https://api.nuget.org/v3-flatcontainer/${PACKAGE_ID,,}/$VERSION/${PACKAGE_ID,,}.$VERSION.nupkg" > /dev/null; then
           echo "Version $VERSION already exists. Skipping push."
           echo "exists=true" >> $GITHUB_OUTPUT
         else
+          echo "Version $VERSION does not exist. Proceeding with publish."
           echo "exists=false" >> $GITHUB_OUTPUT
         fi
 
