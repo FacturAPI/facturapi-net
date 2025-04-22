@@ -102,7 +102,8 @@ namespace Facturapi.Wrappers
             {
                 var resultString = await response.Content.ReadAsStringAsync();
                 var error = JsonConvert.DeserializeObject<JObject>(resultString);
-                throw new FacturapiException(error["message"].ToString());
+                var errorMessage = error["message"] != null ? error["message"].ToString() : "An error occurred";
+                throw new FacturapiException(errorMessage);
             }
         }
     }
