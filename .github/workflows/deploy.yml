@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '7.0.x' # Adjust the .NET version as needed
+        dotnet-version: '8.0.x' # Adjust the .NET version as needed
 
     - name: Restore dependencies
       run: dotnet restore
@@ -27,5 +27,19 @@ jobs:
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./nupkg
 
+    - name: Check if version exists on NuGet
+      id: version-check
+      run: |
+        PACKAGE_ID="Facturapi"
+        VERSION=$(grep -oPm1 "(?<=<Version>)[^<]+" *.csproj)
+        echo "Checking NuGet for $PACKAGE_ID $VERSION"
+        if curl -sSf "https://api.nuget.org/v3-flatcontainer/${PACKAGE_ID,,}/$VERSION/${PACKAGE_ID,,}.$VERSION.nupkg" > /dev/null; then
+          echo "Version $VERSION already exists. Skipping push."
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+        fi
+
     - name: Publish to NuGet
+      if: steps.version-check.outputs.exists == 'false'
       run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
