@@ -17,7 +17,7 @@
     <ApplicationIcon>facturapi.ico</ApplicationIcon>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Company>Facturación Espacial</Company>
-    <Copyright>Facturación Espacial © 2024</Copyright>
+    <Copyright>Facturación Espacial © 2025</Copyright>
     <PackageProjectUrl>www.facturapi.io</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/facturapi/facturapi-net</RepositoryUrl>
