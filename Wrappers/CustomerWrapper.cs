@@ -94,5 +94,17 @@ namespace Facturapi.Wrappers
             var validation = JsonConvert.DeserializeObject<TaxInfoValidation>(resultString, this.jsonSettings);
             return validation;
         }
+
+        public async Task SendEditLinkByEmailAsync(string id, Dictionary<string, object> data)
+        {
+            var response = await client.PostAsync(Router.SendEditLinkByEmail(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            if (!response.IsSuccessStatusCode)
+            {
+                var resultString = await response.Content.ReadAsStringAsync();
+                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                var errorMessage = error["message"] != null ? error["message"].ToString() : "An error occurred";
+                throw new FacturapiException(errorMessage);
+            }
+        }
     }
 }
