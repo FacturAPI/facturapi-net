@@ -258,5 +258,18 @@ namespace Facturapi.Wrappers
             var deserializeJson = JsonConvert.DeserializeObject<List<LiveApiKey>>(resultString, this.jsonSettings);
             return deserializeJson;
         }
+
+        public async Task<Organization> UpdateSelfInvoiceSettingsAsync(string organizationId, Dictionary<string, object> data)
+        {
+            var response = await client.PutAsync(Router.UpdateSelfInvoiceSettings(organizationId), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = JsonConvert.DeserializeObject<JObject>(resultString);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var organization = JsonConvert.DeserializeObject<Organization>(resultString, this.jsonSettings);
+            return organization;
+        }
     }
 }
