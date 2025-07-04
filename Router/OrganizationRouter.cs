@@ -96,5 +96,9 @@ namespace Facturapi
             return $"{RetrieveOrganization(id)}/series-group/{series_name}";
         }
         
+        public static string UpdateSelfInvoiceSettings(string organizationId)
+        {
+            return $"{RetrieveOrganization(organizationId)}/self-invoice";
+        }
     }
 }
