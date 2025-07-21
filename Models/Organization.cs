@@ -14,5 +14,6 @@ namespace Facturapi
         public SelfInvoiceSettings SelfInvoice { get; set; }
         public Certificate Certificate { get; set; }
         public List<LiveApiKey> ApiKeys { get; set; }
+        public List<string> AddOns { get; set; }
     }
 }
