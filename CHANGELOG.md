@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.9.1] - 2025-07-21
+
+### Fixed
+
+- Fix `Invoices.SendByEmailAsync`, `Receipts.SendByEmailAsync`, `Retentions.SendByEmailAsync` method and mark the `data` parameter as optional.
+
+### Added
+
+- Add `AddOns` property to `Organization` model to support Facturapi add-ons.
+- Add missing properties to `Organization.Customization.PdfExtra` model: `AddressCodes`, `RoundUnitPrice`, `TaxBreakdown`, `IepsBreakdown`, `RenderCartaPorte`, and `RepeatSignature`.
+
 ## [4.9.0] - 2025-06-16
 
 ### Added
