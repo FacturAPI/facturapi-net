@@ -183,5 +183,18 @@ namespace Facturapi.Wrappers
             var invoice = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
             return invoice;
         }
+
+        public async Task<Stream> PreviewPdfAsync(Dictionary<string, object> query = null)
+        {
+            var response = await client.GetAsync(Router.PreviewPdf(query));
+            if (!response.IsSuccessStatusCode)
+            {
+                var resultString = await response.Content.ReadAsStringAsync();
+                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
+                throw new FacturapiException(error["message"].ToString());
+            }
+            var stream = await response.Content.ReadAsStreamAsync();
+            return stream;
+        }
     }
 }
