@@ -90,7 +90,7 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task SendByEmailAsync(string id, Dictionary<string, object> data)
+        public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null)
         {
             var response = await client.PostAsync(Router.SendReceiptByEmail(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
             if (!response.IsSuccessStatusCode)
