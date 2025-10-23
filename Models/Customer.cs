@@ -16,5 +16,6 @@ namespace Facturapi
         public DateTime SatValidatedAt { get; set; }
         public string EditLink { get; set; }
         public DateTime EditLinkExpiresAt { get; set; }
+        public string DefaultInvoiceUse { get; set; }
     }
 }
