@@ -62,5 +62,10 @@ namespace Facturapi
         {
             return $"invoices/{id}/copy";
         }
+
+        public static string PreviewPdf(Dictionary<string, object> query = null)
+        {
+            return UriWithQuery("invoices/preview/pdf", query);
+        }
     }
 }
