@@ -11,7 +11,7 @@
       API Keys creando una cuenta gratuita en https://www.facturapi.io</Summary>
     <PackageTags>factura factura-electronica cfdi facturapi mexico conekta</PackageTags>
     <Title>Facturapi</Title>
-    <Version>4.7.0</Version>
+    <Version>4.8.0</Version>
     <PackageVersion>$(Version)</PackageVersion>
     <Owners>Facturapi</Owners>
     <ApplicationIcon>facturapi.ico</ApplicationIcon>
