@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,13 +16,8 @@ namespace Facturapi.Wrappers
         public async Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null)
         {
             var response = await client.GetAsync(Router.ListRetentionss(query));
+            await this.ThrowIfErrorAsync(response);
             var resultString = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
 
             var searchResult = JsonConvert.DeserializeObject<SearchResult<Invoice>>(resultString, this.jsonSettings);
             return searchResult;
@@ -34,12 +26,8 @@ namespace Facturapi.Wrappers
         public async Task<Invoice> CreateAsync(Dictionary<string, object> data)
         {
             var response = await client.PostAsync(Router.CreateRetention(), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+            await this.ThrowIfErrorAsync(response);
             var resultString = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
             var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
             return customer;
         }
@@ -47,12 +35,8 @@ namespace Facturapi.Wrappers
         public async Task<Invoice> RetrieveAsync(string id)
         {
             var response = await client.GetAsync(Router.RetrieveRetention(id));
+            await this.ThrowIfErrorAsync(response);
             var resultString = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
             var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
             return customer;
         }
@@ -60,12 +44,8 @@ namespace Facturapi.Wrappers
         public async Task<Invoice> CancelAsync(string id)
         {
             var response = await client.DeleteAsync(Router.CancelRetention(id));
+            await this.ThrowIfErrorAsync(response);
             var resultString = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
             var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
             return customer;
         }
@@ -73,23 +53,13 @@ namespace Facturapi.Wrappers
         public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null)
         {
             var response = await client.PostAsync(Router.SendRetentionByEmail(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
-            if (!response.IsSuccessStatusCode)
-            {
-                var resultString = await response.Content.ReadAsStringAsync();
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
+            await this.ThrowIfErrorAsync(response);
         }
 
         private async Task<Stream> DownloadAsync(string id, string format)
         {
             var response = await client.GetAsync(Router.DownloadRetention(id, format));
-            if (!response.IsSuccessStatusCode)
-            {
-                var resultString = await response.Content.ReadAsStringAsync();
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
+            await this.ThrowIfErrorAsync(response);
             var stream = await response.Content.ReadAsStreamAsync();
             return stream;
         }

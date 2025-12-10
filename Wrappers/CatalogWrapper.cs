@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -16,13 +15,8 @@ namespace Facturapi.Wrappers
         public async Task<SearchResult<CatalogItem>> SearchProducts(Dictionary<string, object> query = null)
         {
             var response = await client.GetAsync(Router.SearchProductKeys(query));
+            await this.ThrowIfErrorAsync(response);
             var resultString = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
 
             var searchResult = JsonConvert.DeserializeObject<SearchResult<CatalogItem>>(resultString, this.jsonSettings);
             return searchResult;
@@ -31,13 +25,8 @@ namespace Facturapi.Wrappers
         public async Task<SearchResult<CatalogItem>> SearchUnits(Dictionary<string, object> query = null)
         {
             var response = await client.GetAsync(Router.SearchUnitKeys(query));
+            await this.ThrowIfErrorAsync(response);
             var resultString = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
 
             var searchResult = JsonConvert.DeserializeObject<SearchResult<CatalogItem>>(resultString, this.jsonSettings);
             return searchResult;

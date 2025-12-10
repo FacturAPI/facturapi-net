@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -21,13 +20,8 @@ namespace Facturapi.Wrappers
                     ["tax_id"] = taxId
                 }
             ));
+            await this.ThrowIfErrorAsync(response);
             var resultString = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
 
             var result = JsonConvert.DeserializeObject<TaxIdValidation>(resultString, this.jsonSettings);
             return result;
