@@ -168,9 +168,10 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<Stream> PreviewPdfAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
+        public async Task<Stream> PreviewPdfAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.PreviewPdf(query), cancellationToken))
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.PreviewPdf(), content, cancellationToken))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken);
                 var responseStream = await response.Content.ReadAsStreamAsync();

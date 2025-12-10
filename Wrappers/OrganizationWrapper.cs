@@ -26,6 +26,28 @@ namespace Facturapi.Wrappers
             }
         }
 
+        public async Task<Organization> GetCurrentAsync(CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.OrganizationMe(), cancellationToken))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var organization = JsonConvert.DeserializeObject<Organization>(resultString, this.jsonSettings);
+                return organization;
+            }
+        }
+
+        public async Task<DomainAvailability> CheckDomainAvailabilityAsync(string domain, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.CheckDomainAvailability(new Dictionary<string, object> { ["domain"] = domain }), cancellationToken))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var availability = JsonConvert.DeserializeObject<DomainAvailability>(resultString, this.jsonSettings);
+                return availability;
+            }
+        }
+
         public async Task<Organization> CreateAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
@@ -115,10 +137,34 @@ namespace Facturapi.Wrappers
             }
         }
 
+        public async Task<Organization> UpdateReceiptsAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PutAsync(Router.UpdateReceipts(id), content, cancellationToken))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var organization = JsonConvert.DeserializeObject<Organization>(resultString, this.jsonSettings);
+                return organization;
+            }
+        }
+
         public async Task<Organization> UpdateCustomizationAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
             using (var response = await client.PutAsync(Router.UpdateCustomization(id), content, cancellationToken))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var organization = JsonConvert.DeserializeObject<Organization>(resultString, this.jsonSettings);
+                return organization;
+            }
+        }
+
+        public async Task<Organization> UpdateDomainAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PutAsync(Router.UpdateDomain(id), content, cancellationToken))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
@@ -188,7 +234,7 @@ namespace Facturapi.Wrappers
         public async Task<SeriesGroup> CreateSeriesGroupAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PutAsync(Router.CreateSeriesGroup(id), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.CreateSeriesGroup(id), content, cancellationToken))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();

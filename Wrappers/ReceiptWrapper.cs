@@ -51,7 +51,7 @@ namespace Facturapi.Wrappers
 
         public async Task<Receipt> CancelAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.DeleteAsync(Router.CancelInvoice(id), cancellationToken))
+            using (var response = await client.DeleteAsync(Router.CancelReceipt(id), cancellationToken))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
@@ -69,10 +69,10 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task CreateGlobalInvoiceAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        public async Task CreateGlobalInvoiceAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.CreateGlobalInvoice(id), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.CreateGlobalInvoice(), content, cancellationToken))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken);
             }

@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Expose webhook methods through `FacturapiClient`/`IFacturapiClient`.
+- New organization endpoints: `GetCurrentAsync` (`/organizations/me`), `CheckDomainAvailabilityAsync`, `UpdateReceiptsAsync`, and `UpdateDomainAsync`.
+- Added `DomainAvailability` model for domain check responses.
+- Added `Tool.HealthCheckAsync` for `/check`.
 - `FacturapiException.Status` now surfaces the HTTP status code when available.
 - Introduced `IFacturapiClient` so consumers can mock the client surface in tests.
 - Optional `CancellationToken` parameters on client methods to allow request cancellation from callers.
@@ -20,6 +24,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `FacturapiClient` now implements `IDisposable`; call `Dispose()` when finished (or wrap in `using`) to release HTTP resources. If not disposed, garbage collection will eventually clean up, but explicit disposal avoids lingering HTTP connections.
+
+### Fixed
+
+- `Invoices.PreviewPdfAsync` now calls the documented POST endpoint with a JSON body (breaking change to the method signature).
+- `Receipts.CreateGlobalInvoiceAsync` posts directly to `/receipts/global-invoice` and no longer requires an id (breaking change to the signature).
+- Receipt routes now hit `/receipts/{id}` for cancel, invoice, email, and PDF download instead of invoice endpoints.
+- `Organizations.CreateSeriesGroupAsync` uses POST (not PUT) to `/organizations/{id}/series-group`, matching the API.
 
 ## [4.11.0] - 2025-12-10
 

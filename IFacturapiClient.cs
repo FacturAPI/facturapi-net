@@ -14,5 +14,6 @@ namespace Facturapi
         CatalogWrapper Catalog { get; }
         CatalogWrapper CartaporteCatalog { get; }
         ToolWrapper Tool { get; }
+        WebhookWrapper Webhook { get; }
     }
 }

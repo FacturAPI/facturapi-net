@@ -28,5 +28,27 @@ namespace Facturapi.Wrappers
                 return result;
             }
         }
+
+        public async Task<bool> HealthCheckAsync(CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.HealthCheck(), cancellationToken))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<Dictionary<string, object>>(resultString, this.jsonSettings);
+                if (result != null && result.TryGetValue("ok", out var okValue))
+                {
+                    if (okValue is bool okBool)
+                    {
+                        return okBool;
+                    }
+                    if (bool.TryParse(okValue.ToString(), out var parsed))
+                    {
+                        return parsed;
+                    }
+                }
+                return false;
+            }
+        }
     }
 }
