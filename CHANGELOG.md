@@ -5,11 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.12.0] = Unreleased
+## [5.0.0] - Unreleased
+
+### Breaking
+
+- Wrappers can no longer be constructed directly; their constructors are internal and they are intended to be used only through `FacturapiClient`.
 
 ### Added
 
 - `FacturapiException.Status` now surfaces the HTTP status code when available.
+
+### Changed
+
+- `FacturapiClient` now implements `IDisposable`; dispose it when finished to release HTTP resources. If not disposed, garbage collection will eventually clean up, but explicit disposal avoids lingering HTTP connections.
 
 ## [4.11.0] - 2025-12-10
 
@@ -65,7 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Type IepsMode for Tax model
 - Type Factor for Tax model
 
-## [4.7.0] = 2025-02-25
+## [4.7.0] - 2025-02-25
 
 ### Added
 

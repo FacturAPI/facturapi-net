@@ -9,59 +9,76 @@ namespace Facturapi.Wrappers
 {
     public class RetentionWrapper : BaseWrapper
     {
-        public RetentionWrapper(string apiKey, string apiVersion = "v2") : base(apiKey, apiVersion)
+        internal RetentionWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
         }
 
         public async Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null)
         {
-            var response = await client.GetAsync(Router.ListRetentionss(query));
-            await this.ThrowIfErrorAsync(response);
-            var resultString = await response.Content.ReadAsStringAsync();
+            using (var response = await client.GetAsync(Router.ListRetentionss(query)))
+            {
+                await this.ThrowIfErrorAsync(response);
+                var resultString = await response.Content.ReadAsStringAsync();
 
-            var searchResult = JsonConvert.DeserializeObject<SearchResult<Invoice>>(resultString, this.jsonSettings);
-            return searchResult;
+                var searchResult = JsonConvert.DeserializeObject<SearchResult<Invoice>>(resultString, this.jsonSettings);
+                return searchResult;
+            }
         }
 
         public async Task<Invoice> CreateAsync(Dictionary<string, object> data)
         {
-            var response = await client.PostAsync(Router.CreateRetention(), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
-            await this.ThrowIfErrorAsync(response);
-            var resultString = await response.Content.ReadAsStringAsync();
-            var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
-            return customer;
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.CreateRetention(), content))
+            {
+                await this.ThrowIfErrorAsync(response);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+                return customer;
+            }
         }
 
         public async Task<Invoice> RetrieveAsync(string id)
         {
-            var response = await client.GetAsync(Router.RetrieveRetention(id));
-            await this.ThrowIfErrorAsync(response);
-            var resultString = await response.Content.ReadAsStringAsync();
-            var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
-            return customer;
+            using (var response = await client.GetAsync(Router.RetrieveRetention(id)))
+            {
+                await this.ThrowIfErrorAsync(response);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+                return customer;
+            }
         }
 
         public async Task<Invoice> CancelAsync(string id)
         {
-            var response = await client.DeleteAsync(Router.CancelRetention(id));
-            await this.ThrowIfErrorAsync(response);
-            var resultString = await response.Content.ReadAsStringAsync();
-            var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
-            return customer;
+            using (var response = await client.DeleteAsync(Router.CancelRetention(id)))
+            {
+                await this.ThrowIfErrorAsync(response);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+                return customer;
+            }
         }
 
         public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null)
         {
-            var response = await client.PostAsync(Router.SendRetentionByEmail(id), new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
-            await this.ThrowIfErrorAsync(response);
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.SendRetentionByEmail(id), content))
+            {
+                await this.ThrowIfErrorAsync(response);
+            }
         }
 
         private async Task<Stream> DownloadAsync(string id, string format)
         {
-            var response = await client.GetAsync(Router.DownloadRetention(id, format));
-            await this.ThrowIfErrorAsync(response);
-            var stream = await response.Content.ReadAsStreamAsync();
-            return stream;
+            using (var response = await client.GetAsync(Router.DownloadRetention(id, format)))
+            {
+                await this.ThrowIfErrorAsync(response);
+                var responseStream = await response.Content.ReadAsStreamAsync();
+                var memory = new MemoryStream();
+                await responseStream.CopyToAsync(memory);
+                memory.Position = 0;
+                return memory;
+            }
         }
 
         public Task<Stream> DownloadZipAsync(string id)

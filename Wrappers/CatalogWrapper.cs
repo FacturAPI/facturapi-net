@@ -7,7 +7,7 @@ namespace Facturapi.Wrappers
 {
     public class CatalogWrapper : BaseWrapper
     {
-        public CatalogWrapper(string apiKey, string apiVersion = "v2") : base(apiKey, apiVersion)
+        internal CatalogWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
         }
 
