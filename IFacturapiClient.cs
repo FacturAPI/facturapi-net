@@ -12,7 +12,7 @@ namespace Facturapi
         ReceiptWrapper Receipt { get; }
         RetentionWrapper Retention { get; }
         CatalogWrapper Catalog { get; }
-        CatalogWrapper CartaporteCatalog { get; }
+        CartaporteCatalogWrapper CartaporteCatalog { get; }
         ToolWrapper Tool { get; }
         WebhookWrapper Webhook { get; }
     }

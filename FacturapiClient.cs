@@ -15,7 +15,7 @@ namespace Facturapi
         public ReceiptWrapper Receipt { get; private set; }
         public RetentionWrapper Retention { get; private set; }
         public CatalogWrapper Catalog { get; private set; }
-        public CatalogWrapper CartaporteCatalog { get; private set; }
+        public CartaporteCatalogWrapper CartaporteCatalog { get; private set; }
         public ToolWrapper Tool { get; private set; }
         public WebhookWrapper Webhook { get; private set; }
         private readonly HttpClient httpClient;
@@ -36,7 +36,7 @@ namespace Facturapi
             this.Receipt = new ReceiptWrapper(apiKey, apiVersion, this.httpClient);
             this.Retention = new RetentionWrapper(apiKey, apiVersion, this.httpClient);
             this.Catalog = new CatalogWrapper(apiKey, apiVersion, this.httpClient);
-            this.CartaporteCatalog = new CatalogWrapper(apiKey, apiVersion, this.httpClient);
+            this.CartaporteCatalog = new CartaporteCatalogWrapper(apiKey, apiVersion, this.httpClient);
             this.Tool = new ToolWrapper(apiKey, apiVersion, this.httpClient);
             this.Webhook = new WebhookWrapper(apiKey, apiVersion, this.httpClient);
         }

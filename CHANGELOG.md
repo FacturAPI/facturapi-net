@@ -11,11 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Wrappers can no longer be constructed directly; their constructors are internal and they are intended to be used only through `FacturapiClient`.
 - Renamed existing methods to match documented C# surface: `Organization.List/Create/Update/DeleteSeriesAsync` (were `*SeriesGroupAsync`), `Invoice.UpdateStatusAsync` (was `UpdateStatus`), and `Tools.ValidateTaxIdAsync` (was `ValidateTaxId`).
+- Carta Porte catalog methods moved to a dedicated `CartaporteCatalogWrapper`; `CartaporteCatalog` is now of that type, and `CatalogWrapper` retains only product/unit catalogs.
 
 ### Added
 
 - Expose webhook methods through `FacturapiClient`/`IFacturapiClient`.
 - New organization endpoints: `MeAsync` (`/organizations/me`), `CheckDomainIsAvailableAsync`, `UpdateReceiptSettingsAsync`, and `UpdateDomainAsync`.
+- New `CartaporteCatalogWrapper` for Carta Porte catalog searches.
 - Added `DomainAvailability` model for domain check responses.
 - Added `Tool.HealthCheckAsync` for `/check`.
 - `FacturapiException.Status` now surfaces the HTTP status code when available.
