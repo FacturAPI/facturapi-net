@@ -9,6 +9,7 @@
         public Wrappers.ReceiptWrapper Receipt { get; private set; }
         public Wrappers.RetentionWrapper Retention { get; private set; }
         public Wrappers.CatalogWrapper Catalog { get; private set; }
+        public Wrappers.CatalogWrapper CartaporteCatalog { get; private set; }
         public Wrappers.ToolWrapper Tool { get; private set; }
 
         public FacturapiClient(string apiKey, string apiVersion = "v2")
@@ -20,6 +21,7 @@
             this.Receipt = new Wrappers.ReceiptWrapper(apiKey, apiVersion);
             this.Retention = new Wrappers.RetentionWrapper(apiKey, apiVersion);
             this.Catalog = new Wrappers.CatalogWrapper(apiKey, apiVersion);
+            this.CartaporteCatalog = new Wrappers.CatalogWrapper(apiKey, apiVersion);
             this.Tool = new Wrappers.ToolWrapper(apiKey, apiVersion);
         }
     }
