@@ -4,6 +4,7 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Facturapi.Wrappers
 {
@@ -69,8 +70,10 @@ namespace Facturapi.Wrappers
             return new FacturapiException(message, status);
         }
 
-        protected async Task ThrowIfErrorAsync(HttpResponseMessage response)
+        protected async Task ThrowIfErrorAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (response.IsSuccessStatusCode)
             {
                 return;

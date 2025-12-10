@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Facturapi.Wrappers
 {
@@ -11,72 +12,72 @@ namespace Facturapi.Wrappers
         {
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchProducts(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchProducts(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchProductKeys(query));
+            return await this.SearchCatalogAsync(Router.SearchProductKeys(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchUnits(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchUnits(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchUnitKeys(query));
+            return await this.SearchCatalogAsync(Router.SearchUnitKeys(query), cancellationToken);
         }
 
         // Carta Porte catalogs
-        public async Task<SearchResult<CatalogItem>> SearchAirTransportCodes(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchAirTransportCodes(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaporteAirTransportCodes(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaporteAirTransportCodes(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchTransportConfigs(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchTransportConfigs(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaporteTransportConfigs(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaporteTransportConfigs(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchRightsOfPassage(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchRightsOfPassage(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaporteRightsOfPassage(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaporteRightsOfPassage(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchCustomsDocuments(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchCustomsDocuments(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaporteCustomsDocuments(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaporteCustomsDocuments(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchPackagingTypes(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchPackagingTypes(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaportePackagingTypes(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaportePackagingTypes(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchTrailerTypes(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchTrailerTypes(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaporteTrailerTypes(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaporteTrailerTypes(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchHazardousMaterials(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchHazardousMaterials(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaporteHazardousMaterials(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaporteHazardousMaterials(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchNavalAuthorizations(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchNavalAuthorizations(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaporteNavalAuthorizations(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaporteNavalAuthorizations(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchPortStations(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchPortStations(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaportePortStations(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaportePortStations(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchMarineContainers(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchMarineContainers(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            return await this.SearchCatalogAsync(Router.SearchCartaporteMarineContainers(query));
+            return await this.SearchCatalogAsync(Router.SearchCartaporteMarineContainers(query), cancellationToken);
         }
 
-        private async Task<SearchResult<CatalogItem>> SearchCatalogAsync(string url)
+        private async Task<SearchResult<CatalogItem>> SearchCatalogAsync(string url, CancellationToken cancellationToken)
         {
-            using (var response = await client.GetAsync(url))
+            using (var response = await client.GetAsync(url, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var searchResult = JsonConvert.DeserializeObject<SearchResult<CatalogItem>>(resultString, this.jsonSettings);
                 return searchResult;

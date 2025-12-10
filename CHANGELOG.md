@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `FacturapiException.Status` now surfaces the HTTP status code when available.
 - Introduced `IFacturapiClient` so consumers can mock the client surface in tests.
+- Optional `CancellationToken` parameters on client methods to allow request cancellation from callers.
 
 ### Changed
 

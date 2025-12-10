@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Facturapi.Wrappers
 {
@@ -13,11 +14,11 @@ namespace Facturapi.Wrappers
         {
         }
 
-        public async Task<SearchResult<Receipt>> ListAsync(Dictionary<string, object> query = null)
+        public async Task<SearchResult<Receipt>> ListAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.ListReceipts(query)))
+            using (var response = await client.GetAsync(Router.ListReceipts(query), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
 
                 var searchResult = JsonConvert.DeserializeObject<SearchResult<Receipt>>(resultString, this.jsonSettings);
@@ -25,75 +26,75 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<Receipt> CreateAsync(Dictionary<string, object> data)
+        public async Task<Receipt> CreateAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.CreateReceipt(), content))
+            using (var response = await client.PostAsync(Router.CreateReceipt(), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Receipt>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task<Receipt> RetrieveAsync(string id)
+        public async Task<Receipt> RetrieveAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.RetrieveReceipt(id)))
+            using (var response = await client.GetAsync(Router.RetrieveReceipt(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Receipt>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task<Receipt> CancelAsync(string id)
+        public async Task<Receipt> CancelAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.DeleteAsync(Router.CancelInvoice(id)))
+            using (var response = await client.DeleteAsync(Router.CancelInvoice(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Receipt>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task InvoiceAsync(string id, Dictionary<string, object> data)
+        public async Task InvoiceAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.InvoiceReceipt(id), content))
+            using (var response = await client.PostAsync(Router.InvoiceReceipt(id), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
             }
         }
 
-        public async Task CreateGlobalInvoiceAsync(string id, Dictionary<string, object> data)
+        public async Task CreateGlobalInvoiceAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.CreateGlobalInvoice(id), content))
+            using (var response = await client.PostAsync(Router.CreateGlobalInvoice(id), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
             }
         }
 
-        public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null)
+        public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.SendReceiptByEmail(id), content))
+            using (var response = await client.PostAsync(Router.SendReceiptByEmail(id), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
             }
         }
 
-        public async Task<Stream> DownloadPdfAsync(string id)
+        public async Task<Stream> DownloadPdfAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.DownloadReceiptPdf(id)))
+            using (var response = await client.GetAsync(Router.DownloadReceiptPdf(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var responseStream = await response.Content.ReadAsStreamAsync();
                 var memory = new MemoryStream();
-                await responseStream.CopyToAsync(memory);
+                await responseStream.CopyToAsync(memory, 81920, cancellationToken);
                 memory.Position = 0;
                 return memory;
             }

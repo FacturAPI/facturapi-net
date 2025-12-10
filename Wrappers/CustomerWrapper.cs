@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Facturapi.Wrappers
 {
@@ -12,11 +13,11 @@ namespace Facturapi.Wrappers
         {
         }
 
-        public async Task<SearchResult<Customer>> ListAsync(Dictionary<string, object> query = null)
+        public async Task<SearchResult<Customer>> ListAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.ListCustomers(query)))
+            using (var response = await client.GetAsync(Router.ListCustomers(query), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
 
                 var searchResult = JsonConvert.DeserializeObject<SearchResult<Customer>>(resultString, this.jsonSettings);
@@ -24,69 +25,69 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<Customer> CreateAsync(Dictionary<string, object> data, Dictionary<string, object> queryParams = null)
+        public async Task<Customer> CreateAsync(Dictionary<string, object> data, Dictionary<string, object> queryParams = null, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.CreateCustomer(queryParams), content))
+            using (var response = await client.PostAsync(Router.CreateCustomer(queryParams), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Customer>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task<Customer> RetrieveAsync(string id)
+        public async Task<Customer> RetrieveAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.RetrieveCustomer(id)))
+            using (var response = await client.GetAsync(Router.RetrieveCustomer(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Customer>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task<Customer> DeleteAsync(string id)
+        public async Task<Customer> DeleteAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.DeleteAsync(Router.DeleteCustomer(id)))
+            using (var response = await client.DeleteAsync(Router.DeleteCustomer(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Customer>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task<Customer> UpdateAsync(string id, Dictionary<string, object> data, Dictionary<string, object> queryParams = null)
+        public async Task<Customer> UpdateAsync(string id, Dictionary<string, object> data, Dictionary<string, object> queryParams = null, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PutAsync(Router.UpdateCustomer(id, queryParams), content))
+            using (var response = await client.PutAsync(Router.UpdateCustomer(id, queryParams), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Customer>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task<TaxInfoValidation> ValidateTaxInfoAsync(string id)
+        public async Task<TaxInfoValidation> ValidateTaxInfoAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.ValidateCustomerTaxInfo(id)))
+            using (var response = await client.GetAsync(Router.ValidateCustomerTaxInfo(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var validation = JsonConvert.DeserializeObject<TaxInfoValidation>(resultString, this.jsonSettings);
                 return validation;
             }
         }
 
-        public async Task SendEditLinkByEmailAsync(string id, Dictionary<string, object> data)
+        public async Task SendEditLinkByEmailAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.SendEditLinkByEmail(id), content))
+            using (var response = await client.PostAsync(Router.SendEditLinkByEmail(id), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
             }
         }
     }

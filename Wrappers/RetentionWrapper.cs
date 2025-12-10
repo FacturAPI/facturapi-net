@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Facturapi.Wrappers
 {
@@ -13,11 +14,11 @@ namespace Facturapi.Wrappers
         {
         }
 
-        public async Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null)
+        public async Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.ListRetentionss(query)))
+            using (var response = await client.GetAsync(Router.ListRetentionss(query), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
 
                 var searchResult = JsonConvert.DeserializeObject<SearchResult<Invoice>>(resultString, this.jsonSettings);
@@ -25,75 +26,75 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<Invoice> CreateAsync(Dictionary<string, object> data)
+        public async Task<Invoice> CreateAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.CreateRetention(), content))
+            using (var response = await client.PostAsync(Router.CreateRetention(), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task<Invoice> RetrieveAsync(string id)
+        public async Task<Invoice> RetrieveAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.RetrieveRetention(id)))
+            using (var response = await client.GetAsync(Router.RetrieveRetention(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task<Invoice> CancelAsync(string id)
+        public async Task<Invoice> CancelAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.DeleteAsync(Router.CancelRetention(id)))
+            using (var response = await client.DeleteAsync(Router.CancelRetention(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
                 var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
                 return customer;
             }
         }
 
-        public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null)
+        public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.SendRetentionByEmail(id), content))
+            using (var response = await client.PostAsync(Router.SendRetentionByEmail(id), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
             }
         }
 
-        private async Task<Stream> DownloadAsync(string id, string format)
+        private async Task<Stream> DownloadAsync(string id, string format, CancellationToken cancellationToken)
         {
-            using (var response = await client.GetAsync(Router.DownloadRetention(id, format)))
+            using (var response = await client.GetAsync(Router.DownloadRetention(id, format), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response);
+                await this.ThrowIfErrorAsync(response, cancellationToken);
                 var responseStream = await response.Content.ReadAsStreamAsync();
                 var memory = new MemoryStream();
-                await responseStream.CopyToAsync(memory);
+                await responseStream.CopyToAsync(memory, 81920, cancellationToken);
                 memory.Position = 0;
                 return memory;
             }
         }
 
-        public Task<Stream> DownloadZipAsync(string id)
+        public Task<Stream> DownloadZipAsync(string id, CancellationToken cancellationToken = default)
         {
-            return this.DownloadAsync(id, "zip");
+            return this.DownloadAsync(id, "zip", cancellationToken);
         }
 
-        public Task<Stream> DownloadPdfAsync(string id)
+        public Task<Stream> DownloadPdfAsync(string id, CancellationToken cancellationToken = default)
         {
-            return this.DownloadAsync(id, "pdf");
+            return this.DownloadAsync(id, "pdf", cancellationToken);
         }
 
-        public Task<Stream> DownloadXmlAsync(string id)
+        public Task<Stream> DownloadXmlAsync(string id, CancellationToken cancellationToken = default)
         {
-            return this.DownloadAsync(id, "xml");
+            return this.DownloadAsync(id, "xml", cancellationToken);
         }
     }
 }
