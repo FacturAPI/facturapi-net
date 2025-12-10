@@ -40,6 +40,8 @@ namespace Facturapi.Wrappers
             }
             catch (JsonException)
             {
+                // Intentionally swallow exception: resultString is not valid JSON.
+                // This allows graceful handling of non-JSON error responses.
             }
 
             var message = error?["message"]?.ToString() ?? "An error occurred";
