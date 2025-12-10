@@ -5,11 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.12.0] = 2025-12-10
+
+### Added
+
+- `FacturapiException.Status` now surfaces the HTTP status code when available.
+
+### Improved
+
+- More reliable HTTP resource cleanup to avoid lingering connections during requests.
+
 ## [4.11.0] = 2025-12-10
 
 ### Added
 
-- Methods to carta porte catalogs 
+- Methods to carta porte catalogs
 - `SearchAirTranportCodes`, `SearchTransportConfigs`,`SearchRightsOfPassage`, `SearchCustomsDocuments`, `SearchPackagingTypes` `SearchTrailerTypes`, `SearchHazardousMaterials`, `SearchNavalAuthorizations`, `SearchPortStations`, `SearchMarineContainers`
 
 ## [4.10.1] = 2025-10-23
@@ -56,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Type IepsMode for Tax model 
+- Type IepsMode for Tax model
 - Type Factor for Tax model
 
 ## [4.7.0] = 2025-02-25
@@ -73,7 +83,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add List of Live Api Keys `Organizations.ListAsyncLiveApiKey`
 - Add Delete of a Live Api Key `Organization.DeleteAsyncLiveApiKey`
-
 
 ## [4.5.0] - 2024-05-06
 
@@ -102,7 +111,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update invoice uses constants
 - Update payment form constants
 - Add new method for delete certs in organization
-
 
 ## [4.1.0] - 2023-12-06
 
@@ -174,21 +182,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added missing properties on `Invoice` class: `ExternalId`, `Type`, `Stamp` and `Complements`.
 
 ## [1.0.3] - 2020-08-19
+
 ### Fixed
 
 - `Invoice.Payments[].Related` should be a List
 
 ## [1.0.2] - 2019-09-12
+
 ### Fixed
 
 - Bug at uploading certificates.
 
 ## [1.0.1] - 2019-08-25
+
 ### Fixed
 
 - Problem uploading logo and certs for an organization.
 
 ## [1.0.0] - 2019-02-21
+
 ### Added
 
 - Bunch of properties missing from the Invoice class like Payments, ForeignTrade, Related, etc.
