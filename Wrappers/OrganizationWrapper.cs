@@ -26,7 +26,7 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<Organization> GetCurrentAsync(CancellationToken cancellationToken = default)
+        public async Task<Organization> MeAsync(CancellationToken cancellationToken = default)
         {
             using (var response = await client.GetAsync(Router.OrganizationMe(), cancellationToken))
             {
@@ -37,7 +37,7 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<DomainAvailability> CheckDomainAvailabilityAsync(string domain, CancellationToken cancellationToken = default)
+        public async Task<DomainAvailability> CheckDomainIsAvailableAsync(string domain, CancellationToken cancellationToken = default)
         {
             using (var response = await client.GetAsync(Router.CheckDomainAvailability(new Dictionary<string, object> { ["domain"] = domain }), cancellationToken))
             {
@@ -137,7 +137,7 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<Organization> UpdateReceiptsAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        public async Task<Organization> UpdateReceiptSettingsAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
             using (var response = await client.PutAsync(Router.UpdateReceipts(id), content, cancellationToken))
@@ -219,7 +219,7 @@ namespace Facturapi.Wrappers
         }
 
 
-        public async Task<List<SeriesGroup>> ListSeriesGroupAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<List<SeriesGroup>> ListSeriesAsync(string id, CancellationToken cancellationToken = default)
         {
             using (var response = await client.GetAsync(Router.ListSeriesGroup(id), cancellationToken))
             {
@@ -231,7 +231,7 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<SeriesGroup> CreateSeriesGroupAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        public async Task<SeriesGroup> CreateSeriesAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
             using (var response = await client.PostAsync(Router.CreateSeriesGroup(id), content, cancellationToken))
@@ -243,7 +243,7 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<SeriesGroup> UpdateSeriesGroupAsync(string id, string seriesName, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        public async Task<SeriesGroup> UpdateSeriesAsync(string id, string seriesName, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
             using (var response = await client.PutAsync(Router.UpdateSeriesGroup(id, seriesName), content, cancellationToken))
@@ -255,7 +255,7 @@ namespace Facturapi.Wrappers
             }
         }
         
-        public async Task<SeriesGroup> DeleteSeriesGroupAsync(string id, string seriesName, CancellationToken cancellationToken = default)
+        public async Task<SeriesGroup> DeleteSeriesAsync(string id, string seriesName, CancellationToken cancellationToken = default)
         {
             using (var response = await client.DeleteAsync(Router.UpdateSeriesGroup(id, seriesName), cancellationToken))
             {

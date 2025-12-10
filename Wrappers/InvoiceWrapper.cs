@@ -120,7 +120,7 @@ namespace Facturapi.Wrappers
             return DownloadCancellationReceiptAsync(id, "pdf", cancellationToken);
         }
 
-        public async Task<Invoice> UpdateStatus(string id, CancellationToken cancellationToken = default)
+        public async Task<Invoice> UpdateStatusAsync(string id, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent("", Encoding.UTF8, "application/json"))
             using (var response = await client.PutAsync(Router.UpdateStatus(id), content, cancellationToken))

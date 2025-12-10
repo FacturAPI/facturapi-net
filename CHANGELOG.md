@@ -10,11 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking
 
 - Wrappers can no longer be constructed directly; their constructors are internal and they are intended to be used only through `FacturapiClient`.
+- Renamed existing methods to match documented C# surface: `Organization.List/Create/Update/DeleteSeriesAsync` (were `*SeriesGroupAsync`), `Invoice.UpdateStatusAsync` (was `UpdateStatus`), and `Tools.ValidateTaxIdAsync` (was `ValidateTaxId`).
 
 ### Added
 
 - Expose webhook methods through `FacturapiClient`/`IFacturapiClient`.
-- New organization endpoints: `GetCurrentAsync` (`/organizations/me`), `CheckDomainAvailabilityAsync`, `UpdateReceiptsAsync`, and `UpdateDomainAsync`.
+- New organization endpoints: `MeAsync` (`/organizations/me`), `CheckDomainIsAvailableAsync`, `UpdateReceiptSettingsAsync`, and `UpdateDomainAsync`.
 - Added `DomainAvailability` model for domain check responses.
 - Added `Tool.HealthCheckAsync` for `/check`.
 - `FacturapiException.Status` now surfaces the HTTP status code when available.
@@ -30,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Invoices.PreviewPdfAsync` now calls the documented POST endpoint with a JSON body (breaking change to the method signature).
 - `Receipts.CreateGlobalInvoiceAsync` posts directly to `/receipts/global-invoice` and no longer requires an id (breaking change to the signature).
 - Receipt routes now hit `/receipts/{id}` for cancel, invoice, email, and PDF download instead of invoice endpoints.
-- `Organizations.CreateSeriesGroupAsync` uses POST (not PUT) to `/organizations/{id}/series-group`, matching the API.
+- `Organizations.CreateSeriesAsync` uses POST (not PUT) to `/organizations/{id}/series-group`, matching the API.
 
 ## [4.11.0] - 2025-12-10
 

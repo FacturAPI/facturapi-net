@@ -12,7 +12,7 @@ namespace Facturapi.Wrappers
         {
         }
 
-        public async Task<TaxIdValidation> ValidateTaxId(string taxId, CancellationToken cancellationToken = default)
+        public async Task<TaxIdValidation> ValidateTaxIdAsync(string taxId, CancellationToken cancellationToken = default)
         {
             using (var response = await client.GetAsync(Router.ValidateTaxId(
                 new Dictionary<string, object>()
