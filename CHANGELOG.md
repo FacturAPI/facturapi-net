@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.0.0] - Unreleased
+## [5.0.0] - 2025-12-10
 
 ### Breaking
 
@@ -14,10 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `FacturapiException.Status` now surfaces the HTTP status code when available.
+- Introduced `IFacturapiClient` so consumers can mock the client surface in tests.
 
 ### Changed
 
-- `FacturapiClient` now implements `IDisposable`; dispose it when finished to release HTTP resources. If not disposed, garbage collection will eventually clean up, but explicit disposal avoids lingering HTTP connections.
+- `FacturapiClient` now implements `IDisposable`; call `Dispose()` when finished (or wrap in `using`) to release HTTP resources. If not disposed, garbage collection will eventually clean up, but explicit disposal avoids lingering HTTP connections.
 
 ## [4.11.0] - 2025-12-10
 

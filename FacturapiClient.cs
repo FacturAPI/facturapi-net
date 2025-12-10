@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Facturapi
 {
-    public class FacturapiClient : IDisposable
+    public class FacturapiClient : IFacturapiClient
     {
         public Wrappers.CustomerWrapper Customer { get; private set; }
         public Wrappers.ProductWrapper Product { get; private set; }
