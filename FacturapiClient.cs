@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Facturapi
 {
-    public class FacturapiClient : IFacturapiClient
+    public sealed class FacturapiClient : IFacturapiClient
     {
         public CustomerWrapper Customer { get; private set; }
         public ProductWrapper Product { get; private set; }
@@ -19,6 +19,7 @@ namespace Facturapi
         public ToolWrapper Tool { get; private set; }
         public WebhookWrapper Webhook { get; private set; }
         private readonly HttpClient httpClient;
+        private bool disposed;
 
         public FacturapiClient(string apiKey, string apiVersion = "v2")
         {
@@ -43,7 +44,14 @@ namespace Facturapi
 
         public void Dispose()
         {
+            if (this.disposed)
+            {
+                return;
+            }
+
             this.httpClient?.Dispose();
+            this.disposed = true;
+            GC.SuppressFinalize(this);
         }
     }
 }
