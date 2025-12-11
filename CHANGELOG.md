@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Breaking
 
 - Wrappers can no longer be constructed directly; their constructors are internal and they are intended to be used only through `FacturapiClient`.
-- Renamed existing methods to match documented C# surface: `Organization.List/Create/Update/DeleteSeriesAsync` (were `*SeriesGroupAsync`), `Invoice.UpdateStatusAsync` (was `UpdateStatus`), and `Tools.ValidateTaxIdAsync` (was `ValidateTaxId`).
+- Renamed existing methods to match documented C# surface: `Organization.List/Create/Update/DeleteSeriesAsync` (were `*SeriesGroupAsync`), `Invoice.UpdateStatusAsync` (was `UpdateStatus`), and `Tool.ValidateTaxIdAsync` (was `ValidateTaxId`).
 - Carta Porte catalog methods moved to a dedicated `CartaporteCatalogWrapper`; `CartaporteCatalog` is now of that type, and `CatalogWrapper` retains only product/unit catalogs.
 
 ### Added
