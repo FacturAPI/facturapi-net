@@ -5,11 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.12.0] = Unreleased
+## [5.0.0] - 2025-12-10
+
+### Breaking
+
+- Wrappers can no longer be constructed directly; their constructors are internal and they are intended to be used only through `FacturapiClient`.
+- Renamed existing methods to match documented C# surface: `Organization.List/Create/Update/DeleteSeriesAsync` (were `*SeriesGroupAsync`), `Invoice.UpdateStatusAsync` (was `UpdateStatus`), and `Tool.ValidateTaxIdAsync` (was `ValidateTaxId`).
+- Carta Porte catalog methods moved to a dedicated `CartaporteCatalogWrapper`; `CartaporteCatalog` is now of that type, and `CatalogWrapper` retains only product/unit catalogs.
 
 ### Added
 
+- Expose webhook methods through `FacturapiClient`/`IFacturapiClient`.
+- New organization endpoints: `MeAsync` (`/organizations/me`), `CheckDomainIsAvailableAsync`, `UpdateReceiptSettingsAsync`, and `UpdateDomainAsync`.
+- New `CartaporteCatalogWrapper` for Carta Porte catalog searches.
+- Added `DomainAvailability` model for domain check responses.
+- Added `Tool.HealthCheckAsync` for `/check`.
 - `FacturapiException.Status` now surfaces the HTTP status code when available.
+- Introduced `IFacturapiClient` so consumers can mock the client surface in tests.
+- Optional `CancellationToken` parameters on client methods to allow request cancellation from callers.
+
+### Changed
+
+- `FacturapiClient` now implements `IDisposable`; call `Dispose()` when finished (or wrap in `using`) to release HTTP resources. If not disposed, garbage collection will eventually clean up, but explicit disposal avoids lingering HTTP connections.
+
+### Fixed
+
+- `Invoices.PreviewPdfAsync` now calls the documented POST endpoint with a JSON body (breaking change to the method signature).
+- `Receipts.CreateGlobalInvoiceAsync` posts directly to `/receipts/global-invoice` and no longer requires an id (breaking change to the signature).
+- Receipt routes now hit `/receipts/{id}` for cancel, invoice, email, and PDF download instead of invoice endpoints.
+- `Organizations.CreateSeriesAsync` uses POST (not PUT) to `/organizations/{id}/series-group`, matching the API.
 
 ## [4.11.0] - 2025-12-10
 
@@ -65,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Type IepsMode for Tax model
 - Type Factor for Tax model
 
-## [4.7.0] = 2025-02-25
+## [4.7.0] - 2025-02-25
 
 ### Added
 

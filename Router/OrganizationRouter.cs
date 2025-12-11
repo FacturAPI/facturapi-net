@@ -10,6 +10,11 @@ namespace Facturapi
             return UriWithQuery("organizations", query);
         }
 
+        public static string OrganizationMe()
+        {
+            return "organizations/me";
+        }
+
         public static string RetrieveOrganization(string id)
         {
             return $"organizations/{id}";
@@ -23,6 +28,11 @@ namespace Facturapi
         public static string DeleteOrganization(string id)
         {
             return RetrieveOrganization(id);
+        }
+
+        public static string CheckDomainAvailability(Dictionary<string, object> query = null)
+        {
+            return UriWithQuery("organizations/domain-check", query);
         }
 
         public static string UpdateLegal(string id)
@@ -40,6 +50,11 @@ namespace Facturapi
             return $"{RetrieveOrganization(id)}/logo";
         }
         
+        public static string UpdateReceipts(string id)
+        {
+            return $"{RetrieveOrganization(id)}/receipts";
+        }
+
         public static string UploadCertificate(string id)
         {
             return $"{RetrieveOrganization(id)}/certificate";
@@ -99,6 +114,11 @@ namespace Facturapi
         public static string UpdateSelfInvoiceSettings(string organizationId)
         {
             return $"{RetrieveOrganization(organizationId)}/self-invoice";
+        }
+
+        public static string UpdateDomain(string organizationId)
+        {
+            return $"{RetrieveOrganization(organizationId)}/domain";
         }
     }
 }

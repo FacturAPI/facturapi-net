@@ -63,9 +63,9 @@ namespace Facturapi
             return $"invoices/{id}/copy";
         }
 
-        public static string PreviewPdf(Dictionary<string, object> query = null)
+        public static string PreviewPdf()
         {
-            return UriWithQuery("invoices/preview/pdf", query);
+            return "invoices/preview/pdf";
         }
     }
 }

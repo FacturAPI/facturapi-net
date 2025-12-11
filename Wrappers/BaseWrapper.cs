@@ -4,25 +4,23 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Facturapi.Wrappers
 {
     public abstract class BaseWrapper
     {
-        protected const string BASE_URL = "https://www.facturapi.io/";
         protected HttpClient client;
         protected JsonSerializerSettings jsonSettings { get; set; }
         public string apiKey { get; set; }
         public string apiVersion {  get; set; }
 
-        public BaseWrapper(string apiKey, string apiVersion = "v2")
+        public BaseWrapper(string apiKey, string apiVersion, HttpClient httpClient)
         {
-            var apiKeyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(apiKey + ":"));
-            this.client = new HttpClient()
-            {
-                BaseAddress = new Uri($"{BASE_URL}/{apiVersion}/")
-            };
-            this.client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", apiKeyBase64);
+            this.apiKey = apiKey;
+            this.apiVersion = apiVersion;
+
+            this.client = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             this.jsonSettings = new JsonSerializerSettings
             {
                 ContractResolver = new SnakeCasePropertyNamesContractResolver(),
@@ -72,8 +70,10 @@ namespace Facturapi.Wrappers
             return new FacturapiException(message, status);
         }
 
-        protected async Task ThrowIfErrorAsync(HttpResponseMessage response)
+        protected async Task ThrowIfErrorAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (response.IsSuccessStatusCode)
             {
                 return;
