@@ -62,5 +62,10 @@ namespace Facturapi
         {
             return $"invoices/{id}/copy";
         }
+
+        public static string PreviewPdf()
+        {
+            return "invoices/preview/pdf";
+        }
     }
 }

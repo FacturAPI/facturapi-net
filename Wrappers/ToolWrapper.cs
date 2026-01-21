@@ -1,36 +1,54 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Facturapi.Wrappers
 {
     public class ToolWrapper : BaseWrapper
     {
-        public ToolWrapper(string apiKey, string apiVersion = "v2") : base(apiKey, apiVersion)
+        internal ToolWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
         }
 
-        public async Task<TaxIdValidation> ValidateTaxId(string taxId)
+        public async Task<TaxIdValidation> ValidateTaxIdAsync(string taxId, CancellationToken cancellationToken = default)
         {
-            var response = await client.GetAsync(Router.ValidateTaxId(
+            using (var response = await client.GetAsync(Router.ValidateTaxId(
                 new Dictionary<string, object>()
                 {
                     ["tax_id"] = taxId
                 }
-            ));
-            var resultString = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
+            ), cancellationToken))
             {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
+                await this.ThrowIfErrorAsync(response, cancellationToken);
+                var resultString = await response.Content.ReadAsStringAsync();
 
-            var result = JsonConvert.DeserializeObject<TaxIdValidation>(resultString, this.jsonSettings);
-            return result;
+                var result = JsonConvert.DeserializeObject<TaxIdValidation>(resultString, this.jsonSettings);
+                return result;
+            }
+        }
+
+        public async Task<bool> HealthCheckAsync(CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.HealthCheck(), cancellationToken))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<Dictionary<string, object>>(resultString, this.jsonSettings);
+                if (result != null && result.TryGetValue("ok", out var okValue))
+                {
+                    if (okValue is bool okBool)
+                    {
+                        return okBool;
+                    }
+                    if (bool.TryParse(okValue.ToString(), out var parsed))
+                    {
+                        return parsed;
+                    }
+                }
+                return false;
+            }
         }
     }
 }
