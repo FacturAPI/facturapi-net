@@ -23,9 +23,9 @@ namespace Facturapi
             return "retentions";
         }
 
-        public static string CancelRetention(string id)
+        public static string CancelRetention(string id, Dictionary<string, object> query = null)
         {
-            return RetrieveRetention(id);
+            return UriWithQuery(RetrieveRetention(id), query);
         }
 
         public static string DownloadRetention(string id, string format)
