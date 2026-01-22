@@ -1,46 +1,36 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Facturapi.Wrappers
 {
     public class CatalogWrapper : BaseWrapper
     {
-        public CatalogWrapper(string apiKey, string apiVersion = "v2") : base(apiKey, apiVersion)
+        internal CatalogWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchProducts(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchProducts(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            var response = await client.GetAsync(Router.SearchProductKeys(query));
-            var resultString = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
-            }
-
-            var searchResult = JsonConvert.DeserializeObject<SearchResult<CatalogItem>>(resultString, this.jsonSettings);
-            return searchResult;
+            return await this.SearchCatalogAsync(Router.SearchProductKeys(query), cancellationToken);
         }
 
-        public async Task<SearchResult<CatalogItem>> SearchUnits(Dictionary<string, object> query = null)
+        public async Task<SearchResult<CatalogItem>> SearchUnits(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            var response = await client.GetAsync(Router.SearchUnitKeys(query));
-            var resultString = await response.Content.ReadAsStringAsync();
+            return await this.SearchCatalogAsync(Router.SearchUnitKeys(query), cancellationToken);
+        }
 
-            if (!response.IsSuccessStatusCode)
+        private async Task<SearchResult<CatalogItem>> SearchCatalogAsync(string url, CancellationToken cancellationToken)
+        {
+            using (var response = await client.GetAsync(url, cancellationToken))
             {
-                var error = JsonConvert.DeserializeObject<JObject>(resultString, this.jsonSettings);
-                throw new FacturapiException(error["message"].ToString());
+                await this.ThrowIfErrorAsync(response, cancellationToken);
+                var resultString = await response.Content.ReadAsStringAsync();
+                var searchResult = JsonConvert.DeserializeObject<SearchResult<CatalogItem>>(resultString, this.jsonSettings);
+                return searchResult;
             }
-
-            var searchResult = JsonConvert.DeserializeObject<SearchResult<CatalogItem>>(resultString, this.jsonSettings);
-            return searchResult;
         }
     }
 }

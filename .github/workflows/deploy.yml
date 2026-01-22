@@ -10,22 +10,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '7.0.x' # Adjust the .NET version as needed
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x" # Adjust the .NET version as needed
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-    - name: Pack
-      run: dotnet pack --configuration Release --no-build --output ./nupkg
+      - name: Pack
+        run: dotnet pack --configuration Release --no-build --output ./nupkg
 
-    - name: Publish to NuGet
-      run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      - name: Install xmllint
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
+      - name: Check if version exists on NuGet
+        id: version-check
+        run: |
+          PACKAGE_ID="Facturapi"
+          VERSION=$(xmllint --xpath "string(//Project/PropertyGroup/Version)" facturapi-net.csproj)
+          echo "Detected version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          if curl -sSf "https://api.nuget.org/v3-flatcontainer/${PACKAGE_ID,,}/$VERSION/${PACKAGE_ID,,}.$VERSION.nupkg" > /dev/null; then
+            echo "Version $VERSION already exists. Skipping push."
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version $VERSION does not exist. Proceeding with publish."
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to NuGet
+        if: steps.version-check.outputs.exists == 'false'
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

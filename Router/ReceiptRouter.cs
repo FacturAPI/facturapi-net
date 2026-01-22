@@ -30,22 +30,22 @@ namespace Facturapi
 
         public static string InvoiceReceipt(string id)
         {
-            return $"receipts/(id)/invoice";
+            return $"receipts/{id}/invoice";
         }
         
-        public static string CreateGlobalInvoice(string id)
+        public static string CreateGlobalInvoice()
         {
             return $"receipts/global-invoice";
         }
 
         public static string DownloadReceiptPdf(string id)
         {
-            return $"receipts/(id)/pdf";
+            return $"receipts/{id}/pdf";
         }
 
         public static string SendReceiptByEmail(string id)
         {
-            return $"receipts/(id)/email";
+            return $"receipts/{id}/email";
         }
     }
 }
