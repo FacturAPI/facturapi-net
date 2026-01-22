@@ -49,9 +49,12 @@ namespace Facturapi.Wrappers
             }
         }
 
-        public async Task<Invoice> CancelAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<Invoice> CancelAsync(string id, Dictionary<string, object> query = null)
         {
-            using (var response = await client.DeleteAsync(Router.CancelRetention(id), cancellationToken))
+            var url = Router.CancelRetention(id, query);
+            var response = await client.DeleteAsync(url);
+            var resultString = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken);
                 var resultString = await response.Content.ReadAsStringAsync();
