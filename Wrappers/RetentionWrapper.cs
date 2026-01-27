@@ -53,14 +53,14 @@ namespace Facturapi.Wrappers
         {
             var url = Router.CancelRetention(id, query);
             var response = await client.DeleteAsync(url);
-            var resultString = await response.Content.ReadAsStringAsync();
+            var responseString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
-                var customer = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
-                return customer;
+                var error = JsonConvert.DeserializeObject<JObject>(responseString, this.jsonSettings);
+                throw new FacturapiException(error["message"].ToString());
             }
+            var retention = JsonConvert.DeserializeObject<Invoice>(responseString, this.jsonSettings);
+            return retention;
         }
 
         public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default)
