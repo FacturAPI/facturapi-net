@@ -3,6 +3,7 @@ Facturapi .NET Library
 
 [![NuGet version](https://badge.fury.io/nu/Facturapi.svg)](https://www.nuget.org/packages/Facturapi/)
 [![NuGet downloads](https://img.shields.io/nuget/dt/Facturapi.svg)](https://www.nuget.org/packages/Facturapi/)
+[![CI](https://github.com/FacturAPI/facturapi-net/actions/workflows/ci.yml/badge.svg)](https://github.com/FacturAPI/facturapi-net/actions/workflows/ci.yml)
 
 Librería oficial para .NET de https://www.facturapi.io
 
