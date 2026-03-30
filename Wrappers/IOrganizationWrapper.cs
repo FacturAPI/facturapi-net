@@ -30,5 +30,21 @@ namespace Facturapi.Wrappers
         Task<SeriesGroup> DeleteSeriesAsync(string id, string seriesName, CancellationToken cancellationToken = default);
         Task<List<LiveApiKey>> DeleteLiveApiKeyAsync(string id, string apiKeyId, CancellationToken cancellationToken = default);
         Task<Organization> UpdateSelfInvoiceSettingsAsync(string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default);
+        Task<List<OrganizationUserAccess>> ListTeamAccessAsync(string organizationId, CancellationToken cancellationToken = default);
+        Task<OrganizationUserAccess> RetrieveTeamAccessAsync(string organizationId, string accessId, CancellationToken cancellationToken = default);
+        Task<OrganizationUserAccess> UpdateTeamAccessRoleAsync(string organizationId, string accessId, string role, CancellationToken cancellationToken = default);
+        Task<bool> RemoveTeamAccessAsync(string organizationId, string accessId, CancellationToken cancellationToken = default);
+        Task<List<OrganizationInvite>> ListSentTeamInvitesAsync(string organizationId, CancellationToken cancellationToken = default);
+        Task<OrganizationInvite> InviteUserToTeamAsync(string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default);
+        Task<bool> CancelTeamInviteAsync(string organizationId, string inviteKey, CancellationToken cancellationToken = default);
+        Task<List<OrganizationInvite>> ListReceivedTeamInvitesAsync(CancellationToken cancellationToken = default);
+        Task<bool> RespondTeamInviteAsync(string inviteKey, Dictionary<string, object> data, CancellationToken cancellationToken = default);
+        Task<List<OrganizationTeamRole>> ListTeamRolesAsync(string organizationId, CancellationToken cancellationToken = default);
+        Task<List<OrganizationTeamRoleTemplate>> ListTeamRoleTemplatesAsync(string organizationId, CancellationToken cancellationToken = default);
+        Task<List<string>> ListTeamRoleOperationsAsync(string organizationId, CancellationToken cancellationToken = default);
+        Task<OrganizationTeamRole> RetrieveTeamRoleAsync(string organizationId, string roleId, CancellationToken cancellationToken = default);
+        Task<OrganizationTeamRole> CreateTeamRoleAsync(string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default);
+        Task<OrganizationTeamRole> UpdateTeamRoleAsync(string organizationId, string roleId, Dictionary<string, object> data, CancellationToken cancellationToken = default);
+        Task<bool> DeleteTeamRoleAsync(string organizationId, string roleId, CancellationToken cancellationToken = default);
     }
 }

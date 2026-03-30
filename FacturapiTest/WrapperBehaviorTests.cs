@@ -72,6 +72,129 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task OrganizationListTeamAccessAsync_UsesTeamRoute()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/organizations/org_1/team", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("[]"));
+            });
+
+            var wrapper = new OrganizationWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListTeamAccessAsync("org_1");
+
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task OrganizationInviteUserToTeamAsync_UsesInvitesRoute()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/organizations/org_1/team/invites", request.RequestUri.PathAndQuery);
+                Assert.NotNull(request.Content);
+                var body = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Assert.Contains("\"email\":\"dev@example.com\"", body);
+
+                return JsonResponse("{\"id\":\"inv_001\",\"email\":\"dev@example.com\"}");
+            });
+
+            var wrapper = new OrganizationWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.InviteUserToTeamAsync("org_1", new Dictionary<string, object>
+            {
+                ["email"] = "dev@example.com"
+            });
+
+            Assert.Equal("inv_001", result.Id);
+        }
+
+        [Fact]
+        public async Task OrganizationListTeamRoleOperationsAsync_UsesOperationsRoute()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/organizations/org_1/team/roles/operations", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("[\"invoice:list\"]"));
+            });
+
+            var wrapper = new OrganizationWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListTeamRoleOperationsAsync("org_1");
+
+            Assert.Single(result);
+            Assert.Equal("invoice:list", result[0]);
+        }
+
+        [Fact]
+        public async Task OrganizationRemoveTeamAccessAsync_ParsesOkResponse()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Delete, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/organizations/org_1/team/acc_1", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"ok\":true}"));
+            });
+
+            var wrapper = new OrganizationWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.RemoveTeamAccessAsync("org_1", "acc_1");
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task OrganizationRespondTeamInviteAsync_UsesInviteResponseRoute()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/organizations/invites/inv_1/response", request.RequestUri.PathAndQuery);
+                Assert.NotNull(request.Content);
+                var body = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Assert.Contains("\"accept\":true", body);
+                return JsonResponse("{\"ok\":true}");
+            });
+
+            var wrapper = new OrganizationWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.RespondTeamInviteAsync("inv_1", new Dictionary<string, object>
+            {
+                ["accept"] = true
+            });
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task OrganizationUpdateTeamRoleAsync_UsesRoleRoute()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Put, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/organizations/org_1/team/roles/role_1", request.RequestUri.PathAndQuery);
+                Assert.NotNull(request.Content);
+                var body = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Assert.Contains("\"name\":\"Senior billing analyst\"", body);
+                return JsonResponse("{\"id\":\"role_1\",\"name\":\"Senior billing analyst\"}");
+            });
+
+            var wrapper = new OrganizationWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.UpdateTeamRoleAsync("org_1", "role_1", new Dictionary<string, object>
+            {
+                ["name"] = "Senior billing analyst"
+            });
+
+            Assert.Equal("role_1", result.Id);
+            Assert.Equal("Senior billing analyst", result.Name);
+        }
+
+        [Fact]
         public async Task RetentionListAsync_UsesRetentionsRoute()
         {
             var handler = new RecordingHandler((request, cancellationToken) =>

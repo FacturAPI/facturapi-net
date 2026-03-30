@@ -120,5 +120,60 @@ namespace Facturapi
         {
             return $"{RetrieveOrganization(organizationId)}/domain";
         }
+
+        public static string ListTeamAccess(string organizationId)
+        {
+            return $"{RetrieveOrganization(organizationId)}/team";
+        }
+
+        public static string RetrieveTeamAccess(string organizationId, string accessId)
+        {
+            return $"{ListTeamAccess(organizationId)}/{accessId}";
+        }
+
+        public static string UpdateTeamAccessRole(string organizationId, string accessId)
+        {
+            return $"{RetrieveTeamAccess(organizationId, accessId)}/role";
+        }
+
+        public static string ListSentTeamInvites(string organizationId)
+        {
+            return $"{ListTeamAccess(organizationId)}/invites";
+        }
+
+        public static string CancelTeamInvite(string organizationId, string inviteKey)
+        {
+            return $"{ListSentTeamInvites(organizationId)}/{inviteKey}";
+        }
+
+        public static string ListReceivedTeamInvites()
+        {
+            return "organizations/invites/pending";
+        }
+
+        public static string RespondTeamInvite(string inviteKey)
+        {
+            return $"organizations/invites/{inviteKey}/response";
+        }
+
+        public static string ListTeamRoles(string organizationId)
+        {
+            return $"{ListTeamAccess(organizationId)}/roles";
+        }
+
+        public static string ListTeamRoleTemplates(string organizationId)
+        {
+            return $"{ListTeamRoles(organizationId)}/templates";
+        }
+
+        public static string ListTeamRoleOperations(string organizationId)
+        {
+            return $"{ListTeamRoles(organizationId)}/operations";
+        }
+
+        public static string RetrieveTeamRole(string organizationId, string roleId)
+        {
+            return $"{ListTeamRoles(organizationId)}/{roleId}";
+        }
     }
 }

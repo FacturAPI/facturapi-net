@@ -288,5 +288,188 @@ namespace Facturapi.Wrappers
                 return organization;
             }
         }
+
+        public async Task<List<OrganizationUserAccess>> ListTeamAccessAsync(string organizationId, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.ListTeamAccess(organizationId), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<List<OrganizationUserAccess>>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<OrganizationUserAccess> RetrieveTeamAccessAsync(string organizationId, string accessId, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.RetrieveTeamAccess(organizationId, accessId), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<OrganizationUserAccess>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<OrganizationUserAccess> UpdateTeamAccessRoleAsync(string organizationId, string accessId, string role, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(new Dictionary<string, object> { ["role"] = role }), Encoding.UTF8, "application/json"))
+            using (var response = await client.PutAsync(Router.UpdateTeamAccessRole(organizationId, accessId), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<OrganizationUserAccess>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<bool> RemoveTeamAccessAsync(string organizationId, string accessId, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.DeleteAsync(Router.RetrieveTeamAccess(organizationId, accessId), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return DeserializeOk(resultString);
+            }
+        }
+
+        public async Task<List<OrganizationInvite>> ListSentTeamInvitesAsync(string organizationId, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.ListSentTeamInvites(organizationId), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<List<OrganizationInvite>>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<OrganizationInvite> InviteUserToTeamAsync(string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.ListSentTeamInvites(organizationId), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<OrganizationInvite>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<bool> CancelTeamInviteAsync(string organizationId, string inviteKey, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.DeleteAsync(Router.CancelTeamInvite(organizationId, inviteKey), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return DeserializeOk(resultString);
+            }
+        }
+
+        public async Task<List<OrganizationInvite>> ListReceivedTeamInvitesAsync(CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.ListReceivedTeamInvites(), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<List<OrganizationInvite>>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<bool> RespondTeamInviteAsync(string inviteKey, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.RespondTeamInvite(inviteKey), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return DeserializeOk(resultString);
+            }
+        }
+
+        public async Task<List<OrganizationTeamRole>> ListTeamRolesAsync(string organizationId, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.ListTeamRoles(organizationId), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<List<OrganizationTeamRole>>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<List<OrganizationTeamRoleTemplate>> ListTeamRoleTemplatesAsync(string organizationId, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.ListTeamRoleTemplates(organizationId), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<List<OrganizationTeamRoleTemplate>>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<List<string>> ListTeamRoleOperationsAsync(string organizationId, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.ListTeamRoleOperations(organizationId), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<List<string>>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<OrganizationTeamRole> RetrieveTeamRoleAsync(string organizationId, string roleId, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.RetrieveTeamRole(organizationId, roleId), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<OrganizationTeamRole>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<OrganizationTeamRole> CreateTeamRoleAsync(string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.ListTeamRoles(organizationId), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<OrganizationTeamRole>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<OrganizationTeamRole> UpdateTeamRoleAsync(string organizationId, string roleId, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PutAsync(Router.RetrieveTeamRole(organizationId, roleId), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<OrganizationTeamRole>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<bool> DeleteTeamRoleAsync(string organizationId, string roleId, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.DeleteAsync(Router.RetrieveTeamRole(organizationId, roleId), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return DeserializeOk(resultString);
+            }
+        }
+
+        private bool DeserializeOk(string resultString)
+        {
+            var result = JsonConvert.DeserializeObject<Dictionary<string, object>>(resultString, this.jsonSettings);
+            if (result != null && result.TryGetValue("ok", out var okValue))
+            {
+                if (okValue is bool okBool)
+                {
+                    return okBool;
+                }
+                if (bool.TryParse(okValue.ToString(), out var parsed))
+                {
+                    return parsed;
+                }
+            }
+
+            return false;
+        }
     }
 }
