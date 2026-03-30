@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,9 +18,35 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build facturapi-net.sln --configuration Release --no-restore
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test_framework: net6.0
+            runtime_version: 6.0.x
+          - test_framework: net8.0
+            runtime_version: 8.0.x
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
           dotnet-version: |
-            6.0.x
             10.0.x
+            ${{ matrix.runtime_version }}
 
       - name: Restore dependencies
         run: dotnet restore
@@ -29,4 +55,4 @@ jobs:
         run: dotnet build facturapi-net.sln --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test FacturapiTest/FacturapiTest.csproj --configuration Release --no-build
+        run: dotnet test FacturapiTest/FacturapiTest.csproj --framework ${{ matrix.test_framework }} --configuration Release --no-build
