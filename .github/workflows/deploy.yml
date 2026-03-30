@@ -27,6 +27,9 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
+      - name: Test
+        run: dotnet test FacturapiTest/FacturapiTest.csproj --configuration Release --no-build
+
       - name: Pack
         run: dotnet pack --configuration Release --no-build --output ./nupkg
 
