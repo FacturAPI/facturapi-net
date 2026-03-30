@@ -72,9 +72,7 @@ namespace Facturapi
 
         private static HttpClient CreateDefaultHttpClient(string apiKey, string apiVersion)
         {
-            var client = new HttpClient();
-            ConfigureHttpClient(client, apiKey, apiVersion);
-            return client;
+            return new HttpClient();
         }
 
         private static void ConfigureHttpClient(HttpClient client, string apiKey, string apiVersion)

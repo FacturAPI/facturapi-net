@@ -24,7 +24,7 @@ namespace Facturapi.Wrappers
 
         private async Task<SearchResult<CatalogItem>> SearchCatalogAsync(string url, CancellationToken cancellationToken)
         {
-            using (var response = await client.GetAsync(url, cancellationToken))
+            using (var response = await client.GetAsync(url, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

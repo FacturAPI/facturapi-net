@@ -19,7 +19,7 @@ namespace Facturapi.Wrappers
                 {
                     ["tax_id"] = taxId
                 }
-            ), cancellationToken))
+            ), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -31,7 +31,7 @@ namespace Facturapi.Wrappers
 
         public async Task<bool> HealthCheckAsync(CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.HealthCheck(), cancellationToken))
+            using (var response = await client.GetAsync(Router.HealthCheck(), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

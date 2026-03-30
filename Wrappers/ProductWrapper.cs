@@ -15,7 +15,7 @@ namespace Facturapi.Wrappers
 
         public async Task<SearchResult<Product>> ListAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.ListProducts(query), cancellationToken))
+            using (var response = await client.GetAsync(Router.ListProducts(query), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -28,7 +28,7 @@ namespace Facturapi.Wrappers
         public async Task<Product> CreateAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.CreateProduct(), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.CreateProduct(), content, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -39,7 +39,7 @@ namespace Facturapi.Wrappers
 
         public async Task<Product> RetrieveAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.RetrieveProduct(id), cancellationToken))
+            using (var response = await client.GetAsync(Router.RetrieveProduct(id), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -50,7 +50,7 @@ namespace Facturapi.Wrappers
 
         public async Task<Product> DeleteAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.DeleteAsync(Router.DeleteProduct(id), cancellationToken))
+            using (var response = await client.DeleteAsync(Router.DeleteProduct(id), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -62,7 +62,7 @@ namespace Facturapi.Wrappers
 		public async Task<Product> UpdateAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
 		{
 			using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-			using (var response = await client.PutAsync(Router.UpdateProduct(id), content, cancellationToken))
+			using (var response = await client.PutAsync(Router.UpdateProduct(id), content, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

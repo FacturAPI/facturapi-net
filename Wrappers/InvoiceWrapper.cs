@@ -17,7 +17,7 @@ namespace Facturapi.Wrappers
 
         public async Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.ListInvoices(query), cancellationToken))
+            using (var response = await client.GetAsync(Router.ListInvoices(query), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -30,7 +30,7 @@ namespace Facturapi.Wrappers
         public async Task<Invoice> CreateAsync(Dictionary<string, object> data, Dictionary<string, object> options = null, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.CreateInvoice(options), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.CreateInvoice(options), content, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -41,7 +41,7 @@ namespace Facturapi.Wrappers
 
         public async Task<Invoice> RetrieveAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.RetrieveInvoice(id), cancellationToken))
+            using (var response = await client.GetAsync(Router.RetrieveInvoice(id), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -52,7 +52,7 @@ namespace Facturapi.Wrappers
 
         public async Task<Invoice> CancelAsync(string id, Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.DeleteAsync(Router.CancelInvoice(id, query), cancellationToken))
+            using (var response = await client.DeleteAsync(Router.CancelInvoice(id, query), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -64,7 +64,7 @@ namespace Facturapi.Wrappers
         public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.SendByEmail(id), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.SendByEmail(id), content, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
             }
@@ -72,7 +72,7 @@ namespace Facturapi.Wrappers
 
         private async Task<Stream> DownloadAsync(string id, string format, CancellationToken cancellationToken)
         {
-            using (var response = await client.GetAsync(Router.DownloadInvoice(id, format), cancellationToken))
+            using (var response = await client.GetAsync(Router.DownloadInvoice(id, format), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
@@ -100,7 +100,7 @@ namespace Facturapi.Wrappers
 
         private async Task<Stream> DownloadCancellationReceiptAsync(string id, string format, CancellationToken cancellationToken)
         {
-            using (var response = await client.GetAsync(Router.DownloadCancellationReceipt(id, format), cancellationToken))
+            using (var response = await client.GetAsync(Router.DownloadCancellationReceipt(id, format), cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
@@ -124,7 +124,7 @@ namespace Facturapi.Wrappers
         public async Task<Invoice> UpdateStatusAsync(string id, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent("", Encoding.UTF8, "application/json"))
-            using (var response = await client.PutAsync(Router.UpdateStatus(id), content, cancellationToken))
+            using (var response = await client.PutAsync(Router.UpdateStatus(id), content, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -136,7 +136,7 @@ namespace Facturapi.Wrappers
         public async Task<Invoice> UpdateDraftAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PutAsync(Router.UpdateDraftInvoice(id), content, cancellationToken))
+            using (var response = await client.PutAsync(Router.UpdateDraftInvoice(id), content, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -148,7 +148,7 @@ namespace Facturapi.Wrappers
         public async Task<Invoice> StampDraftAsync(string id, Dictionary<string, object> options = null, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent("", Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.StampDraftInvoice(id, options), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.StampDraftInvoice(id, options), content, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -166,7 +166,7 @@ namespace Facturapi.Wrappers
         public async Task<Invoice> CopyToDraftAsync(string id, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent("", Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.CopyInvoice(id), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.CopyInvoice(id), content, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -178,7 +178,7 @@ namespace Facturapi.Wrappers
         public async Task<Stream> PreviewPdfAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.PreviewPdf(), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.PreviewPdf(), content, cancellationToken).ConfigureAwait(false))
             {
                 await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
                 var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
