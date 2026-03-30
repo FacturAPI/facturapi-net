@@ -10,6 +10,34 @@ Facturapi ayuda a generar facturas electrónicas válidas en México (CFDI) de l
 
 Si alguna vez has usado [Stripe](https://stripe.com) o [Conekta](https://conekta.io), verás que Facturapi es igual de sencillo de entender e integrar a tu aplicación.
 
+## Migración a v6
+
+### ¿Cuándo NO necesitas cambiar nada?
+
+No necesitas actualizar tu código si:
+- Creas `FacturapiClient` y llamas métodos directamente (por ejemplo `await client.Invoice.CreateAsync(...)`).
+- Usas `var` al guardar wrappers (por ejemplo `var invoices = client.Invoice;`).
+- No dependes de tipos concretos de wrappers en firmas, propiedades o pruebas.
+
+### ¿Cuándo SÍ necesitas actualizar?
+
+Debes ajustar tu código si:
+- Declaras wrappers como clases concretas (`CustomerWrapper`, `InvoiceWrapper`, etc.).
+- Mockeas wrappers concretos en pruebas.
+- Expones wrappers concretos en tus propias interfaces o APIs públicas.
+
+Antes (v5):
+
+```csharp
+CustomerWrapper customers = client.Customer;
+```
+
+Después (v6):
+
+```csharp
+ICustomerWrapper customers = client.Customer;
+```
+
 ## Instalación
 
 Puedes instalar Facturapi en tu proyecto usando [Nuget](https://www.nuget.org/)
@@ -30,9 +58,22 @@ Empieza por crear una instancia del Wrapper de Facturapi usando tu llave secreta
 using Facturapi;
 
 // Esto asegura que puedas usar diferentes ApiKeys en diferentes instancias de Wrapper
-var facturapi = new FacturapiClient('TU_API_KEY');
+var facturapi = new FacturapiClient("TU_API_KEY");
 // Después, procede a llamar a los métodos como muestra la documentación.
-var invoice = await facturapi.Invoice.Create(...);
+var invoice = await facturapi.Invoice.CreateAsync(...);
+```
+
+### Escenario avanzado: usar tu propio `HttpClient`
+
+Para la mayoría de usuarios, usa el constructor normal de `FacturapiClient`.
+Si necesitas un `HttpClient` custom (por ejemplo para un `HttpMessageHandler` propio), usa el factory avanzado:
+
+```csharp
+using System.Net.Http;
+using Facturapi;
+
+var customHttpClient = new HttpClient();
+var facturapi = FacturapiClient.CreateWithCustomHttpClient("TU_API_KEY", customHttpClient);
 ```
 
 ### Métodos asíncronos (async, await)
@@ -41,10 +82,10 @@ Esta librería utiliza métodos asíncronos. Si tu aplicación no tiene código 
 
 ```csharp
 // Asíncrono
-var customers = await facturapi.Customer.List();
+var customers = await facturapi.Customer.ListAsync();
 
 // Síncrono
-var customers = facturapi.Customer.List().GetAwaiter().GetResult();
+var customers = facturapi.Customer.ListAsync().GetAwaiter().GetResult();
 ```
 
 ## Uso de la librería
@@ -104,7 +145,7 @@ var product = await facturapi.Product.CreateAsync(new Dictionary<string, object>
 ### Crear una factura
 
 ```csharp
-var invoice = await facturapi.Product.CreateAsync(new Dictionary<string, object>
+var invoice = await facturapi.Invoice.CreateAsync(new Dictionary<string, object>
 {
   ["customer"] = "ID_DEL_CLIENTE",	  // Para clientes no registrados, puedes asignar
 									  // un Dictionary con los datos del cliente.
@@ -116,7 +157,7 @@ var invoice = await facturapi.Product.CreateAsync(new Dictionary<string, object>
       ["product"] = "ID_DEL_PRODUCTO" // Para productos no registrados, puedes asignar
                                       // un Dictionary con los datos del producto.
     }
-  }
+  },
   ["payment_form"] = Facturapi.PaymentForm.DINERO_ELECTRONICO
 });
 ```
@@ -131,9 +172,8 @@ var zipStream = await facturapi.Invoice.DownloadZipAsync(invoice.Id);
 var xmlStream = await facturapi.Invoice.DownloadXmlAsync(invoice.Id);
 var pdfStream = await facturapi.Invoice.DownloadPdfAsync(invoice.Id);
 // Y luego guardarlo en un archivo del disco duro
-var file = new System.IO.FileStrem("C:\\route\\to\\save\\invoice.zip", FileMode.Create);
-zipStream.CopyTo(file);
-file.Close();
+using var file = new System.IO.FileStream("C:\\route\\to\\save\\invoice.zip", System.IO.FileMode.Create);
+await zipStream.CopyToAsync(file);
 ```
 
 #### Envía la factura por correo electrónico
