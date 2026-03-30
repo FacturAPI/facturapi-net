@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class ProductWrapper : BaseWrapper
+    public class ProductWrapper : BaseWrapper, IProductWrapper
     {
         internal ProductWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
@@ -17,8 +17,8 @@ namespace Facturapi.Wrappers
         {
             using (var response = await client.GetAsync(Router.ListProducts(query), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 var searchResult = JsonConvert.DeserializeObject<SearchResult<Product>>(resultString, this.jsonSettings);
                 return searchResult;
@@ -30,8 +30,8 @@ namespace Facturapi.Wrappers
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
             using (var response = await client.PostAsync(Router.CreateProduct(), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var customer = JsonConvert.DeserializeObject<Product>(resultString, this.jsonSettings);
                 return customer;
             }
@@ -41,8 +41,8 @@ namespace Facturapi.Wrappers
         {
             using (var response = await client.GetAsync(Router.RetrieveProduct(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var product = JsonConvert.DeserializeObject<Product>(resultString, this.jsonSettings);
                 return product;
             }
@@ -52,8 +52,8 @@ namespace Facturapi.Wrappers
         {
             using (var response = await client.DeleteAsync(Router.DeleteProduct(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var product = JsonConvert.DeserializeObject<Product>(resultString, this.jsonSettings);
                 return product;
             }
@@ -64,8 +64,8 @@ namespace Facturapi.Wrappers
 			using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
 			using (var response = await client.PutAsync(Router.UpdateProduct(id), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 			    var product = JsonConvert.DeserializeObject<Product>(resultString, this.jsonSettings);
 			    return product;
             }

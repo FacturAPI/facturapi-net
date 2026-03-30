@@ -8,7 +8,7 @@ namespace Facturapi
 {
     internal static partial class Router
     {
-        public static string ListRetentionss(Dictionary<string, object> query = null)
+        public static string ListRetentions(Dictionary<string, object> query = null)
         {
             return UriWithQuery("retentions", query);
         }

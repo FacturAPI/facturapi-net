@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class ReceiptWrapper : BaseWrapper
+    public class ReceiptWrapper : BaseWrapper, IReceiptWrapper
     {
         internal ReceiptWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
@@ -18,8 +18,8 @@ namespace Facturapi.Wrappers
         {
             using (var response = await client.GetAsync(Router.ListReceipts(query), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 var searchResult = JsonConvert.DeserializeObject<SearchResult<Receipt>>(resultString, this.jsonSettings);
                 return searchResult;
@@ -31,8 +31,8 @@ namespace Facturapi.Wrappers
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
             using (var response = await client.PostAsync(Router.CreateReceipt(), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var customer = JsonConvert.DeserializeObject<Receipt>(resultString, this.jsonSettings);
                 return customer;
             }
@@ -42,8 +42,8 @@ namespace Facturapi.Wrappers
         {
             using (var response = await client.GetAsync(Router.RetrieveReceipt(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var customer = JsonConvert.DeserializeObject<Receipt>(resultString, this.jsonSettings);
                 return customer;
             }
@@ -53,8 +53,8 @@ namespace Facturapi.Wrappers
         {
             using (var response = await client.DeleteAsync(Router.CancelReceipt(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var customer = JsonConvert.DeserializeObject<Receipt>(resultString, this.jsonSettings);
                 return customer;
             }
@@ -65,7 +65,7 @@ namespace Facturapi.Wrappers
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
             using (var response = await client.PostAsync(Router.InvoiceReceipt(id), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -74,7 +74,7 @@ namespace Facturapi.Wrappers
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
             using (var response = await client.PostAsync(Router.CreateGlobalInvoice(), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Facturapi.Wrappers
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
             using (var response = await client.PostAsync(Router.SendReceiptByEmail(id), content, cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -91,10 +91,10 @@ namespace Facturapi.Wrappers
         {
             using (var response = await client.GetAsync(Router.DownloadReceiptPdf(id), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var responseStream = await response.Content.ReadAsStreamAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                 var memory = new MemoryStream();
-                await responseStream.CopyToAsync(memory, 81920, cancellationToken);
+                await responseStream.CopyToAsync(memory, 81920, cancellationToken).ConfigureAwait(false);
                 memory.Position = 0;
                 return memory;
             }

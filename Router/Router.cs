@@ -8,20 +8,30 @@ namespace Facturapi
     {
         private static string UriWithQuery(string path, Dictionary<string, object> query = null)
         {
-            var url = path;
-            if (query != null)
-            {
-                return $"{path}?{DictionaryToQueryString(query)}";
-            }
-            else
+            if (query == null || query.Count == 0)
             {
                 return path;
             }
+
+            var queryString = DictionaryToQueryString(query);
+            if (String.IsNullOrEmpty(queryString))
+            {
+                return path;
+            }
+
+            return $"{path}?{queryString}";
         }
 
         private static string DictionaryToQueryString(Dictionary<string, object> dict)
         {
-            return String.Join("&", dict.Select(x => String.Format("{0}={1}", Uri.EscapeDataString(x.Key), Uri.EscapeDataString(x.Value.ToString()))));
+            return String.Join(
+                "&",
+                dict
+                    .Where(x => !String.IsNullOrEmpty(x.Key))
+                    .Select(x => String.Format(
+                        "{0}={1}",
+                        Uri.EscapeDataString(x.Key),
+                        Uri.EscapeDataString(x.Value?.ToString() ?? String.Empty))));
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class ToolWrapper : BaseWrapper
+    public class ToolWrapper : BaseWrapper, IToolWrapper
     {
         internal ToolWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
@@ -21,8 +21,8 @@ namespace Facturapi.Wrappers
                 }
             ), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 var result = JsonConvert.DeserializeObject<TaxIdValidation>(resultString, this.jsonSettings);
                 return result;
@@ -33,8 +33,8 @@ namespace Facturapi.Wrappers
         {
             using (var response = await client.GetAsync(Router.HealthCheck(), cancellationToken))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var result = JsonConvert.DeserializeObject<Dictionary<string, object>>(resultString, this.jsonSettings);
                 if (result != null && result.TryGetValue("ok", out var okValue))
                 {
