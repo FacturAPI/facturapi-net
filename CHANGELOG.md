@@ -42,6 +42,7 @@ ICustomerWrapper customers = client.Customer;
 - `Invoice.StampDraftAsync` and legacy `StampDraft` now co-exist; `StampDraft` is marked as obsolete.
 - Added initial `FacturapiTest` test project with regression coverage for query building and wrapper behavior.
 - Added `FacturapiClient.CreateWithCustomHttpClient(...)` for advanced scenarios where consumers need to provide their own `HttpClient` without changing the default constructor.
+- Added organization team-management endpoints to `Organization` / `IOrganizationWrapper`: access listing and retrieval, invite send/cancel/respond flows, role listing/templates/operations, role CRUD, and role reassignment for team members.
 
 ### Fixed
 
