@@ -19,13 +19,21 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x" # Adjust the .NET version as needed
+          dotnet-version: |
+            6.0.x
+            8.0.x
+            10.0.x
 
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: |
+          dotnet test FacturapiTest/FacturapiTest.csproj --framework net6.0 --configuration Release --no-build
+          dotnet test FacturapiTest/FacturapiTest.csproj --framework net8.0 --configuration Release --no-build
 
       - name: Pack
         run: dotnet pack --configuration Release --no-build --output ./nupkg

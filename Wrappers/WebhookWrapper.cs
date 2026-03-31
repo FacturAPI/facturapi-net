@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class WebhookWrapper : BaseWrapper
+    public class WebhookWrapper : BaseWrapper, IWebhookWrapper
     {
         internal WebhookWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
@@ -15,10 +15,10 @@ namespace Facturapi.Wrappers
 
         public async Task<SearchResult<Webhook>> ListAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.ListWebhooks(query), cancellationToken))
+            using (var response = await client.GetAsync(Router.ListWebhooks(query), cancellationToken).ConfigureAwait(false))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 var searchResult = JsonConvert.DeserializeObject<SearchResult<Webhook>>(resultString, this.jsonSettings);
                 return searchResult;
@@ -28,10 +28,10 @@ namespace Facturapi.Wrappers
         public async Task<Webhook> CreateAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.CreateWebhook(), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.CreateWebhook(), content, cancellationToken).ConfigureAwait(false))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var webhook = JsonConvert.DeserializeObject<Webhook>(resultString, this.jsonSettings);
                 return webhook;
             }
@@ -39,10 +39,10 @@ namespace Facturapi.Wrappers
 
         public async Task<Webhook> RetrieveAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.GetAsync(Router.RetrieveWebhook(id), cancellationToken))
+            using (var response = await client.GetAsync(Router.RetrieveWebhook(id), cancellationToken).ConfigureAwait(false))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var webhook = JsonConvert.DeserializeObject<Webhook>(resultString, this.jsonSettings);
                 return webhook;
             }
@@ -51,10 +51,10 @@ namespace Facturapi.Wrappers
         public async Task<Webhook> UpdateAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PutAsync(Router.UpdateWebhook(id), content, cancellationToken))
+            using (var response = await client.PutAsync(Router.UpdateWebhook(id), content, cancellationToken).ConfigureAwait(false))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var webhook = JsonConvert.DeserializeObject<Webhook>(resultString, this.jsonSettings);
                 return webhook;
             }
@@ -62,10 +62,10 @@ namespace Facturapi.Wrappers
 
         public async Task<Webhook> DeleteAsync(string id, CancellationToken cancellationToken = default)
         {
-            using (var response = await client.DeleteAsync(Router.DeleteWebhook(id), cancellationToken))
+            using (var response = await client.DeleteAsync(Router.DeleteWebhook(id), cancellationToken).ConfigureAwait(false))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var webhook = JsonConvert.DeserializeObject<Webhook>(resultString, this.jsonSettings);
                 return webhook;
             }
@@ -74,10 +74,10 @@ namespace Facturapi.Wrappers
         public async Task<Webhook> ValidateSignatureAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
-            using (var response = await client.PostAsync(Router.ValidateSignature(), content, cancellationToken))
+            using (var response = await client.PostAsync(Router.ValidateSignature(), content, cancellationToken).ConfigureAwait(false))
             {
-                await this.ThrowIfErrorAsync(response, cancellationToken);
-                var resultString = await response.Content.ReadAsStringAsync();
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var webhook = JsonConvert.DeserializeObject<Webhook>(resultString, this.jsonSettings);
                 return webhook;
             }

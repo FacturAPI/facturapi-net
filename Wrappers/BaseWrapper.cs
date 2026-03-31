@@ -79,7 +79,7 @@ namespace Facturapi.Wrappers
                 return;
             }
 
-            var resultString = await response.Content.ReadAsStringAsync();
+            var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             throw CreateException(resultString, response);
         }
     }

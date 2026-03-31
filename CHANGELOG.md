@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.0] - 2026-03-30
+
+### Migration Guide
+
+No changes are required if your code:
+- Instantiates `FacturapiClient` and calls wrapper methods directly (for example `await client.Invoice.CreateAsync(...)`).
+- Uses `var` when storing wrapper properties (for example `var invoices = client.Invoice;`).
+- Does not depend on concrete wrapper types in method signatures, fields, or tests.
+
+You need to update your code if you:
+- Type wrapper properties as concrete classes (`CustomerWrapper`, `InvoiceWrapper`, etc.).
+- Mock or inject concrete wrapper classes.
+- Expose concrete wrappers in your own interfaces or public APIs.
+
+Before (v5):
+```csharp
+CustomerWrapper customers = client.Customer;
+```
+
+After (v6):
+```csharp
+ICustomerWrapper customers = client.Customer;
+```
+
+### Breaking
+
+- `IFacturapiClient` now exposes wrapper interfaces instead of concrete wrapper classes:
+  - `ICustomerWrapper`, `IProductWrapper`, `IInvoiceWrapper`, `IOrganizationWrapper`, `IReceiptWrapper`, `IRetentionWrapper`, `ICatalogWrapper`, `ICartaporteCatalogWrapper`, `IToolWrapper`, `IWebhookWrapper`.
+- `FacturapiClient` properties now return those interface types as part of the public contract.
+- Dropped `net452` target framework support. The package now targets `netstandard2.0`, `net6.0`, and `net8.0`.
+
+### Added
+
+- New public interfaces for all wrapper surfaces to improve dependency injection and mocking in tests.
+- `Invoice.StampDraftAsync` and legacy `StampDraft` now co-exist; `StampDraft` is marked as obsolete.
+- Added initial `FacturapiTest` test project with regression coverage for query building and wrapper behavior.
+- Added `FacturapiClient.CreateWithCustomHttpClient(...)` for advanced scenarios where consumers need to provide their own `HttpClient` without changing the default constructor.
+- Added organization team-management endpoints to `Organization` / `IOrganizationWrapper`: access listing and retrieval, invite send/cancel/respond flows, role listing/templates/operations, role CRUD, and role reassignment for team members.
+
+### Fixed
+
+- `Retention.CancelAsync` is now consistent with the rest of the SDK: supports `CancellationToken`, disposes HTTP responses, and uses shared error handling (`ThrowIfErrorAsync`).
+- Query string generation now handles null values and empty query dictionaries safely.
+- README examples were corrected to align with the current async API surface and valid C# snippets.
+- Internal async calls in wrapper implementations now consistently use `ConfigureAwait(false)`.
+
 ## [5.1.0] - 2026-03-12
 
 ### Fix
