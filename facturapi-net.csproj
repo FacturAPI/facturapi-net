@@ -7,22 +7,27 @@
     <PackageId>Facturapi</PackageId>
     <Authors>Javier Rosas</Authors>
     <PackageIcon>icon.png</PackageIcon>
-    <Summary>Genera facturas electrónicas válidas en México (CFDI) lo más fácil posible. Obtén tus
-      API Keys creando una cuenta gratuita en https://www.facturapi.io</Summary>
-    <PackageTags>factura factura-electronica cfdi facturapi mexico conekta</PackageTags>
+    <Description>SDK oficial de Facturapi para .NET. Integra facturación electrónica en México (CFDI) de forma simple y obtén una perspectiva fiscal completa de tu operación, con búsquedas indexadas, envío de documentos y trazabilidad.</Description>
+    <Summary>SDK oficial de Facturapi para .NET para facturación electrónica en México (CFDI), envío de documentos, búsqueda y trazabilidad.</Summary>
+    <PackageTags>factura factura-electronica facturacion cfdi cfdi40 sat invoice invoicing facturapi mexico</PackageTags>
     <Title>Facturapi</Title>
     <Version>6.1.0</Version>
     <PackageVersion>$(Version)</PackageVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>https://github.com/FacturAPI/facturapi-net/blob/main/CHANGELOG.md</PackageReleaseNotes>
     <Owners>Facturapi</Owners>
     <ApplicationIcon>facturapi.ico</ApplicationIcon>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Company>Facturación Espacial</Company>
-    <Copyright>Facturación Espacial © 2025</Copyright>
+    <Copyright>Facturación Espacial © 2026</Copyright>
     <PackageProjectUrl>https://www.facturapi.io</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/facturapi/facturapi-net</RepositoryUrl>
