@@ -28,6 +28,7 @@ namespace Facturapi.Wrappers
         Task<SeriesGroup> CreateSeriesAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default);
         Task<SeriesGroup> UpdateSeriesAsync(string id, string seriesName, Dictionary<string, object> data, CancellationToken cancellationToken = default);
         Task<SeriesGroup> DeleteSeriesAsync(string id, string seriesName, CancellationToken cancellationToken = default);
+        Task<Organization> UpdateDefaultSeriesAsync(string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default);
         Task<List<LiveApiKey>> DeleteLiveApiKeyAsync(string id, string apiKeyId, CancellationToken cancellationToken = default);
         Task<Organization> UpdateSelfInvoiceSettingsAsync(string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default);
         Task<List<OrganizationUserAccess>> ListTeamAccessAsync(string organizationId, CancellationToken cancellationToken = default);

@@ -110,6 +110,11 @@ namespace Facturapi
         {
             return $"{RetrieveOrganization(id)}/series-group/{series_name}";
         }
+
+        public static string UpdateDefaultSeries(string organizationId)
+        {
+            return $"{RetrieveOrganization(organizationId)}/series-group/default-series";
+        }
         
         public static string UpdateSelfInvoiceSettings(string organizationId)
         {
