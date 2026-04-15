@@ -265,6 +265,18 @@ namespace Facturapi.Wrappers
                 return series;
             }
         }
+
+        public async Task<Organization> UpdateDefaultSeriesAsync(string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PutAsync(Router.UpdateDefaultSeries(organizationId), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var organization = JsonConvert.DeserializeObject<Organization>(resultString, this.jsonSettings);
+                return organization;
+            }
+        }
         
         public async Task<List<LiveApiKey>> DeleteLiveApiKeyAsync(string id, string apiKeyId, CancellationToken cancellationToken = default)
         {
