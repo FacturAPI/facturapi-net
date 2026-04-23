@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.3.0] - 2026-04-23
+### Added
+- Added Carta Porte constants and description catalogs: customs regimes, transport keys, station types, SCT permits, COFEPRIS sectors, pharmaceutical forms, special transport conditions, material types, customs document types, transport unit/figure types, Istmo records, loading keys, maritime configuration, rail traffic, container types, maritime container types, rail car/service types, transfer motives, incoterms, and customs units.
+
 ## [6.2.0] - 2026-04-13
 ### Added
 - Added method `facturapi.Organization.UpdateDefaultSeriesAsync` for updating default series
