@@ -13,6 +13,8 @@ namespace Facturapi.Wrappers
         Task<Receipt> CancelAsync(string id, CancellationToken cancellationToken = default);
         Task InvoiceAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default);
         Task CreateGlobalInvoiceAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default);
+        Task ToInvoiceAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default);
+        Task<Stream> PreviewToInvoicePdfAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default);
         Task SendByEmailAsync(string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default);
         Task<Stream> DownloadPdfAsync(string id, CancellationToken cancellationToken = default);
     }
