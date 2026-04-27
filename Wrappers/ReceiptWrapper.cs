@@ -78,6 +78,29 @@ namespace Facturapi.Wrappers
             }
         }
 
+        public async Task ToInvoiceAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.MultiInvoice(), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        public async Task<Stream> PreviewToInvoicePdfAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.PreviewMultiInvoicePdf(), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                var memory = new MemoryStream();
+                await responseStream.CopyToAsync(memory, 81920, cancellationToken).ConfigureAwait(false);
+                memory.Position = 0;
+                return memory;
+            }
+        }
+
         public async Task SendByEmailAsync(string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))

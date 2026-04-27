@@ -38,6 +38,16 @@ namespace Facturapi
             return $"receipts/global-invoice";
         }
 
+        public static string MultiInvoice()
+        {
+            return "receipts/multi-invoice";
+        }
+
+        public static string PreviewMultiInvoicePdf()
+        {
+            return "receipts/multi-invoice/preview/pdf";
+        }
+
         public static string DownloadReceiptPdf(string id)
         {
             return $"receipts/{id}/pdf";
