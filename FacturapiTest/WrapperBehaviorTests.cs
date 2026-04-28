@@ -55,6 +55,57 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task ReceiptToInvoiceAsync_UsesMultiInvoiceRoute()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/receipts/multi-invoice", request.RequestUri.PathAndQuery);
+                Assert.NotNull(request.Content);
+                var body = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Assert.Contains("\"keys\":[\"rcp_1\",\"rcp_2\"]", body);
+                return JsonResponse("{\"id\":\"inv_123\"}");
+            });
+
+            var wrapper = new ReceiptWrapper("test_key", "v2", CreateHttpClient(handler));
+            await wrapper.ToInvoiceAsync(new Dictionary<string, object>
+            {
+                ["keys"] = new[] { "rcp_1", "rcp_2" }
+            });
+        }
+
+        [Fact]
+        public async Task ReceiptPreviewToInvoicePdfAsync_UsesPreviewPdfRoute()
+        {
+            var payload = Encoding.UTF8.GetBytes("pdf-bytes");
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/receipts/multi-invoice/preview/pdf", request.RequestUri.PathAndQuery);
+                Assert.NotNull(request.Content);
+                var body = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Assert.Contains("\"keys\":[\"rcp_1\"]", body);
+                return new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new ByteArrayContent(payload)
+                };
+            });
+
+            var wrapper = new ReceiptWrapper("test_key", "v2", CreateHttpClient(handler));
+            using var stream = await wrapper.PreviewToInvoicePdfAsync(new Dictionary<string, object>
+            {
+                ["keys"] = new[] { "rcp_1" }
+            });
+
+            Assert.Equal(0, stream.Position);
+            using var reader = new StreamReader(stream, Encoding.UTF8, false, 1024, leaveOpen: true);
+            var text = await reader.ReadToEndAsync();
+            Assert.Equal("pdf-bytes", text);
+        }
+
+        [Fact]
         public async Task OrganizationDeleteSeriesAsync_UsesDeleteSeriesRoute()
         {
             var handler = new RecordingHandler((request, cancellationToken) =>

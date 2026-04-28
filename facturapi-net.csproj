@@ -11,7 +11,7 @@
     <Summary>SDK oficial de Facturapi para .NET para facturación electrónica en México (CFDI), envío de documentos, búsqueda y trazabilidad.</Summary>
     <PackageTags>factura factura-electronica facturacion cfdi cfdi40 sat invoice invoicing facturapi mexico</PackageTags>
     <Title>Facturapi</Title>
-    <Version>6.3.0</Version>
+    <Version>6.4.0</Version>
     <PackageVersion>$(Version)</PackageVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
