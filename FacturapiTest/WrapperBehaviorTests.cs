@@ -282,6 +282,37 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task ErrorMapping_ExposesApiErrorFieldsAndHeaders()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                var response = new HttpResponseMessage((HttpStatusCode)429)
+                {
+                    Content = new StringContent(
+                        "{\"message\":\"too many requests\",\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"path\":\"date\",\"location\":\"query\",\"errors\":[{\"code\":\"required\",\"message\":\"date is required\",\"path\":\"date\",\"location\":\"query\"}]}",
+                        Encoding.UTF8,
+                        "application/json")
+                };
+                response.Headers.Add("Retry-After", "3");
+                response.Headers.Add("x-facturapi-log-id", "log_123");
+                return Task.FromResult(response);
+            });
+
+            var wrapper = new CustomerWrapper("test_key", "v2", CreateHttpClient(handler));
+            var exception = await Assert.ThrowsAsync<FacturapiException>(() => wrapper.ListAsync());
+
+            Assert.Equal(429, exception.Status);
+            Assert.Equal("too many requests", exception.Message);
+            Assert.Equal("RATE_LIMIT_EXCEEDED", exception.Code);
+            Assert.Equal("date", exception.Path);
+            Assert.Equal("query", exception.Location);
+            Assert.Equal("log_123", exception.LogId);
+            Assert.Equal("required", exception.Errors[0]["code"]?.ToString());
+            Assert.Equal("3", exception.Headers["retry-after"]);
+            Assert.Equal("log_123", exception.Headers["x-facturapi-log-id"]);
+        }
+
+        [Fact]
         public async Task ErrorMapping_UsesStatusFromFloat()
         {
             var handler = new RecordingHandler((request, cancellationToken) =>
