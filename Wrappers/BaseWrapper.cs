@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,7 +68,38 @@ namespace Facturapi.Wrappers
                 status = (int)response.StatusCode;
             }
 
-            return new FacturapiException(message, status);
+            var headers = NormalizeResponseHeaders(response);
+            return new FacturapiException(
+                message,
+                status,
+                error?["code"]?.Type == JTokenType.String ? error["code"]?.ToString() : null,
+                error?["path"]?.Type == JTokenType.String ? error["path"]?.ToString() : null,
+                error?["location"]?.Type == JTokenType.String ? error["location"]?.ToString() : null,
+                error?["errors"] as JArray,
+                headers.TryGetValue("x-facturapi-log-id", out var logId) ? logId : null,
+                headers
+            );
+        }
+
+        private static IReadOnlyDictionary<string, string> NormalizeResponseHeaders(HttpResponseMessage response)
+        {
+            var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (response == null)
+            {
+                return headers;
+            }
+            foreach (var header in response.Headers)
+            {
+                headers[header.Key.ToLowerInvariant()] = string.Join(", ", header.Value);
+            }
+            if (response.Content != null)
+            {
+                foreach (var header in response.Content.Headers)
+                {
+                    headers[header.Key.ToLowerInvariant()] = string.Join(", ", header.Value);
+                }
+            }
+            return headers;
         }
 
         protected async Task ThrowIfErrorAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
