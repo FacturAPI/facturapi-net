@@ -28,6 +28,21 @@ namespace Facturapi
             return UriWithQuery(RetrieveRetention(id), query);
         }
 
+        public static string UpdateDraftRetention(string id)
+        {
+            return RetrieveRetention(id);
+        }
+
+        public static string StampDraftRetention(string id, Dictionary<string, object> query = null)
+        {
+            return UriWithQuery($"retentions/{id}/stamp", query);
+        }
+
+        public static string CopyRetention(string id)
+        {
+            return $"retentions/{id}/copy";
+        }
+
         public static string DownloadRetention(string id, string format)
         {
             return $"retentions/{id}/{format}";
