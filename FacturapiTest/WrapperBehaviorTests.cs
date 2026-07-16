@@ -289,7 +289,7 @@ namespace FacturapiTest
                 var response = new HttpResponseMessage((HttpStatusCode)429)
                 {
                     Content = new StringContent(
-                        "{\"message\":\"too many requests\",\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"path\":\"date\",\"location\":\"query\",\"errors\":[{\"code\":\"required\",\"message\":\"date is required\",\"path\":\"date\",\"location\":\"query\"}]}",
+                        "{\"message\":\"too many requests\",\"status\":429,\"code\":\"rate_limit_exceeded\",\"path\":\"date\",\"location\":\"query\",\"errors\":[{\"code\":\"required\",\"message\":\"date is required\",\"path\":\"date\",\"location\":\"query\"}]}",
                         Encoding.UTF8,
                         "application/json")
                 };
@@ -303,7 +303,7 @@ namespace FacturapiTest
 
             Assert.Equal(429, exception.Status);
             Assert.Equal("too many requests", exception.Message);
-            Assert.Equal("RATE_LIMIT_EXCEEDED", exception.Code);
+            Assert.Equal(ApiErrorCodes.RequestErrorCode.RATE_LIMIT_EXCEEDED, exception.Code);
             Assert.Equal("date", exception.Path);
             Assert.Equal("query", exception.Location);
             Assert.Equal("log_123", exception.LogId);
