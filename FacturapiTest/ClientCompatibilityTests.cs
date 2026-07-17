@@ -53,6 +53,32 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task InvoiceRetrieveAsync_DeserializesPropertyTaxAccounts()
+        {
+            var handler = new StubHttpMessageHandler((request, cancellationToken) =>
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(
+                        "{\"id\":\"inv_123\",\"items\":[{\"property_tax_account\":[\"0102030405\"]}]}",
+                        Encoding.UTF8,
+                        "application/json")
+                };
+                return Task.FromResult(response);
+            });
+
+            var httpClient = new HttpClient(handler)
+            {
+                BaseAddress = new Uri("https://www.facturapi.io/v2/")
+            };
+            var wrapper = new InvoiceWrapper("test_key", "v2", httpClient);
+
+            var invoice = await wrapper.RetrieveAsync("inv_123");
+
+            Assert.Equal(new[] { "0102030405" }, invoice.Items[0].PropertyTaxAccount);
+        }
+
+        [Fact]
         public async Task InvoiceStampDraftAsync_AndLegacyMethod_BothWork()
         {
             var handler = new StubHttpMessageHandler((request, cancellationToken) =>
