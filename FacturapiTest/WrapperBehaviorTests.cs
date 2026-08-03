@@ -264,6 +264,108 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task RetentionListAsync_CanFilterDrafts()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/retentions?status=draft", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"data\":[]}"));
+            });
+
+            var wrapper = new RetentionWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new Dictionary<string, object> { ["status"] = "draft" });
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Data);
+        }
+
+        [Fact]
+        public async Task RetentionCreateAsync_CanCreateDraft()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/retentions", request.RequestUri.PathAndQuery);
+                Assert.NotNull(request.Content);
+                var body = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Assert.Contains("\"status\":\"draft\"", body);
+                Assert.Contains("\"customer\":null", body);
+
+                return JsonResponse("{\"id\":\"ret_123\"}");
+            });
+
+            var wrapper = new RetentionWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.CreateAsync(new Dictionary<string, object>
+            {
+                ["status"] = "draft",
+                ["customer"] = null!
+            });
+
+            Assert.Equal("ret_123", result.Id);
+        }
+
+        [Fact]
+        public async Task RetentionUpdateDraftAsync_UsesRetentionRoute()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Put, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/retentions/ret_123", request.RequestUri.PathAndQuery);
+                Assert.NotNull(request.Content);
+                var body = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Assert.Contains("\"folio_int\":\"R-2026-001\"", body);
+
+                return JsonResponse("{\"id\":\"ret_123\"}");
+            });
+
+            var wrapper = new RetentionWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.UpdateDraftAsync("ret_123", new Dictionary<string, object>
+            {
+                ["folio_int"] = "R-2026-001"
+            });
+
+            Assert.Equal("ret_123", result.Id);
+        }
+
+        [Fact]
+        public async Task RetentionCopyToDraftAsync_UsesCopyRoute()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/retentions/ret_123/copy", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"id\":\"ret_copy\"}"));
+            });
+
+            var wrapper = new RetentionWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.CopyToDraftAsync("ret_123");
+
+            Assert.Equal("ret_copy", result.Id);
+        }
+
+        [Fact]
+        public async Task RetentionStampDraftAsync_UsesStampRoute()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/retentions/ret_123/stamp", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"id\":\"ret_123\"}"));
+            });
+
+            var wrapper = new RetentionWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.StampDraftAsync("ret_123");
+
+            Assert.Equal("ret_123", result.Id);
+        }
+
+        [Fact]
         public async Task ErrorMapping_UsesStatusFromString()
         {
             var handler = new RecordingHandler((request, cancellationToken) =>

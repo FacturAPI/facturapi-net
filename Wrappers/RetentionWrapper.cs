@@ -69,6 +69,42 @@ namespace Facturapi.Wrappers
             }
         }
 
+        public async Task<Invoice> UpdateDraftAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PutAsync(Router.UpdateDraftRetention(id), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var retention = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+                return retention;
+            }
+        }
+
+        public async Task<Invoice> StampDraftAsync(string id, Dictionary<string, object> options = null, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent("", Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.StampDraftRetention(id, options), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var retention = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+                return retention;
+            }
+        }
+
+        public async Task<Invoice> CopyToDraftAsync(string id, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent("", Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.CopyRetention(id), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var retention = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
+                return retention;
+            }
+        }
+
         private async Task<Stream> DownloadAsync(string id, string format, CancellationToken cancellationToken)
         {
             using (var response = await client.GetAsync(Router.DownloadRetention(id, format), cancellationToken).ConfigureAwait(false))
