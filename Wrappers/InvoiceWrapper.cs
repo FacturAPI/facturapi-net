@@ -188,5 +188,49 @@ namespace Facturapi.Wrappers
                 return memory;
             }
         }
+
+        public async Task<Dictionary<string, object>> CreateZipRequestAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default)
+        {
+            using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+            using (var response = await client.PostAsync(Router.CreateZipRequest(), content, cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<Dictionary<string, object>>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<SearchResult<Dictionary<string, object>>> ListZipRequestsAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.ListZipRequests(query), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<SearchResult<Dictionary<string, object>>>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<Dictionary<string, object>> RetrieveZipRequestAsync(string id, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.RetrieveZipRequest(id), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<Dictionary<string, object>>(resultString, this.jsonSettings);
+            }
+        }
+
+        public async Task<Stream> DownloadZipRequestAsync(string id, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.DownloadZipRequest(id), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                var memory = new MemoryStream();
+                await responseStream.CopyToAsync(memory, 81920, cancellationToken).ConfigureAwait(false);
+                memory.Position = 0;
+                return memory;
+            }
+        }
     }
 }
