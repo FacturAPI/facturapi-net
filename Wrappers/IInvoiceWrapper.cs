@@ -25,9 +25,5 @@ namespace Facturapi.Wrappers
         Task<Invoice> StampDraft(string id, Dictionary<string, object> options = null, CancellationToken cancellationToken = default);
         Task<Invoice> CopyToDraftAsync(string id, CancellationToken cancellationToken = default);
         Task<Stream> PreviewPdfAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default);
-        Task<Dictionary<string, object>> CreateZipRequestAsync(Dictionary<string, object> data, CancellationToken cancellationToken = default);
-        Task<SearchResult<Dictionary<string, object>>> ListZipRequestsAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default);
-        Task<Dictionary<string, object>> RetrieveZipRequestAsync(string id, CancellationToken cancellationToken = default);
-        Task<Stream> DownloadZipRequestAsync(string id, CancellationToken cancellationToken = default);
     }
 }

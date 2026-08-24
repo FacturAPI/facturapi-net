@@ -39,6 +39,8 @@ Después (v6):
 ICustomerWrapper customers = client.Customer;
 ```
 
+Las interfaces de wrappers se mantienen estables para pruebas y mocks. Las capacidades opcionales se exponen en interfaces adicionales; por ejemplo, un mock que cubra solicitudes ZIP debe implementar `IInvoiceWrapper` e `IInvoiceZipRequestWrapper`.
+
 ## Instalación
 
 Puedes instalar Facturapi en tu proyecto usando [Nuget](https://www.nuget.org/)

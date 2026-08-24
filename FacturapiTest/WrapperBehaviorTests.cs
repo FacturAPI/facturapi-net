@@ -505,7 +505,7 @@ namespace FacturapiTest
                 return JsonResponse("{\"id\":\"zip_1\",\"status\":\"pending\"}");
             });
 
-            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            IInvoiceWrapper wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
             var result = await wrapper.CreateZipRequestAsync(new Dictionary<string, object>
             {
                 ["year"] = 2025,

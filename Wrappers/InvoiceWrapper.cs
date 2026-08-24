@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class InvoiceWrapper : BaseWrapper, IInvoiceWrapper
+    public class InvoiceWrapper : BaseWrapper, IInvoiceWrapper, IInvoiceZipRequestWrapper
     {
         internal InvoiceWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
