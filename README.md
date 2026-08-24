@@ -39,10 +39,6 @@ Después (v6):
 ICustomerWrapper customers = client.Customer;
 ```
 
-### Contrato de interfaces
-
-`IFacturapiClient` y las interfaces `I*Wrapper` son contratos públicos para mocks e inyección. Agregar una capacidad de la API al wrapper correspondiente se considera una feature compatible y se publica en una versión menor. Las implementaciones manuales de esas interfaces deben incorporar los nuevos miembros; los integradores que no las implementan directamente no requieren cambios.
-
 ## Instalación
 
 Puedes instalar Facturapi en tu proyecto usando [Nuget](https://www.nuget.org/)
