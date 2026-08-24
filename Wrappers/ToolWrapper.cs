@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class ToolWrapper : BaseWrapper, IToolWrapper
+    public class ToolWrapper : BaseWrapper
     {
         internal ToolWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {

@@ -14,6 +14,23 @@ namespace FacturapiTest
     public class ClientCompatibilityTests
     {
         [Fact]
+        public void Client_ExposesConcreteResourceWrappers()
+        {
+            using var client = new FacturapiClient("test_key");
+
+            Assert.IsType<CustomerWrapper>(client.Customer);
+            Assert.IsType<ProductWrapper>(client.Product);
+            Assert.IsType<InvoiceWrapper>(client.Invoice);
+            Assert.IsType<OrganizationWrapper>(client.Organization);
+            Assert.IsType<ReceiptWrapper>(client.Receipt);
+            Assert.IsType<RetentionWrapper>(client.Retention);
+            Assert.IsType<CatalogWrapper>(client.Catalog);
+            Assert.IsType<CartaporteCatalogWrapper>(client.CartaporteCatalog);
+            Assert.IsType<ToolWrapper>(client.Tool);
+            Assert.IsType<WebhookWrapper>(client.Webhook);
+        }
+
+        [Fact]
         public void Router_ListCustomers_AllowsNullQueryValues()
         {
             var query = new Dictionary<string, object>
