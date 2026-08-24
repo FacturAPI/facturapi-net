@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class RetentionWrapper : BaseWrapper
+    public class RetentionWrapper : BaseWrapper, IRetentionWrapper
     {
         internal RetentionWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {

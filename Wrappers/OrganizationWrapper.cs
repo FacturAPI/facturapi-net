@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class OrganizationWrapper : BaseWrapper
+    public class OrganizationWrapper : BaseWrapper, IOrganizationWrapper
     {
         internal OrganizationWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {

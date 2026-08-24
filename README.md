@@ -11,6 +11,36 @@ Facturapi ayuda a generar facturas electrónicas válidas en México (CFDI) de l
 
 Si alguna vez has usado [Stripe](https://stripe.com) o [Conekta](https://conekta.io), verás que Facturapi es igual de sencillo de entender e integrar a tu aplicación.
 
+## Migración a v6
+
+### ¿Cuándo NO necesitas cambiar nada?
+
+No necesitas actualizar tu código si:
+- Creas `FacturapiClient` y llamas métodos directamente (por ejemplo `await client.Invoice.CreateAsync(...)`).
+- Usas `var` al guardar wrappers (por ejemplo `var invoices = client.Invoice;`).
+- No dependes de tipos concretos de wrappers en firmas, propiedades o pruebas.
+
+### ¿Cuándo SÍ necesitas actualizar?
+
+Debes ajustar tu código si:
+- Declaras wrappers como clases concretas (`CustomerWrapper`, `InvoiceWrapper`, etc.).
+- Mockeas wrappers concretos en pruebas.
+- Expones wrappers concretos en tus propias interfaces o APIs públicas.
+
+Antes (v5):
+
+```csharp
+CustomerWrapper customers = client.Customer;
+```
+
+Después (v6):
+
+```csharp
+ICustomerWrapper customers = client.Customer;
+```
+
+Las interfaces de wrappers se mantienen estables para pruebas y mocks. Las capacidades opcionales se exponen en interfaces adicionales; por ejemplo, un mock que cubra solicitudes ZIP debe implementar `IInvoiceWrapper` e `IInvoiceZipRequestWrapper`.
+
 ## Instalación
 
 Puedes instalar Facturapi en tu proyecto usando [Nuget](https://www.nuget.org/)
@@ -48,8 +78,6 @@ using Facturapi;
 var customHttpClient = new HttpClient();
 var facturapi = FacturapiClient.CreateWithCustomHttpClient("TU_API_KEY", customHttpClient);
 ```
-
-Para pruebas, usa este factory con un `HttpMessageHandler` propio que simule las respuestas de la API. Si tu aplicación necesita abstraer Facturapi, define una interfaz en tu propia capa de integración.
 
 ### Métodos asíncronos (async, await)
 

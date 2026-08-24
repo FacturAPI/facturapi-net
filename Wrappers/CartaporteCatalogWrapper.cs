@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class CartaporteCatalogWrapper : BaseWrapper
+    public class CartaporteCatalogWrapper : BaseWrapper, ICartaporteCatalogWrapper
     {
         internal CartaporteCatalogWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {

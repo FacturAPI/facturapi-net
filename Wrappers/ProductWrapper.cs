@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class ProductWrapper : BaseWrapper
+    public class ProductWrapper : BaseWrapper, IProductWrapper
     {
         internal ProductWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {

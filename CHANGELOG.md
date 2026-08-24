@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added invoice ZIP request methods: `CreateZipRequestAsync`, `ListZipRequestsAsync`, `RetrieveZipRequestAsync`, and `DownloadZipRequestAsync`.
 
-### Changed
-- Expose concrete resource wrappers from `FacturapiClient`; use an injected `HttpClient` or an application-owned abstraction for tests.
+### Fixed
+- Keep `IInvoiceWrapper` stable when adding ZIP request methods.
 
 ## [6.6.0] - 2026-07-01
 ### Added

@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public class WebhookWrapper : BaseWrapper
+    public class WebhookWrapper : BaseWrapper, IWebhookWrapper
     {
         internal WebhookWrapper(string apiKey, string apiVersion, HttpClient httpClient) : base(apiKey, apiVersion, httpClient)
         {
