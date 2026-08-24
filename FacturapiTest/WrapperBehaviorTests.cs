@@ -524,7 +524,11 @@ namespace FacturapiTest
             {
                 Assert.Equal(HttpMethod.Get, request.Method);
                 Assert.NotNull(request.RequestUri);
-                Assert.Equal("/v2/invoices/zip-requests?year=2025&month=3&status=finished&limit=20&page=1", request.RequestUri.PathAndQuery);
+                Assert.Equal("/v2/invoices/zip-requests", request.RequestUri.AbsolutePath);
+                Assert.Equal(
+                    new[] { "limit=20", "month=3", "page=1", "status=finished", "year=2025" },
+                    request.RequestUri.Query.TrimStart('?').Split('&').OrderBy(parameter => parameter)
+                );
                 return Task.FromResult(JsonResponse("{\"page\":1,\"total_pages\":1,\"total_results\":1,\"data\":[{\"id\":\"zip_1\"}]}"));
             });
 
