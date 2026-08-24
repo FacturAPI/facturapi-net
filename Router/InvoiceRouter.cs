@@ -67,5 +67,25 @@ namespace Facturapi
         {
             return "invoices/preview/pdf";
         }
+
+        public static string ListZipRequests(Dictionary<string, object> query = null)
+        {
+            return UriWithQuery("invoices/zip-requests", query);
+        }
+
+        public static string CreateZipRequest()
+        {
+            return "invoices/zip-requests";
+        }
+
+        public static string RetrieveZipRequest(string id)
+        {
+            return $"invoices/zip-requests/{id}";
+        }
+
+        public static string DownloadZipRequest(string id)
+        {
+            return $"invoices/zip-requests/{id}/zip";
+        }
     }
 }

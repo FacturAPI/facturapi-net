@@ -490,6 +490,104 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task InvoiceCreateZipRequestAsync_UsesZipRequestsPostRoute()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/invoices/zip-requests", request.RequestUri.PathAndQuery);
+                Assert.NotNull(request.Content);
+                var body = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Assert.Contains("\"year\":2025", body);
+                Assert.Contains("\"issuer_type\":\"issuing\"", body);
+                Assert.Contains("\"invoice_types\":[\"I\",\"E\"]", body);
+                return JsonResponse("{\"id\":\"zip_1\",\"status\":\"pending\"}");
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.CreateZipRequestAsync(new Dictionary<string, object>
+            {
+                ["year"] = 2025,
+                ["month"] = 3,
+                ["issuer_type"] = "issuing",
+                ["invoice_types"] = new[] { "I", "E" }
+            });
+
+            Assert.Equal("zip_1", result["id"]?.ToString());
+        }
+
+        [Fact]
+        public async Task InvoiceListZipRequestsAsync_UsesZipRequestsQueryRoute()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/invoices/zip-requests", request.RequestUri.AbsolutePath);
+                Assert.Equal(
+                    new[] { "limit=20", "month=3", "page=1", "status=finished", "year=2025" },
+                    request.RequestUri.Query.TrimStart('?').Split('&').OrderBy(parameter => parameter)
+                );
+                return Task.FromResult(JsonResponse("{\"page\":1,\"total_pages\":1,\"total_results\":1,\"data\":[{\"id\":\"zip_1\"}]}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListZipRequestsAsync(new Dictionary<string, object>
+            {
+                ["year"] = 2025,
+                ["month"] = 3,
+                ["status"] = "finished",
+                ["limit"] = 20,
+                ["page"] = 1
+            });
+
+            Assert.Single(result.Data);
+            Assert.Equal("zip_1", result.Data[0]["id"]?.ToString());
+        }
+
+        [Fact]
+        public async Task InvoiceRetrieveZipRequestAsync_UsesZipRequestRoute()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/invoices/zip-requests/zip_1", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"id\":\"zip_1\",\"status\":\"finished\"}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.RetrieveZipRequestAsync("zip_1");
+
+            Assert.Equal("finished", result["status"]?.ToString());
+        }
+
+        [Fact]
+        public async Task InvoiceDownloadZipRequestAsync_ReturnsSeekableStreamAtPositionZero()
+        {
+            var payload = Encoding.UTF8.GetBytes("zip-request-content");
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/invoices/zip-requests/zip_1/zip", request.RequestUri.PathAndQuery);
+                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new ByteArrayContent(payload)
+                });
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            using var stream = await wrapper.DownloadZipRequestAsync("zip_1");
+
+            Assert.Equal(0, stream.Position);
+            using var reader = new StreamReader(stream, Encoding.UTF8, false, 1024, leaveOpen: true);
+            var text = await reader.ReadToEndAsync();
+            Assert.Equal("zip-request-content", text);
+        }
+
+        [Fact]
         public async Task RetentionDownloadZipAsync_ReturnsSeekableStreamAtPositionZero()
         {
             var payload = Encoding.UTF8.GetBytes("zip-content");
