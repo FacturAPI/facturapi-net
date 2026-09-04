@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -47,6 +47,17 @@ namespace Facturapi.Wrappers
                 var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 var invoice = JsonConvert.DeserializeObject<Invoice>(resultString, this.jsonSettings);
                 return invoice;
+            }
+        }
+
+        public async Task<PaymentSummary> GetPaymentSummaryAsync(string id, double amount, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.RetrieveInvoicePaymentSummary(id, amount), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var summary = JsonConvert.DeserializeObject<PaymentSummary>(resultString, this.jsonSettings);
+                return summary;
             }
         }
 
