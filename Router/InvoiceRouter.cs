@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +16,14 @@ namespace Facturapi
         public static string RetrieveInvoice(string id)
         {
             return $"invoices/{id}";
+        }
+
+        public static string RetrieveInvoicePaymentSummary(string id, double amount)
+        {
+            return UriWithQuery($"{RetrieveInvoice(id)}/payment-summary", new Dictionary<string, object>
+            {
+                ["amount"] = amount
+            });
         }
 
         public static string CreateInvoice(Dictionary<string, object> query = null)

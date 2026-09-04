@@ -38,6 +38,26 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task InvoiceGetPaymentSummaryAsync_UsesPaymentSummaryRoute()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/invoices/inv_123/payment-summary?amount=58", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"uuid\":\"6CF6CE33-1BD2-4F88-A443-33013C069169\",\"installment\":1,\"last_balance\":100,\"total\":100,\"currency\":\"MXN\",\"amount\":58,\"taxes\":[{\"base\":50,\"rate\":0.16,\"type\":\"IVA\",\"factor\":\"Tasa\",\"withholding\":false}]}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.GetPaymentSummaryAsync("inv_123", 58);
+
+            Assert.Equal("6CF6CE33-1BD2-4F88-A443-33013C069169", result.Uuid);
+            Assert.Equal(1, result.Installment);
+            Assert.Equal(50m, result.Taxes[0].Base);
+            Assert.False(result.Taxes[0].Withholding);
+        }
+
+        [Fact]
         public async Task ReceiptCancelAsync_UsesReceiptDeleteRoute()
         {
             var handler = new RecordingHandler((request, cancellationToken) =>

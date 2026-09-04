@@ -11,6 +11,7 @@ namespace Facturapi.Wrappers
         Task<SearchResult<Invoice>> ListAsync(Dictionary<string, object> query = null, CancellationToken cancellationToken = default);
         Task<Invoice> CreateAsync(Dictionary<string, object> data, Dictionary<string, object> options = null, CancellationToken cancellationToken = default);
         Task<Invoice> RetrieveAsync(string id, CancellationToken cancellationToken = default);
+        Task<PaymentSummary> GetPaymentSummaryAsync(string id, double amount, CancellationToken cancellationToken = default);
         Task<Invoice> CancelAsync(string id, Dictionary<string, object> query = null, CancellationToken cancellationToken = default);
         Task SendByEmailAsync(string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default);
         Task<Stream> DownloadZipAsync(string id, CancellationToken cancellationToken = default);
