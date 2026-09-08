@@ -110,6 +110,7 @@ namespace FacturapiTest
         {
             var handler = new StubHttpMessageHandler((request, cancellationToken) =>
             {
+                Assert.Equal("en-US", Assert.Single(request.Headers.AcceptLanguage).Value);
                 var response = new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent("{\"ok\":true}", Encoding.UTF8, "application/json")
@@ -122,6 +123,7 @@ namespace FacturapiTest
                 BaseAddress = new Uri("https://www.facturapi.io/v2/")
             };
 
+            injectedHttpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US");
             var client = FacturapiClient.CreateWithCustomHttpClient("test_key", injectedHttpClient, "v2");
 
             var healthy = await client.Tool.HealthCheckAsync();

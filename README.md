@@ -183,6 +183,22 @@ await zipStream.CopyToAsync(file);
 await facturapi.Invoice.SendByEmailAsync(invoice.Id);
 ```
 
+## Idioma de los errores de la API
+
+En API V2 puedes solicitar mensajes de error en inglés con `Accept-Language`. Usa la configuración existente del cliente:
+
+```csharp
+using Facturapi;
+using System.Net.Http;
+
+using var httpClient = new HttpClient();
+httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en");
+using var facturapi = FacturapiClient.CreateWithCustomHttpClient(
+    "YOUR_API_KEY", httpClient);
+```
+
+Usa `es` para español. También se aceptan variantes como `en-US` y preferencias como `en;q=0.9, es;q=0.5`. Sin el header o sin un idioma compatible, la API usa español. La preferencia se aplica a todas las solicitudes de esta instancia; usa instancias separadas si necesitas varios idiomas. Los códigos no cambian y los mensajes externos SAT/PAC y los mensajes legacy no catalogados conservan su idioma original. La localización depende del soporte de API V2 en el servidor; no traduce errores locales del SDK.
+
 ## Documentación
 
 Hay muchas más cosas que puedes hacer con esta librería: listar, consultar, actualizar y eliminar clientes, productos y facturas.
