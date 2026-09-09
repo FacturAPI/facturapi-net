@@ -354,6 +354,56 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task InvoiceListAsync_LaterCursorPageOmitsPageTotals()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/invoices?pagination=cursor&after=next-1", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"data\":[{\"id\":\"inv_x\"}],\"next_cursor\":\"next-2\",\"previous_cursor\":\"next-1\"}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new Dictionary<string, object>
+            {
+                ["pagination"] = "cursor",
+                ["after"] = "next-1"
+            });
+
+            Assert.NotNull(result);
+            Assert.Null(result.Page);
+            Assert.Null(result.TotalPages);
+            Assert.Null(result.TotalResults);
+            Assert.Equal("next-2", result.NextCursor);
+            Assert.Equal("next-1", result.PreviousCursor);
+            Assert.Single(result.Data);
+        }
+
+        [Fact]
+        public async Task InvoiceListAsync_SerializesArrayParamsWithBracketKeys()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal(
+                    "/v2/invoices?status%5B%5D=valid&status%5B%5D=canceled",
+                    request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"data\":[]}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new Dictionary<string, object>
+            {
+                ["status"] = new List<string> { "valid", "canceled" }
+            });
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Data);
+        }
+
+        [Fact]
         public async Task RetentionCreateAsync_CanCreateDraft()
         {
             var handler = new RecordingHandler(async (request, cancellationToken) =>
