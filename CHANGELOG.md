@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.9.0] - 2026-09-09
+### Added
+- Expose cursor pagination and capped-total metadata on `SearchResult`: `TotalsAreCapped`, `NextCursor`, and `PreviousCursor` so callers can follow cursor pagination and detect capped totals (page totals capped; cursor mode returns totals only on the first page).
+
+### Fixed
+- Serialize nested and array query params with the bracket notation the API expects. Query values that were dictionaries or lists were sent through `ToString()` (for example a `date` range as `Dictionary<string, object>`); they now expand to bracket keys (`date[gte]=...&date[lt]=...` and `status[]=...`).
+
 ## [6.8.0] - 2026-09-04
 ### Added
 - Added `GetPaymentSummaryAsync` to get the related-document object needed to build a payment complement (complemento de pago): installment number, previous balance, and taxes prorated to the paid amount.
