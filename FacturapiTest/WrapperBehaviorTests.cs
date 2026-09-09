@@ -330,6 +330,30 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task InvoiceListAsync_MapsPaginationMetadata()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/invoices?limit=100", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"data\":[],\"total_results\":3000,\"totals_are_capped\":true,\"next_cursor\":\"next-1\",\"previous_cursor\":null}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new Dictionary<string, object>
+            {
+                ["limit"] = 100
+            });
+
+            Assert.NotNull(result);
+            Assert.Equal(3000, result.TotalResults);
+            Assert.True(result.TotalsAreCapped);
+            Assert.Equal("next-1", result.NextCursor);
+            Assert.Null(result.PreviousCursor);
+        }
+
+        [Fact]
         public async Task RetentionCreateAsync_CanCreateDraft()
         {
             var handler = new RecordingHandler(async (request, cancellationToken) =>
