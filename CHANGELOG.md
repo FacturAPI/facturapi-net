@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.0.0] - 2026-09-09
+### Breaking
+- `SearchResult.Page`, `TotalPages`, and `TotalResults` are now nullable (`int?`): cursor responses after the first page omit them and absence must not deserialize as `0`.
+
+### Added
+- Expose cursor pagination and capped-total metadata on `SearchResult`: `TotalsAreCapped`, `NextCursor`, and `PreviousCursor`.
+
+### Fixed
+- Serialize nested and array query params with the bracket notation the API expects (dictionaries/lists used to be sent through `ToString()`).
+
 ## [6.9.0] - 2026-09-09
 ### Added
 - Expose cursor pagination and capped-total metadata on `SearchResult`: `TotalsAreCapped`, `NextCursor`, and `PreviousCursor` so callers can follow cursor pagination and detect capped totals (page totals capped; cursor mode returns totals only on the first page).
