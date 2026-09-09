@@ -302,6 +302,34 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task InvoiceListAsync_SerializesNestedDateRangeWithBracketNotation()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal(
+                    "/v2/invoices?limit=100&date%5Bgte%5D=2026-01-01&date%5Blt%5D=2026-02-01",
+                    request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"data\":[]}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new Dictionary<string, object>
+            {
+                ["limit"] = 100,
+                ["date"] = new Dictionary<string, object>
+                {
+                    ["gte"] = "2026-01-01",
+                    ["lt"] = "2026-02-01"
+                }
+            });
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Data);
+        }
+
+        [Fact]
         public async Task RetentionCreateAsync_CanCreateDraft()
         {
             var handler = new RecordingHandler(async (request, cancellationToken) =>

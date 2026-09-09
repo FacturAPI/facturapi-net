@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,14 +25,44 @@ namespace Facturapi
 
         private static string DictionaryToQueryString(Dictionary<string, object> dict)
         {
-            return String.Join(
-                "&",
-                dict
-                    .Where(x => !String.IsNullOrEmpty(x.Key))
-                    .Select(x => String.Format(
-                        "{0}={1}",
-                        Uri.EscapeDataString(x.Key),
-                        Uri.EscapeDataString(x.Value?.ToString() ?? String.Empty))));
+            var parts = new List<string>();
+            foreach (var entry in dict.Where(x => !String.IsNullOrEmpty(x.Key)))
+            {
+                AppendQueryPart(parts, entry.Key, entry.Value);
+            }
+
+            return String.Join("&", parts);
+        }
+
+        private static void AppendQueryPart(List<string> parts, string key, object value)
+        {
+            if (value == null)
+            {
+                parts.Add(Uri.EscapeDataString(key) + "=");
+                return;
+            }
+
+            if (value is IDictionary dictionary)
+            {
+                foreach (DictionaryEntry entry in dictionary)
+                {
+                    AppendQueryPart(parts, key + "[" + entry.Key + "]", entry.Value);
+                }
+
+                return;
+            }
+
+            if (!(value is string) && value is IEnumerable enumerable)
+            {
+                foreach (var item in enumerable)
+                {
+                    AppendQueryPart(parts, key + "[]", item);
+                }
+
+                return;
+            }
+
+            parts.Add(Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value.ToString() ?? String.Empty));
         }
     }
 }
