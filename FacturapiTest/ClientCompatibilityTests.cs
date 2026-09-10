@@ -14,12 +14,25 @@ namespace FacturapiTest
     public class ClientCompatibilityTests
     {
         [Fact]
-        public void Router_ListCustomers_AllowsNullQueryValues()
+        public void Router_ListCustomers_SkipsNullQueryValues()
         {
             var query = new Dictionary<string, object>
             {
                 ["foo"] = null!,
                 [""] = "ignored"
+            };
+
+            var url = Router.ListCustomers(query);
+
+            Assert.Equal("customers", url);
+        }
+
+        [Fact]
+        public void Router_ListCustomers_SendsExplicitEmptyQueryValues()
+        {
+            var query = new Dictionary<string, object>
+            {
+                ["foo"] = ""
             };
 
             var url = Router.ListCustomers(query);

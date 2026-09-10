@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.0.0] - 2026-09-09
+### Breaking
+- `SearchResult.Page`, `TotalPages`, and `TotalResults` are now nullable (`int?`): cursor responses after the first page omit them and absence must not deserialize as `0`.
+- A `null` value in a query dictionary now omits the key instead of sending it empty (`foo=`), matching the other official SDKs. Pass an empty string to send an explicit empty value.
+
+### Added
+- Expose cursor pagination and capped-total metadata on `SearchResult`: `TotalsAreCapped`, `NextCursor`, and `PreviousCursor`.
+
+### Fixed
+- Serialize query params with the encoding the API documents: nested dictionaries use bracket notation (`date[gte]=...`) and lists repeat the key (`status=valid&status=canceled`), matching the other official SDKs (dictionaries/lists used to be sent through `ToString()`).
+
 ## [6.8.0] - 2026-09-04
 ### Added
 - Added `GetPaymentSummaryAsync` to get the related-document object needed to build a payment complement (complemento de pago): installment number, previous balance, and taxes prorated to the paid amount.

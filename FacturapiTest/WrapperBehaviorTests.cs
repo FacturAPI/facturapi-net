@@ -302,6 +302,108 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task InvoiceListAsync_SerializesNestedDateRangeWithBracketNotation()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal(
+                    "/v2/invoices?limit=100&date%5Bgte%5D=2026-01-01&date%5Blt%5D=2026-02-01",
+                    request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"data\":[]}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new Dictionary<string, object>
+            {
+                ["limit"] = 100,
+                ["date"] = new Dictionary<string, object>
+                {
+                    ["gte"] = "2026-01-01",
+                    ["lt"] = "2026-02-01"
+                }
+            });
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Data);
+        }
+
+        [Fact]
+        public async Task InvoiceListAsync_MapsPaginationMetadata()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/invoices?limit=100", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"data\":[],\"total_results\":3000,\"totals_are_capped\":true,\"next_cursor\":\"next-1\",\"previous_cursor\":null}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new Dictionary<string, object>
+            {
+                ["limit"] = 100
+            });
+
+            Assert.NotNull(result);
+            Assert.Equal(3000, result.TotalResults);
+            Assert.True(result.TotalsAreCapped);
+            Assert.Equal("next-1", result.NextCursor);
+            Assert.Null(result.PreviousCursor);
+        }
+
+        [Fact]
+        public async Task InvoiceListAsync_LaterCursorPageOmitsPageTotals()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/invoices?pagination=cursor&after=next-1", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"data\":[{\"id\":\"inv_x\"}],\"next_cursor\":\"next-2\",\"previous_cursor\":\"next-1\"}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new Dictionary<string, object>
+            {
+                ["pagination"] = "cursor",
+                ["after"] = "next-1"
+            });
+
+            Assert.NotNull(result);
+            Assert.Null(result.Page);
+            Assert.Null(result.TotalPages);
+            Assert.Null(result.TotalResults);
+            Assert.Equal("next-2", result.NextCursor);
+            Assert.Equal("next-1", result.PreviousCursor);
+            Assert.Single(result.Data);
+        }
+
+        [Fact]
+        public async Task InvoiceListAsync_SerializesArrayParamsWithRepeatedKeys()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal(
+                    "/v2/invoices?status=valid&status=canceled",
+                    request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"data\":[]}"));
+            });
+
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new Dictionary<string, object>
+            {
+                ["status"] = new List<string> { "valid", "canceled" }
+            });
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Data);
+        }
+
+        [Fact]
         public async Task RetentionCreateAsync_CanCreateDraft()
         {
             var handler = new RecordingHandler(async (request, cancellationToken) =>
