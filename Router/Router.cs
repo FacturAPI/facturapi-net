@@ -56,7 +56,7 @@ namespace Facturapi
             {
                 foreach (var item in enumerable)
                 {
-                    AppendQueryPart(parts, key + "[]", item);
+                    AppendQueryPart(parts, key, item);
                 }
 
                 return;

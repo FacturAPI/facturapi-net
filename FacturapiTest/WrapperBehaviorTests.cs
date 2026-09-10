@@ -381,14 +381,14 @@ namespace FacturapiTest
         }
 
         [Fact]
-        public async Task InvoiceListAsync_SerializesArrayParamsWithBracketKeys()
+        public async Task InvoiceListAsync_SerializesArrayParamsWithRepeatedKeys()
         {
             var handler = new RecordingHandler((request, cancellationToken) =>
             {
                 Assert.Equal(HttpMethod.Get, request.Method);
                 Assert.NotNull(request.RequestUri);
                 Assert.Equal(
-                    "/v2/invoices?status%5B%5D=valid&status%5B%5D=canceled",
+                    "/v2/invoices?status=valid&status=canceled",
                     request.RequestUri.PathAndQuery);
                 return Task.FromResult(JsonResponse("{\"data\":[]}"));
             });

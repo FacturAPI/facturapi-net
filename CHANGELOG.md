@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Expose cursor pagination and capped-total metadata on `SearchResult`: `TotalsAreCapped`, `NextCursor`, and `PreviousCursor`.
 
 ### Fixed
-- Serialize nested and array query params with the bracket notation the API expects (dictionaries/lists used to be sent through `ToString()`).
+- Serialize query params with the encoding the API documents: nested dictionaries use bracket notation (`date[gte]=...`) and lists repeat the key (`status=valid&status=canceled`), matching the other official SDKs (dictionaries/lists used to be sent through `ToString()`).
 
 ## [6.8.0] - 2026-09-04
 ### Added
