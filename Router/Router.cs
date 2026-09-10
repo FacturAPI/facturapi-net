@@ -36,9 +36,11 @@ namespace Facturapi
 
         private static void AppendQueryPart(List<string> parts, string key, object value)
         {
+            // A null value means "no filter": omit the key instead of sending it
+            // empty, which the API can read as an explicit empty value. Pass an
+            // empty string to send `key=` on purpose.
             if (value == null)
             {
-                parts.Add(Uri.EscapeDataString(key) + "=");
                 return;
             }
 

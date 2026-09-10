@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.0.0] - 2026-09-09
 ### Breaking
 - `SearchResult.Page`, `TotalPages`, and `TotalResults` are now nullable (`int?`): cursor responses after the first page omit them and absence must not deserialize as `0`.
+- A `null` value in a query dictionary now omits the key instead of sending it empty (`foo=`), matching the other official SDKs. Pass an empty string to send an explicit empty value.
 
 ### Added
 - Expose cursor pagination and capped-total metadata on `SearchResult`: `TotalsAreCapped`, `NextCursor`, and `PreviousCursor`.
