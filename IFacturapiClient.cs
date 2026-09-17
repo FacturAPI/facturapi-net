@@ -13,6 +13,7 @@ namespace Facturapi
         IRetentionWrapper Retention { get; }
         ICatalogWrapper Catalog { get; }
         ICartaporteCatalogWrapper CartaporteCatalog { get; }
+        INominaCatalogWrapper NominaCatalog { get; }
         IToolWrapper Tool { get; }
         IWebhookWrapper Webhook { get; }
     }
