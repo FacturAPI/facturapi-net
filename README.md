@@ -64,6 +64,13 @@ var facturapi = new FacturapiClient("TU_API_KEY");
 var invoice = await facturapi.Invoice.CreateAsync(...);
 ```
 
+### Catálogos de nómina
+
+```csharp
+var deductions = await facturapi.NominaCatalog.SearchDeductions(new Dictionary<string, object> { ["q"] = "001" });
+var perceptions = await facturapi.NominaCatalog.SearchPerceptions(new Dictionary<string, object> { ["q"] = "001" });
+```
+
 ### Escenario avanzado: usar tu propio `HttpClient`
 
 Para la mayoría de usuarios, usa el constructor normal de `FacturapiClient`.

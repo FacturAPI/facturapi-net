@@ -16,6 +16,7 @@ namespace Facturapi
         public IRetentionWrapper Retention { get; private set; }
         public ICatalogWrapper Catalog { get; private set; }
         public ICartaporteCatalogWrapper CartaporteCatalog { get; private set; }
+        public INominaCatalogWrapper NominaCatalog { get; private set; }
         public IToolWrapper Tool { get; private set; }
         public IWebhookWrapper Webhook { get; private set; }
         private readonly HttpClient httpClient;
@@ -41,6 +42,7 @@ namespace Facturapi
             this.Retention = new RetentionWrapper(apiKey, apiVersion, this.httpClient);
             this.Catalog = new CatalogWrapper(apiKey, apiVersion, this.httpClient);
             this.CartaporteCatalog = new CartaporteCatalogWrapper(apiKey, apiVersion, this.httpClient);
+            this.NominaCatalog = new NominaCatalogWrapper(apiKey, apiVersion, this.httpClient);
             this.Tool = new ToolWrapper(apiKey, apiVersion, this.httpClient);
             this.Webhook = new WebhookWrapper(apiKey, apiVersion, this.httpClient);
         }
