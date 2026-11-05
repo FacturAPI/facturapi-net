@@ -143,6 +143,25 @@ namespace FacturapiTest
         }
 
         [Fact]
+        public async Task OrganizationDownloadManifiestoZipUrlAsync_UsesExpectedRoute()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Get, request.Method);
+                Assert.NotNull(request.RequestUri);
+                Assert.Equal("/v2/organizations/org_1/manifiesto/download-url", request.RequestUri.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"url\":\"https://storage.googleapis.com/signed-download\",\"expires_at\":\"2030-01-01T00:00:00.000Z\",\"content_type\":\"application/zip\",\"filename\":\"manifiesto_AAA010101AAA.zip\"}"));
+            });
+
+            var wrapper = new OrganizationWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.DownloadManifiestoZipUrlAsync("org_1");
+
+            Assert.Equal("application/zip", result.ContentType);
+            Assert.Equal("manifiesto_AAA010101AAA.zip", result.Filename);
+            Assert.Equal(new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero), result.ExpiresAt);
+        }
+
+        [Fact]
         public async Task OrganizationListTeamAccessAsync_UsesTeamRoute()
         {
             var handler = new RecordingHandler((request, cancellationToken) =>
