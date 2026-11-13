@@ -18,7 +18,7 @@ const contract = await compileContract(
 );
 const outputs = new Map([
   ...renderModels(contract),
-  ...renderResources(contract),
+  ...renderResources(contract, config),
 ]);
 for (const [filename, content] of outputs)
   outputs.set(filename, content.replace(/[ \t]+$/gm, ""));
@@ -88,5 +88,5 @@ for (const [filename, content] of outputs) {
   }
 }
 console.log(
-  `${process.argv.includes("--check") ? "Verified" : "Generated"} Customers: ${contract.methods.length} operations, ${contract.models.length} models.`,
+  `${process.argv.includes("--check") ? "Verified" : "Generated"} SDK: ${contract.operationCount} operations, ${contract.methods.length} bindings, ${contract.models.length} models.`,
 );

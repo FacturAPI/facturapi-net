@@ -76,7 +76,11 @@ function fixture() {
 }
 const binding = {
   ...config,
-  methods: { retrieve: "getCustomer" },
+  outputModels: [],
+  variants: {},
+  resources: {
+    Customer: { methods: { RetrieveAsync: { operation: "getCustomer" } } },
+  },
   inputs: ["CustomerUpdateInput"],
 };
 
@@ -146,20 +150,129 @@ test("requires a public method for every resource operation", async () => {
   };
   await assert.rejects(
     compileContract(spec, binding),
-    /Every Customers operation/,
+    /Every public operation/,
   );
 });
 
-test("fails on unsupported open types instead of generating an untyped model", async () => {
+test("preserves deliberately open payloads without inventing a schema", async () => {
   const spec = fixture();
-  spec.components.schemas.Base.properties.unknown = {};
-  await assert.rejects(compileContract(spec, binding), /Unsupported open type/);
+  spec.components.schemas.Base.properties.metadata = {
+    type: "object",
+    additionalProperties: true,
+  };
+  const contract = await compileContract(spec, binding);
+  const metadata = contract.models
+    .find((model) => model.name === "Customer")
+    .properties.find((field) => field.name === "metadata");
+  assert.equal(metadata.kind, "map");
 });
 
-test("fails on an unsupported union instead of flattening incompatible variants", async () => {
+test("represents heterogeneous alternatives without a JSON envelope", async () => {
   const spec = fixture();
-  spec.components.schemas.Base.properties.variant = {
+  spec.components.schemas.CustomerUpdateInput.properties.variant = {
     oneOf: [{ type: "string" }, { type: "integer" }],
   };
-  await assert.rejects(compileContract(spec, binding), /Unsupported union/);
+  const contract = await compileContract(spec, binding);
+  const variant = contract.models
+    .find((model) => model.name === "CustomerUpdateInput")
+    .properties.find((field) => field.name === "variant");
+  assert.equal(variant.kind, "union");
+  assert.deepEqual(variant.variants.map((value) => value.kind).sort(), [
+    "integer",
+    "string",
+  ]);
+  assert.match([...renderModels(contract).values()].join("\n"), /OneOf</);
+});
+
+test("keeps null-only response variants nullable without widening their value type", async () => {
+  const spec = fixture();
+  spec.components.schemas.Customer = {
+    oneOf: [
+      {
+        type: "object",
+        properties: {
+          uuid: { type: "string" },
+          status: { type: "string", const: "valid" },
+        },
+      },
+      {
+        type: "object",
+        properties: {
+          uuid: { type: "null" },
+          status: { type: "string", const: "draft" },
+        },
+      },
+    ],
+  };
+  const customer = (await compileContract(spec, binding)).models.find(
+    (model) => model.name === "Customer",
+  );
+  assert.equal(
+    customer.properties.find((field) => field.name === "uuid").kind,
+    "string",
+  );
+  assert.equal(
+    customer.properties.find((field) => field.name === "uuid").nullable,
+    true,
+  );
+  assert.equal(
+    customer.properties.find((field) => field.name === "status").kind,
+    "string",
+  );
+});
+
+test("normalizes numeric intersections and omits read-only request fields", async () => {
+  const spec = fixture();
+  spec.components.schemas.CustomerUpdateInput.properties.days = {
+    allOf: [{ type: "number" }, { type: "integer" }],
+  };
+  spec.components.schemas.CustomerUpdateInput.properties.created_at = {
+    type: "string",
+    format: "date-time",
+    readOnly: true,
+  };
+  const input = (await compileContract(spec, binding)).models.find(
+    (model) => model.name === "CustomerUpdateInput",
+  );
+  assert.equal(
+    input.properties.find((field) => field.name === "days").kind,
+    "integer",
+  );
+  assert.equal(
+    input.properties.some((field) => field.name === "created_at"),
+    false,
+  );
+});
+
+test("retains constructor requirements while making named input variants assignable to their family", async () => {
+  const spec = fixture();
+  spec.components.schemas.CustomerNationalCreateInput = {
+    type: "object",
+    required: ["legal_name", "tax_id"],
+    properties: { legal_name: { type: "string" }, tax_id: { type: "string" } },
+  };
+  spec.components.schemas.CustomerForeignCreateInput = {
+    type: "object",
+    required: ["legal_name"],
+    properties: { legal_name: { type: "string" }, country: { type: "string" } },
+  };
+  spec.components.schemas.CustomerCreateInput = {
+    anyOf: [
+      { $ref: "#/components/schemas/CustomerNationalCreateInput" },
+      { $ref: "#/components/schemas/CustomerForeignCreateInput" },
+    ],
+  };
+  const contract = await compileContract(spec, binding);
+  const national = contract.models.find(
+    (model) => model.name === "CustomerNationalCreateInput",
+  );
+  assert.equal(national.parent, "CustomerCreateInput");
+  assert.equal(
+    national.properties.find((field) => field.name === "tax_id").required,
+    true,
+  );
+  assert.match(
+    renderModels(contract).get("Models/Inputs/CustomerNationalCreateInput.cs"),
+    /: base\(@legalName\)/,
+  );
 });

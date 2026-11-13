@@ -1,13 +1,721 @@
 {
-  "resource": "customers",
-  "methods": {
-    "create": "createCustomer",
-    "list": "listCustomers",
-    "retrieve": "getCustomer",
-    "update": "editCustomer",
-    "delete": "deleteCustomer",
-    "validateTaxInfo": "validateCustomerTaxInfo",
-    "sendEditLinkByEmail": "sendEditLinkByEmail"
+  "resources": {
+    "Customer": {
+      "methods": {
+        "CreateAsync": {
+          "operation": "createCustomer",
+          "signature": "Dictionary<string, object> data, Dictionary<string, object> queryParams = null, CancellationToken cancellationToken = default"
+        },
+        "ListAsync": {
+          "operation": "listCustomers",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "RetrieveAsync": {
+          "operation": "getCustomer",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "UpdateAsync": {
+          "operation": "editCustomer",
+          "bodySchema": "CustomerUpdateInput",
+          "signature": "string id, Dictionary<string, object> data, Dictionary<string, object> queryParams = null, CancellationToken cancellationToken = default"
+        },
+        "DeleteAsync": {
+          "operation": "deleteCustomer",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "ValidateTaxInfoAsync": {
+          "operation": "validateCustomerTaxInfo",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "SendEditLinkByEmailAsync": {
+          "operation": "sendEditLinkByEmail",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        }
+      }
+    },
+    "Invoice": {
+      "methods": {
+        "CreateAsync": {
+          "operation": "createInvoice",
+          "signature": "Dictionary<string, object> data, Dictionary<string, object> options = null, CancellationToken cancellationToken = default",
+          "responseSchema": "Invoice"
+        },
+        "ListAsync": {
+          "operation": "listInvoices",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "RetrieveAsync": {
+          "operation": "getInvoice",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "GetPaymentSummaryAsync": {
+          "operation": "getInvoicePaymentSummary",
+          "signature": "string id, double amount, CancellationToken cancellationToken = default",
+          "queryFields": {
+            "amount": "amount"
+          }
+        },
+        "CancelAsync": {
+          "operation": "cancelInvoice",
+          "querySchema": "CancellationQueryInput",
+          "signature": "string id, Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SendByEmailAsync": {
+          "operation": "sendInvoiceByEmail",
+          "signature": "string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default"
+        },
+        "DownloadPdfAsync": {
+          "operation": "downloadInvoice",
+          "path": {
+            "format": "pdf"
+          },
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadXmlAsync": {
+          "operation": "downloadInvoice",
+          "path": {
+            "format": "xml"
+          },
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadZipAsync": {
+          "operation": "downloadInvoice",
+          "path": {
+            "format": "zip"
+          },
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadPdfUrlAsync": {
+          "operation": "getInvoiceDownloadUrl",
+          "path": {
+            "format": "pdf"
+          }
+        },
+        "DownloadXmlUrlAsync": {
+          "operation": "getInvoiceDownloadUrl",
+          "path": {
+            "format": "xml"
+          }
+        },
+        "DownloadZipUrlAsync": {
+          "operation": "getInvoiceDownloadUrl",
+          "path": {
+            "format": "zip"
+          }
+        },
+        "CreateZipRequestAsync": {
+          "operation": "createInvoiceZipRequest",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "ListZipRequestsAsync": {
+          "operation": "listInvoiceZipRequests",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "RetrieveZipRequestAsync": {
+          "operation": "retrieveInvoiceZipRequest",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadZipRequestAsync": {
+          "operation": "downloadInvoiceZipRequest",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadZipRequestUrlAsync": {
+          "operation": "getInvoiceZipRequestDownloadUrl"
+        },
+        "DownloadCancellationReceiptXmlAsync": {
+          "operation": "downloadCancellationReceipt",
+          "path": {
+            "format": "xml"
+          },
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadCancellationReceiptPdfAsync": {
+          "operation": "downloadCancellationReceipt",
+          "path": {
+            "format": "pdf"
+          },
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadCancellationReceiptPdfUrlAsync": {
+          "operation": "getCancellationReceiptDownloadUrl",
+          "path": {
+            "format": "pdf"
+          }
+        },
+        "DownloadCancellationReceiptXmlUrlAsync": {
+          "operation": "getCancellationReceiptDownloadUrl",
+          "path": {
+            "format": "xml"
+          }
+        },
+        "UpdateDraftAsync": {
+          "operation": "updateDraftInvoice",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default",
+          "responseSchema": "Invoice"
+        },
+        "StampDraftAsync": {
+          "operation": "stampDraftInvoice",
+          "signature": "string id, Dictionary<string, object> options = null, CancellationToken cancellationToken = default"
+        },
+        "UpdateStatusAsync": {
+          "operation": "updateInvoiceStatus",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "CopyToDraftAsync": {
+          "operation": "copyToDraftInvoice",
+          "signature": "string id, CancellationToken cancellationToken = default",
+          "responseSchema": "Invoice"
+        },
+        "PreviewPdfAsync": {
+          "operation": "previewInvoicePdf",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "PreviewPdfUrlAsync": {
+          "operation": "previewInvoicePdfUrl"
+        },
+        "StampDraft": {
+          "alias": "StampDraftAsync",
+          "signature": "string id, Dictionary<string, object> options = null, CancellationToken cancellationToken = default"
+        }
+      }
+    },
+    "Organization": {
+      "methods": {
+        "CreateAsync": {
+          "operation": "createOrganization",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "ListAsync": {
+          "operation": "listOrganizations",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "RetrieveAsync": {
+          "operation": "getOrganization",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "UpdateLegalAsync": {
+          "operation": "editOrganizationLegal",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "UpdateCustomizationAsync": {
+          "operation": "editOrganizationCustomization",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "UpdateReceiptSettingsAsync": {
+          "operation": "editOrganizationReceiptsSettings",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "UpdateDomainAsync": {
+          "operation": "editOrganizationDomain",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "CheckDomainIsAvailableAsync": {
+          "operation": "checkDomainAvailability",
+          "signature": "string domain, CancellationToken cancellationToken = default",
+          "queryFields": {
+            "domain": "domain"
+          }
+        },
+        "UploadLogoAsync": {
+          "operation": "uploadOrganizationLogo",
+          "signature": "string id, Stream file, CancellationToken cancellationToken = default",
+          "multipart": {
+            "file": "file"
+          }
+        },
+        "UploadCertificateAsync": {
+          "operation": "uploadOrganizationCertificate",
+          "signature": "string id, Stream cerFile, Stream keyFile, string password, CancellationToken cancellationToken = default",
+          "multipart": {
+            "cer": "cerFile",
+            "key": "keyFile",
+            "password": "password"
+          }
+        },
+        "DeleteCertificateAsync": {
+          "operation": "deleteOrganizationCertificate",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadManifiestoZipUrlAsync": {
+          "operation": "getOrganizationManifiestoDownloadUrl"
+        },
+        "DeleteAsync": {
+          "operation": "deleteOrganization",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "GetTestApiKeyAsync": {
+          "operation": "getTestApiKey",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "RenewTestApiKeyAsync": {
+          "operation": "renewTestApiKey",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "ListLiveApiKeysAsync": {
+          "operation": "listLiveApiKeys",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "RenewLiveApiKeyAsync": {
+          "operation": "renewLiveApiKey",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DeleteLiveApiKeyAsync": {
+          "operation": "deleteLiveApiKey",
+          "signature": "string id, string apiKeyId, CancellationToken cancellationToken = default"
+        },
+        "ListSeriesAsync": {
+          "operation": "getSeriesGroup",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "CreateSeriesAsync": {
+          "operation": "createSeriesGroup",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "UpdateSeriesAsync": {
+          "operation": "updateSeriesGroup",
+          "signature": "string id, string seriesName, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "UpdateDefaultSeriesAsync": {
+          "operation": "updateDefaultSeries",
+          "signature": "string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "DeleteSeriesAsync": {
+          "operation": "deleteSeriesGroup",
+          "signature": "string id, string seriesName, CancellationToken cancellationToken = default"
+        },
+        "MeAsync": {
+          "operation": "meOrganization",
+          "signature": "CancellationToken cancellationToken = default"
+        },
+        "UpdateSelfInvoiceSettingsAsync": {
+          "operation": "editOrganizationSelfInvoiceSettings",
+          "signature": "string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "ListTeamAccessAsync": {
+          "operation": "getOrganizationTeam",
+          "signature": "string organizationId, CancellationToken cancellationToken = default"
+        },
+        "RetrieveTeamAccessAsync": {
+          "operation": "getOrganizationTeamUser",
+          "signature": "string organizationId, string accessId, CancellationToken cancellationToken = default"
+        },
+        "UpdateTeamAccessRoleAsync": {
+          "operation": "updateOrganizationTeamUserRole",
+          "signature": "string organizationId, string accessId, string role, CancellationToken cancellationToken = default",
+          "bodyFields": {
+            "role": "role"
+          }
+        },
+        "RemoveTeamAccessAsync": {
+          "operation": "removeOrganizationUserAccess",
+          "signature": "string organizationId, string accessId, CancellationToken cancellationToken = default",
+          "resultProperty": "ok"
+        },
+        "ListSentTeamInvitesAsync": {
+          "operation": "listOrganizationTeamInvites",
+          "signature": "string organizationId, CancellationToken cancellationToken = default"
+        },
+        "InviteUserToTeamAsync": {
+          "operation": "createOrganizationTeamInvite",
+          "signature": "string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "CancelTeamInviteAsync": {
+          "operation": "deleteOrganizationTeamInvite",
+          "signature": "string organizationId, string inviteKey, CancellationToken cancellationToken = default",
+          "resultProperty": "ok"
+        },
+        "ListReceivedTeamInvitesAsync": {
+          "operation": "listPendingOrganizationInvites",
+          "signature": "CancellationToken cancellationToken = default"
+        },
+        "RespondTeamInviteAsync": {
+          "operation": "respondOrganizationInvite",
+          "signature": "string inviteKey, Dictionary<string, object> data, CancellationToken cancellationToken = default",
+          "resultProperty": "ok"
+        },
+        "ListTeamRolesAsync": {
+          "operation": "listOrganizationPermissionRoles",
+          "signature": "string organizationId, CancellationToken cancellationToken = default"
+        },
+        "ListTeamRoleTemplatesAsync": {
+          "operation": "listOrganizationPermissionRoleTemplates",
+          "signature": "string organizationId, CancellationToken cancellationToken = default"
+        },
+        "ListTeamRoleOperationsAsync": {
+          "operation": "listOrganizationPermissionOperations",
+          "signature": "string organizationId, CancellationToken cancellationToken = default"
+        },
+        "RetrieveTeamRoleAsync": {
+          "operation": "getOrganizationPermissionRole",
+          "signature": "string organizationId, string roleId, CancellationToken cancellationToken = default"
+        },
+        "CreateTeamRoleAsync": {
+          "operation": "createOrganizationPermissionRole",
+          "signature": "string organizationId, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "UpdateTeamRoleAsync": {
+          "operation": "updateOrganizationPermissionRole",
+          "signature": "string organizationId, string roleId, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "DeleteTeamRoleAsync": {
+          "operation": "deleteOrganizationPermissionRole",
+          "signature": "string organizationId, string roleId, CancellationToken cancellationToken = default",
+          "resultProperty": "ok"
+        },
+        "UploadFielAsync": {
+          "operation": "uploadOrganizationFiel",
+          "multipart": {
+            "cer": "cerFile",
+            "key": "keyFile",
+            "password": "password"
+          },
+          "signature": "string id, Stream cerFile, Stream keyFile, string password, CancellationToken cancellationToken = default"
+        }
+      }
+    },
+    "Product": {
+      "methods": {
+        "CreateAsync": {
+          "operation": "createProduct",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "ListAsync": {
+          "operation": "listProducts",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "RetrieveAsync": {
+          "operation": "getProduct",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "UpdateAsync": {
+          "operation": "editProduct",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "DeleteAsync": {
+          "operation": "deleteProduct",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        }
+      }
+    },
+    "Receipt": {
+      "methods": {
+        "CreateAsync": {
+          "operation": "createReceipt",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "ListAsync": {
+          "operation": "listReceipts",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "RetrieveAsync": {
+          "operation": "getReceipt",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "InvoiceAsync": {
+          "operation": "invoiceReceipt",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "CreateGlobalInvoiceAsync": {
+          "operation": "createGlobalInvoice",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "ToInvoiceAsync": {
+          "operation": "createToInvoiceFromReceipts",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "PreviewToInvoicePdfAsync": {
+          "operation": "previewToInvoiceFromReceipts",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "PreviewToInvoicePdfUrlAsync": {
+          "operation": "previewToInvoiceFromReceiptsUrl"
+        },
+        "CancelAsync": {
+          "operation": "cancelReceipt",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "SendByEmailAsync": {
+          "operation": "sendReceiptByEmail",
+          "signature": "string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default"
+        },
+        "DownloadPdfAsync": {
+          "operation": "downloadReceiptPdf",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadPdfUrlAsync": {
+          "operation": "getReceiptDownloadUrl"
+        },
+        "UpdateCustomerAsync": {
+          "operation": "assignReceiptCustomer"
+        },
+        "SummarizeToInvoiceAsync": {
+          "operation": "createToInvoiceFromReceipts",
+          "responseSchema": "ToInvoiceSummary",
+          "bodyFlags": {
+            "dry_run": true
+          }
+        }
+      }
+    },
+    "Retention": {
+      "methods": {
+        "CreateAsync": {
+          "operation": "createRetention",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "ListAsync": {
+          "operation": "listRetentions",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "RetrieveAsync": {
+          "operation": "getRetention",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "CancelAsync": {
+          "operation": "cancelRetention",
+          "querySchema": "CancellationQueryInput",
+          "signature": "string id, Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "UpdateDraftAsync": {
+          "operation": "updateDraftRetention",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "StampDraftAsync": {
+          "operation": "stampDraftRetention",
+          "signature": "string id, Dictionary<string, object> options = null, CancellationToken cancellationToken = default"
+        },
+        "CopyToDraftAsync": {
+          "operation": "copyToDraftRetention",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "SendByEmailAsync": {
+          "operation": "sendRetentionByEmail",
+          "signature": "string id, Dictionary<string, object> data = null, CancellationToken cancellationToken = default"
+        },
+        "DownloadPdfAsync": {
+          "operation": "downloadRetention",
+          "path": {
+            "format": "pdf"
+          },
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadXmlAsync": {
+          "operation": "downloadRetention",
+          "path": {
+            "format": "xml"
+          },
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadZipAsync": {
+          "operation": "downloadRetention",
+          "path": {
+            "format": "zip"
+          },
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "DownloadPdfUrlAsync": {
+          "operation": "getRetentionDownloadUrl",
+          "path": {
+            "format": "pdf"
+          }
+        },
+        "DownloadXmlUrlAsync": {
+          "operation": "getRetentionDownloadUrl",
+          "path": {
+            "format": "xml"
+          }
+        },
+        "DownloadZipUrlAsync": {
+          "operation": "getRetentionDownloadUrl",
+          "path": {
+            "format": "zip"
+          }
+        }
+      }
+    },
+    "CartaporteCatalog": {
+      "methods": {
+        "SearchAirTransportCodes": {
+          "operation": "searchCartaPorteAirTransportCodes",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchTransportConfigs": {
+          "operation": "searchCartaPorteTransportConfigs",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchRightsOfPassage": {
+          "operation": "searchCartaPorteRightsOfPassage",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchCustomsDocuments": {
+          "operation": "searchCartaPorteCustomsDocuments",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchPackagingTypes": {
+          "operation": "searchCartaPortePackagingTypes",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchTrailerTypes": {
+          "operation": "searchCartaPorteTrailerTypes",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchHazardousMaterials": {
+          "operation": "searchCartaPorteHazardousMaterials",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchNavalAuthorizations": {
+          "operation": "searchCartaPorteNavalAuthorizations",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchPortStations": {
+          "operation": "searchCartaPortePortStations",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchMarineContainers": {
+          "operation": "searchCartaPorteMarineContainers",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        }
+      }
+    },
+    "Catalog": {
+      "methods": {
+        "SearchProducts": {
+          "operation": "searchProducts",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchUnits": {
+          "operation": "searchUnits",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "ListProductCategories": {
+          "operation": "listProductCategories"
+        },
+        "GetProductCategory": {
+          "operation": "getProductCategory"
+        },
+        "SearchZipCodes": {
+          "operation": "searchZipCodes"
+        },
+        "GetZipCode": {
+          "operation": "getZipCode"
+        },
+        "SearchCountries": {
+          "operation": "searchCountries"
+        },
+        "SearchTaxSystems": {
+          "operation": "searchTaxSystems"
+        },
+        "SearchInvoiceUses": {
+          "operation": "searchInvoiceUses"
+        }
+      }
+    },
+    "ComercioExteriorCatalog": {
+      "methods": {
+        "SearchTariffFractions": {
+          "operation": "searchComercioExteriorTariffFractions"
+        }
+      }
+    },
+    "Tool": {
+      "methods": {
+        "ValidateTaxIdAsync": {
+          "operation": "validateTaxId",
+          "signature": "string taxId, CancellationToken cancellationToken = default",
+          "queryFields": {
+            "tax_id": "taxId"
+          }
+        },
+        "HealthCheckAsync": {
+          "operation": "checkApiHealth",
+          "signature": "CancellationToken cancellationToken = default",
+          "resultProperty": "ok"
+        }
+      }
+    },
+    "Webhook": {
+      "methods": {
+        "CreateAsync": {
+          "operation": "createWebhook",
+          "signature": "Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "ListAsync": {
+          "operation": "listWebhooks",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "RetrieveAsync": {
+          "operation": "getWebhook",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "UpdateAsync": {
+          "operation": "editWebhook",
+          "signature": "string id, Dictionary<string, object> data, CancellationToken cancellationToken = default"
+        },
+        "DeleteAsync": {
+          "operation": "deleteWebhook",
+          "signature": "string id, CancellationToken cancellationToken = default"
+        },
+        "ValidateSignatureRemotelyAsync": {
+          "operation": "validateWebhookSignature"
+        }
+      }
+    },
+    "NominaCatalog": {
+      "methods": {
+        "SearchDeductions": {
+          "operation": "searchNominaDeductions",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        },
+        "SearchPerceptions": {
+          "operation": "searchNominaPerceptions",
+          "signature": "Dictionary<string, object> query = null, CancellationToken cancellationToken = default"
+        }
+      }
+    }
+  },
+  "modelNames": {
+    "CustomerAddress": "Address",
+    "OrganizationSeriesGroup": "SeriesGroup",
+    "OrganizationPermissionRole": "OrganizationTeamRole",
+    "OrganizationPermissionRoleTemplate": "OrganizationTeamRoleTemplate",
+    "TaxIdValidationResult": "TaxIdValidation",
+    "NamespaceProperties": "Namespace",
+    "ThirdParty": "InvoiceItemThirdParty",
+    "Parts": "InvoiceItemPart",
+    "BaseTax": "Tax",
+    "InvoiceItemProduct": "ProductInfo",
+    "OrganizationLegal": "Legal",
+    "OrganizationPendingStepsItem": "CompletionStep",
+    "OrganizationCustomization": "Customization",
+    "OrganizationSelfInvoice": "SelfInvoiceSettings",
+    "OrganizationCertificate": "Certificate",
+    "OrganizationFiel": "FielCertificate",
+    "ListLiveApiKeysResponseItem": "LiveApiKey",
+    "DeleteLiveApiKeyResponseItem": "LiveApiKey",
+    "CheckDomainAvailabilityResponse": "DomainAvailability",
+    "ValidateCustomerTaxInfoResponse": "TaxInfoValidation",
+    "TaxInfoValidationErrorsItem": "TaxInfoError",
+    "GetInvoicePaymentSummaryResponse": "PaymentSummary",
+    "PaymentSummaryTaxesItem": "PaymentSummaryTax",
+    "SearchKeyDescriptionResultDataItem": "CatalogItem",
+    "RetentionPeriodo": "RetentionPeriod",
+    "RetentionTotales": "RetentionTotals",
+    "RetentionTotalsImpRetenidosItem": "RetentionRetainedTax",
+    "TaxInfoValidationEfos": "Efos",
+    "EfosData": "EfosData",
+    "EfosDataDetallesItem": "EfosDetalle",
+    "InvoiceGlobal": "Global",
+    "RelatedDocument": "PaymentRelated",
+    "PaymentProperties": "Payment",
+    "InvoicePdfExtra": "PdfExtra",
+    "SendEditLinkByEmailResponse": "CustomerEditLinkEmailResult",
+    "TaxIdValidationEfosData": "EfosData",
+    "InvoiceStamp": "Stamp",
+    "InvoiceAddress": "Address",
+    "ProductCatalogResult": "CatalogItem",
+    "UnitCatalogResult": "CatalogItem",
+    "CatalogEntry": "CatalogItem",
+    "TaxIdValidationEfos": "Efos"
   },
   "inputs": [
     "CustomerNationalCreateInput",
@@ -15,11 +723,133 @@
     "CustomerGenericCreateInput",
     "CustomerCreateWithEditLinkInput",
     "CustomerUpdateInput",
-    "CustomerUpdateWithEditLinkInput"
+    "CustomerUpdateWithEditLinkInput",
+    "CancellationQueryInput"
   ],
-  "modelNames": {
-    "CustomerAddress": "Address",
-    "ValidateCustomerTaxInfoResponse": "TaxInfoValidation",
-    "TaxInfoValidationErrorsItem": "TaxInfoValidationError"
+  "outputModels": [
+    "ApiEvent",
+    "InvoiceStamped",
+    "InvoiceDraft",
+    "InvoicePending",
+    "InvoiceFailed",
+    "PaymentProperties",
+    "GenericError",
+    "ErrorDetail"
+  ],
+  "convenience": {
+    "Customer": {
+      "CreateNationalAsync": {
+        "method": "CreateAsync",
+        "schema": "CustomerNationalCreateInput"
+      },
+      "CreateForeignAsync": {
+        "method": "CreateAsync",
+        "schema": "CustomerForeignCreateInput"
+      },
+      "CreateGenericAsync": {
+        "method": "CreateAsync",
+        "schema": "CustomerGenericCreateInput"
+      },
+      "CreateWithEditLinkAsync": {
+        "method": "CreateAsync",
+        "schema": "CustomerCreateWithEditLinkInput",
+        "query": {
+          "createEditLink": true
+        }
+      },
+      "UpdateWithEditLinkAsync": {
+        "method": "UpdateAsync",
+        "schema": "CustomerUpdateWithEditLinkInput",
+        "query": {
+          "createEditLink": true
+        }
+      }
+    },
+    "Invoice": {
+      "CreateIngresoAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoiceIngresoInput"
+      },
+      "CreateEgresoAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoiceEgresoInput"
+      },
+      "CreatePagoAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoicePagoInput"
+      },
+      "CreateNominaAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoiceNominaInput"
+      },
+      "CreateTrasladoAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoiceTrasladoInput"
+      },
+      "CreateDraftIngresoAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoiceIngresoDraftInput"
+      },
+      "CreateDraftEgresoAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoiceEgresoDraftInput"
+      },
+      "CreateDraftPagoAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoicePagoDraftInput"
+      },
+      "CreateDraftNominaAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoiceNominaDraftInput"
+      },
+      "CreateDraftTrasladoAsync": {
+        "method": "CreateAsync",
+        "schema": "InvoiceTrasladoDraftInput"
+      }
+    }
+  },
+  "variants": {
+    "CancellationWithSubstitutionInput": {
+      "schema": "CancellationQueryInput",
+      "match": {
+        "motive": ["01", "04"]
+      },
+      "parent": true
+    },
+    "InvoiceIngresoDraftInput": {
+      "schema": "InvoiceCreateInput",
+      "match": {
+        "type": "I",
+        "status": "draft"
+      }
+    },
+    "InvoiceEgresoDraftInput": {
+      "schema": "InvoiceCreateInput",
+      "match": {
+        "type": "E",
+        "status": "draft"
+      }
+    },
+    "InvoicePagoDraftInput": {
+      "schema": "InvoiceCreateInput",
+      "match": {
+        "type": "P",
+        "status": "draft"
+      }
+    },
+    "InvoiceNominaDraftInput": {
+      "schema": "InvoiceCreateInput",
+      "match": {
+        "type": "N",
+        "status": "draft"
+      }
+    },
+    "InvoiceTrasladoDraftInput": {
+      "schema": "InvoiceCreateInput",
+      "match": {
+        "type": "T",
+        "status": "draft"
+      }
+    }
   }
 }

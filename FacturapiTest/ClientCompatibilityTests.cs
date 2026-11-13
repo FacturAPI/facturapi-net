@@ -22,7 +22,7 @@ namespace FacturapiTest
                 [""] = "ignored"
             };
 
-            var url = Router.ListCustomers(query);
+            var url = Router.UriWithQuery("customers", query);
 
             Assert.Equal("customers", url);
         }
@@ -37,7 +37,7 @@ namespace FacturapiTest
                 ["disabled"] = false
             };
 
-            var url = Router.ListCustomers(query);
+            var url = Router.UriWithQuery("customers", query);
 
             Assert.Equal("customers?foo=&enabled=true&disabled=false", url);
         }
@@ -65,6 +65,7 @@ namespace FacturapiTest
 
             Assert.Equal(400, exception.Status);
             Assert.Equal("bad retention", exception.Message);
+            Assert.Empty(exception.ErrorDetails);
         }
 
         [Fact]
