@@ -1,5 +1,6 @@
 using Facturapi;
 using Facturapi.Wrappers;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -731,6 +732,72 @@ namespace FacturapiTest
             using var reader = new StreamReader(stream, Encoding.UTF8, false, 1024, leaveOpen: true);
             var text = await reader.ReadToEndAsync();
             Assert.Equal("zip-content", text);
+        }
+
+        [Fact]
+        public async Task GeneratedCustomerInputs_PreserveOmissionExplicitNullAndTypedResponses()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Put, request.Method);
+                Assert.Equal("/v2/customers/cus_1", request.RequestUri!.PathAndQuery);
+                var body = Newtonsoft.Json.Linq.JObject.Parse(await request.Content!.ReadAsStringAsync());
+                Assert.Equal(Newtonsoft.Json.Linq.JTokenType.Null, body["email"]!.Type);
+                Assert.Null(body.Property("legal_name"));
+                Assert.Equal("Centro", body["address"]!["street"]!.Value<string>());
+                Assert.Null(body["address"]!["country"]);
+                return JsonResponse("{\"id\":\"cus_1\",\"created_at\":\"2026-01-02T00:00:00Z\",\"sat_validated_at\":null,\"edit_link_expires_at\":null,\"organization\":\"org_1\",\"external_id\":\"external_1\",\"address\":{\"zip\":\"86500\"}}");
+            });
+            ICustomerWrapper wrapper = new CustomerWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.UpdateAsync("cus_1", new CustomerUpdateInput
+            {
+                Email = null,
+                Address = new CustomerUpdateInputAddress { Street = "Centro" }
+            });
+            Assert.Equal("cus_1", result.Id);
+            Assert.Equal(new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc), result.CreatedAt);
+            Assert.Null(result.SatValidatedAt);
+            Assert.Null(result.EditLinkExpiresAt);
+            Assert.Equal("org_1", result.Organization);
+            Assert.Equal("external_1", result.ExternalId);
+            Assert.Equal("86500", result.Address.Zip);
+        }
+
+        [Fact]
+        public async Task GeneratedCustomerCreateNational_UsesRequiredFieldsAndExistingInterface()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.Equal("/v2/customers", request.RequestUri!.PathAndQuery);
+                var body = Newtonsoft.Json.Linq.JObject.Parse(await request.Content!.ReadAsStringAsync());
+                Assert.Equal("Dunder Mifflin", body["legal_name"]!.Value<string>());
+                Assert.Equal("86500", body["address"]!["zip"]!.Value<string>());
+                Assert.Null(body.Property("email"));
+                Assert.Null(body["address"]!["country"]);
+                return JsonResponse("{\"id\":\"cus_1\"}");
+            });
+            ICustomerWrapper wrapper = new CustomerWrapper("test_key", "v2", CreateHttpClient(handler));
+            Assert.Equal("cus_1", (await wrapper.CreateNationalAsync(new CustomerNationalCreateInput(
+                "Dunder Mifflin", "ABC101010111", "601", new CustomerNationalAddressInput("86500")))).Id);
+        }
+
+        [Fact]
+        public async Task GeneratedCustomerListParams_SerializeDateRangesAndReadCursorPages()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal("/v2/customers?pagination=cursor&after=abc&date%5Bgte%5D=2026-01-01T00%3A00%3A00Z", request.RequestUri!.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"next_cursor\":null,\"data\":[{\"id\":\"cus_1\"}]}"));
+            });
+            var wrapper = new CustomerWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new CustomerListParams
+            {
+                Pagination = "cursor", After = "abc", Date = new DateRangeInput { Gte = "2026-01-01T00:00:00Z" }
+            });
+            Assert.Null(result.TotalResults);
+            Assert.Null(result.NextCursor);
+            Assert.Equal("cus_1", Assert.Single(result.Data).Id);
         }
 
         private static HttpClient CreateHttpClient(HttpMessageHandler handler)

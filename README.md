@@ -209,3 +209,37 @@ Mándanos un Pull Request! Agradecemos todo tipo de ayuda :)
 ### Contáctanos
 
 contacto@facturapi.io
+
+## Clientes con entradas tipadas
+
+Puedes seguir usando `Dictionary<string, object>` y las firmas existentes. Los modelos de entrada también son diccionarios y sólo serializan los campos asignados; un `null` explícito se conserva.
+
+```csharp
+var customer = await facturapi.Customer.CreateNationalAsync(
+    new CustomerNationalCreateInput("Dunder Mifflin", "ABC101010111", "601",
+        new CustomerNationalAddressInput("86500")));
+await facturapi.Customer.UpdateAsync(customer.Id, new CustomerUpdateInput { Email = null });
+```
+
+También están disponibles `CreateForeignAsync`, `CreateGenericAsync`, `CreateWithEditLinkAsync` y `UpdateWithEditLinkAsync`, y los filtros `CustomerListParams`, `CustomerCreateParams` y `CustomerUpdateParams`.
+
+### Migración a v8
+
+`Customer.SatValidatedAt` y `Customer.EditLinkExpiresAt` ahora son `DateTime?`, porque la API admite `null`. Si asignabas estas propiedades a una variable `DateTime`, maneja el caso nulo antes de acceder a `.Value`. Las llamadas con diccionarios no requieren cambios. Las implementaciones manuales de `ICustomerWrapper` deben añadir los métodos nuevos.
+
+## SDK generation
+
+The Customers resource is generated from the public OpenAPI contract. The scope currently includes Customers and its input/output models; other resources remain handwritten. Generated files carry a banner and must be changed through the generator or the public specification.
+
+For SDK development, install Node.js 24+ and pnpm 11.9, then run:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm generate:sdk
+pnpm test:codegen
+pnpm generate:sdk:check
+```
+
+`openapi/source.json` pins the public documentation commit. To update it, run `pnpm sync:openapi [public-ref]` followed by generation and the SDK's normal test suite. Generation downloads the spec at that exact commit into memory; builds and consumers use the tracked generated code and need neither Node.js nor access to the spec. CI verifies regeneration and rejects unbound Customers operations or unsupported schema shapes instead of silently widening their types.
+
+The TypeScript compiler resolves the contract after `openapi-typescript`; C# renderers emit models, methods and documentation. SDK bindings preserve method names, generic pagination and established compatibility behavior. Input models distinguish properties that were never assigned from explicit `null`. Literal string constraints remain documented strings so existing catalog values and response parsing stay compatible; server-side validation still applies.

@@ -64,7 +64,7 @@ namespace Facturapi
                 return;
             }
 
-            parts.Add(Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value.ToString() ?? String.Empty));
+            parts.Add(Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value is bool boolean ? (boolean ? "true" : "false") : value.ToString() ?? String.Empty));
         }
     }
 }

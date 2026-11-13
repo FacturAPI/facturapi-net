@@ -1,0 +1,25 @@
+{
+  "resource": "customers",
+  "methods": {
+    "create": "createCustomer",
+    "list": "listCustomers",
+    "retrieve": "getCustomer",
+    "update": "editCustomer",
+    "delete": "deleteCustomer",
+    "validateTaxInfo": "validateCustomerTaxInfo",
+    "sendEditLinkByEmail": "sendEditLinkByEmail"
+  },
+  "inputs": [
+    "CustomerNationalCreateInput",
+    "CustomerForeignCreateInput",
+    "CustomerGenericCreateInput",
+    "CustomerCreateWithEditLinkInput",
+    "CustomerUpdateInput",
+    "CustomerUpdateWithEditLinkInput"
+  ],
+  "modelNames": {
+    "CustomerAddress": "Address",
+    "ValidateCustomerTaxInfoResponse": "TaxInfoValidation",
+    "TaxInfoValidationErrorsItem": "TaxInfoValidationError"
+  }
+}

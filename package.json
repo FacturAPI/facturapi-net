@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate:sdk": "node scripts/generate-sdk.mjs",
+    "generate:sdk:check": "node scripts/generate-sdk.mjs --check",
+    "sync:openapi": "node scripts/sync-openapi.mjs",
+    "test:codegen": "node --test scripts/sdk/*.test.mjs"
+  },
+  "devDependencies": {
+    "js-yaml": "5.5.0",
+    "openapi-typescript": "7.13.0",
+    "typescript": "6.0.3"
+  },
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=24"
+  }
+}

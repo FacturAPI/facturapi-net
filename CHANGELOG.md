@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [8.0.0] - 2026-11-13
+
+### Breaking
+
+- `Customer.SatValidatedAt` and `Customer.EditLinkExpiresAt` are nullable dates, matching responses that contain `null`. See the README migration guide.
+
+### Added
+
+- Typed customer creation, update and search inputs, with helpers for national, foreign, generic and edit-link workflows. Existing dictionary calls remain supported.
+- Expose customer organization, CURP and external ID, and stable fiscal-validation detail codes and sources.
+
+### Fixed
+
+- Serialize boolean query values as lowercase `true` and `false`.
+
 ## [7.1.0] - 2026-10-07
 
 ### Added

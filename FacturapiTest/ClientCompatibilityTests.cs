@@ -32,12 +32,14 @@ namespace FacturapiTest
         {
             var query = new Dictionary<string, object>
             {
-                ["foo"] = ""
+                ["foo"] = "",
+                ["enabled"] = true,
+                ["disabled"] = false
             };
 
             var url = Router.ListCustomers(query);
 
-            Assert.Equal("customers?foo=", url);
+            Assert.Equal("customers?foo=&enabled=true&disabled=false", url);
         }
 
         [Fact]

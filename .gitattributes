@@ -61,3 +61,32 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# BEGIN generated SDK
+Models/Address.cs linguist-generated=true
+Models/Customer.cs linguist-generated=true
+Models/CustomerEditLinkEmailResult.cs linguist-generated=true
+Models/Inputs/CustomerCreateParams.cs linguist-generated=true
+Models/Inputs/CustomerCreateWithEditLinkInput.cs linguist-generated=true
+Models/Inputs/CustomerCreateWithEditLinkInputAddress.cs linguist-generated=true
+Models/Inputs/CustomerEditLinkEmailInput.cs linguist-generated=true
+Models/Inputs/CustomerForeignAddressInput.cs linguist-generated=true
+Models/Inputs/CustomerForeignCreateInput.cs linguist-generated=true
+Models/Inputs/CustomerGenericCreateInput.cs linguist-generated=true
+Models/Inputs/CustomerGenericCreateInputAddress.cs linguist-generated=true
+Models/Inputs/CustomerListParams.cs linguist-generated=true
+Models/Inputs/CustomerNationalAddressInput.cs linguist-generated=true
+Models/Inputs/CustomerNationalCreateInput.cs linguist-generated=true
+Models/Inputs/CustomerUpdateInput.cs linguist-generated=true
+Models/Inputs/CustomerUpdateInputAddress.cs linguist-generated=true
+Models/Inputs/CustomerUpdateParams.cs linguist-generated=true
+Models/Inputs/CustomerUpdateWithEditLinkInput.cs linguist-generated=true
+Models/Inputs/CustomerUpdateWithEditLinkInputAddress.cs linguist-generated=true
+Models/Inputs/DateRangeInput.cs linguist-generated=true
+Models/SearchResult.cs linguist-generated=true
+Models/TaxInfoError.cs linguist-generated=true
+Models/TaxInfoValidation.cs linguist-generated=true
+Router/CustomerRouter.cs linguist-generated=true
+Wrappers/CustomerWrapper.cs linguist-generated=true
+Wrappers/ICustomerWrapper.cs linguist-generated=true
+# END generated SDK
