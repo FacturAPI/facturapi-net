@@ -1,5 +1,6 @@
 using Facturapi;
 using Facturapi.Wrappers;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -133,13 +134,13 @@ namespace FacturapiTest
                 Assert.Equal(HttpMethod.Delete, request.Method);
                 Assert.NotNull(request.RequestUri);
                 Assert.Equal("/v2/organizations/org_1/series-group/A", request.RequestUri.PathAndQuery);
-                return Task.FromResult(JsonResponse("{\"name\":\"A\"}"));
+                return Task.FromResult(JsonResponse("[{\"series\":\"A\"}]"));
             });
 
             var wrapper = new OrganizationWrapper("test_key", "v2", CreateHttpClient(handler));
             var result = await wrapper.DeleteSeriesAsync("org_1", "A");
 
-            Assert.Equal("A", result.Name);
+            Assert.Equal("A", Assert.Single(result)?.Series);
         }
 
         [Fact]
@@ -513,7 +514,7 @@ namespace FacturapiTest
                 var response = new HttpResponseMessage((HttpStatusCode)429)
                 {
                     Content = new StringContent(
-                        "{\"message\":\"too many requests\",\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"path\":\"date\",\"location\":\"query\",\"errors\":[{\"code\":\"required\",\"message\":\"date is required\",\"path\":\"date\",\"location\":\"query\"}]}",
+                        "{\"message\":\"too many requests\",\"status\":429,\"code\":\"RATE_LIMIT_EXCEEDED\",\"path\":\"date\",\"location\":\"query\",\"errors\":[{\"source\":\"facturapi\",\"code\":\"required\",\"message\":\"date is required\",\"path\":\"date\",\"location\":\"query\"}]}",
                         Encoding.UTF8,
                         "application/json")
                 };
@@ -532,6 +533,8 @@ namespace FacturapiTest
             Assert.Equal("query", exception.Location);
             Assert.Equal("log_123", exception.LogId);
             Assert.Equal("required", exception.Errors[0]["code"]?.ToString());
+            Assert.Equal("required", Assert.Single(exception.ErrorDetails).Code);
+            Assert.Equal("facturapi", Assert.Single(exception.ErrorDetails).Source);
             Assert.Equal("3", exception.Headers["retry-after"]);
             Assert.Equal("log_123", exception.Headers["x-facturapi-log-id"]);
         }
@@ -636,7 +639,7 @@ namespace FacturapiTest
                 ["invoice_types"] = new[] { "I", "E" }
             });
 
-            Assert.Equal("zip_1", result["id"]?.ToString());
+            Assert.Equal("zip_1", result.Id);
         }
 
         [Fact]
@@ -665,7 +668,7 @@ namespace FacturapiTest
             });
 
             Assert.Single(result.Data);
-            Assert.Equal("zip_1", result.Data[0]["id"]?.ToString());
+            Assert.Equal("zip_1", result.Data[0].Id);
         }
 
         [Fact]
@@ -682,7 +685,7 @@ namespace FacturapiTest
             var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
             var result = await wrapper.RetrieveZipRequestAsync("zip_1");
 
-            Assert.Equal("finished", result["status"]?.ToString());
+            Assert.Equal("finished", result.Status);
         }
 
         [Fact]
@@ -731,6 +734,281 @@ namespace FacturapiTest
             using var reader = new StreamReader(stream, Encoding.UTF8, false, 1024, leaveOpen: true);
             var text = await reader.ReadToEndAsync();
             Assert.Equal("zip-content", text);
+        }
+
+        [Fact]
+        public async Task GeneratedCustomerInputs_PreserveOmissionExplicitNullAndTypedResponses()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Put, request.Method);
+                Assert.Equal("/v2/customers/cus_1", request.RequestUri!.PathAndQuery);
+                var body = Newtonsoft.Json.Linq.JObject.Parse(await request.Content!.ReadAsStringAsync());
+                Assert.Equal(Newtonsoft.Json.Linq.JTokenType.Null, body["email"]!.Type);
+                Assert.Null(body.Property("legal_name"));
+                Assert.Equal("Centro", body["address"]!["street"]!.Value<string>());
+                Assert.Null(body["address"]!["country"]);
+                return JsonResponse("{\"id\":\"cus_1\",\"created_at\":\"2026-01-02T00:00:00Z\",\"sat_validated_at\":null,\"edit_link_expires_at\":null,\"organization\":\"org_1\",\"external_id\":\"external_1\",\"address\":{\"zip\":\"86500\"}}");
+            });
+            ICustomerWrapper wrapper = new CustomerWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.UpdateAsync("cus_1", new CustomerUpdateInput
+            {
+                Email = null,
+                Address = new CustomerUpdateInputAddress { Street = "Centro" }
+            });
+            Assert.Equal("cus_1", result.Id);
+            Assert.Equal(new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc), result.CreatedAt);
+            Assert.Null(result.SatValidatedAt);
+            Assert.Null(result.EditLinkExpiresAt);
+            Assert.Equal("org_1", result.Organization);
+            Assert.Equal("external_1", result.ExternalId);
+            Assert.Equal("86500", result.Address!.Zip);
+        }
+
+        [Fact]
+        public async Task GeneratedCustomerCreateNational_UsesRequiredFieldsAndExistingInterface()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.Equal("/v2/customers", request.RequestUri!.PathAndQuery);
+                var body = Newtonsoft.Json.Linq.JObject.Parse(await request.Content!.ReadAsStringAsync());
+                Assert.Equal("Dunder Mifflin", body["legal_name"]!.Value<string>());
+                Assert.Equal("86500", body["address"]!["zip"]!.Value<string>());
+                Assert.Null(body.Property("email"));
+                Assert.Null(body["address"]!["country"]);
+                return JsonResponse("{\"id\":\"cus_1\"}");
+            });
+            ICustomerWrapper wrapper = new CustomerWrapper("test_key", "v2", CreateHttpClient(handler));
+            Assert.Equal("cus_1", (await wrapper.CreateNationalAsync(new CustomerNationalCreateInput(
+                "Dunder Mifflin", "ABC101010111", "601", new CustomerNationalAddressInput("86500")))).Id);
+        }
+
+        [Fact]
+        public async Task GeneratedCustomerListParams_SerializeDateRangesAndReadCursorPages()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal("/v2/customers?pagination=cursor&after=abc&date%5Bgte%5D=2026-01-01T00%3A00%3A00Z", request.RequestUri!.PathAndQuery);
+                return Task.FromResult(JsonResponse("{\"next_cursor\":null,\"data\":[{\"id\":\"cus_1\"}]}"));
+            });
+            var wrapper = new CustomerWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ListAsync(new CustomerListParams
+            {
+                Pagination = "cursor", After = "abc", Date = new DateRangeInput { Gte = "2026-01-01T00:00:00Z" }
+            });
+            Assert.Null(result.TotalResults);
+            Assert.Null(result.NextCursor);
+            Assert.Equal("cus_1", Assert.Single(result.Data).Id);
+        }
+
+        [Fact]
+        public async Task TypedInvoiceCreation_PreservesAlternativesAndOpaqueXml()
+        {
+            const string xml = "<custom:Complement xmlns:custom=\"urn:test\"><custom:Text><![CDATA[<raw>&value]]></custom:Text></custom:Complement>";
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal("/v2/invoices", request.RequestUri!.AbsolutePath);
+                var body = JObject.Parse(await request.Content!.ReadAsStringAsync());
+                Assert.Equal("I", (string?)body["type"]);
+                Assert.Equal("cus_1", (string?)body["customer"]);
+                Assert.Equal("prod_1", (string?)body["items"]![0]!["product"]);
+                Assert.Equal(100.25m, (decimal?)body["items"]![1]!["product"]!["price"]);
+                Assert.Equal("custom", (string?)body["complements"]![0]!["type"]);
+                Assert.Equal(xml, (string?)body["complements"]![0]!["data"]);
+                return JsonResponse("{\"id\":\"inv_1\",\"status\":\"draft\",\"date\":null,\"uuid\":null,\"stamp\":null,\"total\":300.25}");
+            });
+            IInvoiceWrapper wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var custom = new CustomComplementInput(xml);
+            InvoiceComplementInput baseComplement = custom;
+            Assert.Equal(xml, baseComplement.Data!.Value.Value);
+            var result = await wrapper.CreateIngresoAsync(new InvoiceIngresoInput(new List<InvoiceItemInput>
+            {
+                new InvoiceItemInput("prod_1") { Quantity = 2 },
+                new InvoiceItemInput(new InvoiceItemProductInput("Servicio", "84111506", 100.25m))
+            }, PaymentForm.TRANSFERENCIA_ELECTRONICA)
+            {
+                Customer = "cus_1", Complements = new List<InvoiceComplementInput> { custom }
+            });
+            Assert.Equal("inv_1", result.Id);
+            Assert.Equal(300.25m, result.Total);
+            Assert.Null(result.Date);
+            Assert.Null(result.Uuid);
+            Assert.Null(result.Stamp);
+        }
+
+        [Fact]
+        public async Task TypedEmailRecipients_SerializeStringsAndListsWithoutEnvelopes()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal("/v2/invoices/inv_1/email", request.RequestUri!.AbsolutePath);
+                var body = JObject.Parse(await request.Content!.ReadAsStringAsync());
+                Assert.True(body["email"]!.Type == JTokenType.Array || body["email"]!.Type == JTokenType.String);
+                Assert.Null(body["email"] as JObject);
+                return JsonResponse("{\"ok\":true}");
+            });
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            Assert.True((await wrapper.SendByEmailAsync("inv_1", new SendInvoiceByEmailInput { Email = new List<string> { "a@example.com", "b@example.com" } })).Ok);
+            Assert.True((await wrapper.SendByEmailAsync("inv_1", new SendInvoiceByEmailInput { Email = "a@example.com" })).Ok);
+
+        }
+
+        [Fact]
+        public async Task NativeDateAndNumericQueries_UseWireFormatsAcrossCultures()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                var query = Uri.UnescapeDataString(request.RequestUri!.Query);
+                if (request.RequestUri.AbsolutePath.EndsWith("payment-summary"))
+                {
+                    Assert.Equal("?amount=58.5", query);
+                    return Task.FromResult(JsonResponse("{\"uuid\":\"uuid_1\",\"amount\":58.5,\"installment\":2,\"taxes\":[]}"));
+                }
+                Assert.Contains("date[gte]=2026-01-01T00:00:00.0000000Z", query);
+                Assert.Contains("date[lte]=2026-01-02T00:00:00.0000000+02:00", query);
+                Assert.Contains("cancellation_status=none&cancellation_status=canceled", query);
+                return Task.FromResult(JsonResponse("{\"next_cursor\":null,\"data\":[]}"));
+            });
+            var wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            await wrapper.ListAsync(new InvoiceListParams
+            {
+                Date = new DateRangeInput { Gte = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), Lte = new DateTimeOffset(2026, 1, 2, 0, 0, 0, TimeSpan.FromHours(2)) },
+                CancellationStatus = new List<string> { "none", "canceled" }
+            });
+            var previous = System.Globalization.CultureInfo.CurrentCulture;
+            try
+            {
+                System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("sv-SE");
+                Assert.Equal(58.5m, (await wrapper.GetPaymentSummaryAsync("inv_1", 58.5)).Amount);
+            }
+            finally { System.Globalization.CultureInfo.CurrentCulture = previous; }
+        }
+
+        [Fact]
+        public async Task ExtendedCatalogs_AreWiredToTheClientAndReturnTypedResults()
+        {
+            var handler = new RecordingHandler((request, cancellationToken) =>
+            {
+                Assert.Equal("Basic", request.Headers.Authorization!.Scheme);
+                if (request.RequestUri!.AbsolutePath == "/v2/catalogs/zip-codes/01000")
+                    return Task.FromResult(JsonResponse("{\"key\":\"01000\",\"state\":{\"key\":\"CMX\",\"description\":\"Ciudad de México\"}}"));
+                Assert.Equal("/v2/catalogs/comercioexterior/2.0/tariff-fractions", request.RequestUri.AbsolutePath);
+                return Task.FromResult(JsonResponse("{\"data\":[{\"key\":\"0101\",\"description\":\"Caballos\"}]}"));
+            });
+            using var http = CreateHttpClient(handler);
+            using var sdk = FacturapiClient.CreateWithCustomHttpClient("sk_test", http);
+            Assert.Equal("CMX", (await sdk.Catalog.GetZipCode("01000")).State!.Key);
+            Assert.Equal("0101", Assert.Single((await sdk.ComercioExteriorCatalog.SearchTariffFractions(new ComercioExteriorCatalogSearchTariffFractionsParams { Q = "0101" })).Data).Key);
+        }
+
+        [Fact]
+        public async Task FielUploadAndLiveKeys_PreserveMultipartAndReadArrayResponses()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                if (request.Method == HttpMethod.Put)
+                {
+                    Assert.Equal("/v2/organizations/org_1/fiel", request.RequestUri!.AbsolutePath);
+                    Assert.Equal("multipart/form-data", request.Content!.Headers.ContentType!.MediaType);
+                    var content = await request.Content.ReadAsStringAsync();
+                    Assert.Contains("name=cer", content);
+                    Assert.Contains("name=key", content);
+                    Assert.Contains("name=password", content);
+                    Assert.Contains("certificate", content);
+                    return JsonResponse("{\"id\":\"org_1\"}");
+                }
+                return JsonResponse("[{\"id\":\"key_1\",\"first_12\":\"prefix\",\"created_at\":\"2026-01-01T00:00:00Z\"}]");
+            });
+            var wrapper = new OrganizationWrapper("test_key", "v2", CreateHttpClient(handler));
+            using var cer = new MemoryStream(Encoding.UTF8.GetBytes("certificate"));
+            using var key = new MemoryStream(Encoding.UTF8.GetBytes("private-key-fixture"));
+            Assert.Equal("org_1", (await wrapper.UploadFielAsync("org_1", cer, key, "password-fixture")).Id);
+            var liveKey = Assert.Single(await wrapper.ListLiveApiKeysAsync("org_1"));
+            Assert.Equal("key_1", liveKey.Id);
+            Assert.Equal(new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), liveKey.CreatedAt);
+        }
+
+        [Fact]
+        public async Task ReceiptSummary_SelectsDryRunWithoutMutatingTheInput()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal("/v2/receipts/to-invoice", request.RequestUri!.AbsolutePath);
+                var body = JObject.Parse(await request.Content!.ReadAsStringAsync());
+                Assert.True((bool)body["dry_run"]!);
+                Assert.Equal("rec_1", (string?)body["keys"]![0]);
+                return JsonResponse("{\"subtotal\":100,\"discount\":0,\"total\":116,\"receipts\":[\"rec_1\"],\"payment_form\":\"03\",\"item_count\":1,\"taxes\":{\"totalAdded\":16,\"totalWithholding\":0,\"allAdded\":[],\"allWithholding\":[],\"localTotalAdded\":0,\"localTotalWithholding\":0,\"localAllAdded\":[],\"localAllWithholding\":[]}}");
+            });
+            var wrapper = new ReceiptWrapper("test_key", "v2", CreateHttpClient(handler));
+            var input = new ToInvoiceInput(new List<string> { "rec_1" }) { DryRun = false };
+            var summary = await wrapper.SummarizeToInvoiceAsync(input);
+            Assert.Equal(116m, summary.Total);
+            Assert.Equal(1, summary.ItemCount);
+            Assert.False(input.DryRun);
+        }
+
+        [Fact]
+        public async Task WebhookSignatures_AreVerifiedLocallyAgainstOriginalPayloadBytes()
+        {
+            const string payload = "{\"id\":\"evt_1\",\"created_at\":\"2026-01-01T00:00:00Z\",\"livemode\":false,\"organization\":\"org_1\",\"type\":\"customer.edit_link_completed\",\"data\":{\"type\":\"customer\",\"object\":{\"id\":\"cus_1\"}}}";
+            const string signature = "b9522a72eaf13b9411ff1182ca4a611bd6fa42e42dffd25824b11b9429cc0ba7";
+            var handler = new RecordingHandler((request, cancellationToken) => throw new InvalidOperationException("Signature verification must not call HTTP."));
+            var wrapper = new WebhookWrapper("test_key", "v2", CreateHttpClient(handler));
+            var result = await wrapper.ValidateSignatureAsync("test_secret", signature.ToUpperInvariant(), payload);
+            Assert.Equal("evt_1", result.Id);
+            Assert.Equal(new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), result.CreatedAt);
+            Assert.True(result.Data.Object.TryGet<Customer>(out var customer));
+            Assert.Equal("cus_1", customer.Id);
+            await Assert.ThrowsAsync<ArgumentNullException>(() => wrapper.ValidateSignatureAsync(null!));
+            await Assert.ThrowsAsync<ArgumentException>(() => wrapper.ValidateSignatureAsync("test_secret", signature, payload + " "));
+            await Assert.ThrowsAsync<ArgumentException>(() => wrapper.ValidateSignatureAsync("test_secret", new string('z', 64), payload));
+            await Assert.ThrowsAsync<OperationCanceledException>(() => wrapper.ValidateSignatureAsync("test_secret", signature, payload, new CancellationToken(true)));
+        }
+
+        [Fact]
+        public async Task RemoteWebhookVerification_PreservesStringsAndOpenObjectValues()
+        {
+            var count = 0;
+            const string payload = "{\"id\":\"evt_1\"}";
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                Assert.Equal("/v2/webhooks/validate-signature", request.RequestUri!.AbsolutePath);
+                var body = JObject.Parse(await request.Content!.ReadAsStringAsync());
+                Assert.Equal(payload, (string?)body["payload"]);
+                return ++count == 1 ? JsonResponse(Newtonsoft.Json.JsonConvert.SerializeObject(payload)) : JsonResponse("{\"metadata\":{\"at\":\"2026-01-01T00:00:00Z\",\"xml\":\"<opaque />\"}}");
+            });
+            var wrapper = new WebhookWrapper("test_key", "v2", CreateHttpClient(handler));
+            var input = new ValidateWebhookSignatureInput("test_secret", payload, "signature-fixture");
+            Assert.True((await wrapper.ValidateSignatureRemotelyAsync(input)).TryGet<string>(out var verified));
+            Assert.Equal(payload, verified);
+            Assert.True((await wrapper.ValidateSignatureRemotelyAsync(input)).TryGet<Dictionary<string, object?>>(out var response));
+            var metadata = Assert.IsType<JObject>(response["metadata"]);
+            Assert.Equal(JTokenType.String, metadata["at"]!.Type);
+            Assert.Equal("<opaque />", (string?)metadata["xml"]);
+        }
+
+        [Fact]
+        public async Task DraftAndCancellationVariants_SelectRequiredFieldsFromTheContract()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                if (request.Method == HttpMethod.Post)
+                {
+                    var body = JObject.Parse(await request.Content!.ReadAsStringAsync());
+                    Assert.Equal("I", (string?)body["type"]);
+                    Assert.Equal("draft", (string?)body["status"]);
+                    Assert.Null(body["items"]);
+                    Assert.Null(body["payment_form"]);
+                    return JsonResponse("{\"id\":\"draft_1\",\"status\":\"draft\",\"date\":null}");
+                }
+                Assert.Equal("?motive=01&substitution=replacement_1", request.RequestUri!.Query);
+                return JsonResponse("{\"id\":\"inv_1\",\"status\":\"canceled\"}");
+            });
+            IInvoiceWrapper wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            Assert.Equal("draft_1", (await wrapper.CreateDraftIngresoAsync(new InvoiceIngresoDraftInput())).Id);
+            Assert.Equal("inv_1", (await wrapper.CancelAsync("inv_1", new CancellationWithSubstitutionInput(
+                CancellationMotive.COMPROBANTE_EMITIDO_CON_ERRORES_CON_RELACION, "replacement_1"))).Id);
         }
 
         private static HttpClient CreateHttpClient(HttpMessageHandler handler)

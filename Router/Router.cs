@@ -7,7 +7,7 @@ namespace Facturapi
 {
     internal static partial class Router
     {
-        private static string UriWithQuery(string path, Dictionary<string, object> query = null)
+        internal static string UriWithQuery(string path, Dictionary<string, object> query = null)
         {
             if (query == null || query.Count == 0)
             {
@@ -39,6 +39,12 @@ namespace Facturapi
             // A null value means "no filter": omit the key instead of sending it
             // empty, which the API can read as an explicit empty value. Pass an
             // empty string to send `key=` on purpose.
+            if (value is IOneOfValue alternative)
+            {
+                AppendQueryPart(parts, key, alternative.Value);
+                return;
+            }
+
             if (value == null)
             {
                 return;
@@ -64,7 +70,14 @@ namespace Facturapi
                 return;
             }
 
-            parts.Add(Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value.ToString() ?? String.Empty));
+            parts.Add(Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value switch
+            {
+                bool boolean => boolean ? "true" : "false",
+                DateTime date => date.ToString("o", System.Globalization.CultureInfo.InvariantCulture),
+                DateTimeOffset offset => offset.ToString("o", System.Globalization.CultureInfo.InvariantCulture),
+                IFormattable scalar => scalar.ToString(null, System.Globalization.CultureInfo.InvariantCulture),
+                _ => value.ToString() ?? String.Empty
+            }));
         }
     }
 }

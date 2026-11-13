@@ -17,6 +17,8 @@ namespace Facturapi
         public ICatalogWrapper Catalog { get; private set; }
         public ICartaporteCatalogWrapper CartaporteCatalog { get; private set; }
         public INominaCatalogWrapper NominaCatalog { get; private set; }
+        /// <summary>Busca claves y descripciones de fracciones arancelarias de comercio exterior.</summary>
+        public IComercioExteriorCatalogWrapper ComercioExteriorCatalog { get; private set; }
         public IToolWrapper Tool { get; private set; }
         public IWebhookWrapper Webhook { get; private set; }
         private readonly HttpClient httpClient;
@@ -43,6 +45,7 @@ namespace Facturapi
             this.Catalog = new CatalogWrapper(apiKey, apiVersion, this.httpClient);
             this.CartaporteCatalog = new CartaporteCatalogWrapper(apiKey, apiVersion, this.httpClient);
             this.NominaCatalog = new NominaCatalogWrapper(apiKey, apiVersion, this.httpClient);
+            this.ComercioExteriorCatalog = new ComercioExteriorCatalogWrapper(apiKey, apiVersion, this.httpClient);
             this.Tool = new ToolWrapper(apiKey, apiVersion, this.httpClient);
             this.Webhook = new WebhookWrapper(apiKey, apiVersion, this.httpClient);
         }

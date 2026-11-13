@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace Facturapi.Wrappers
 {
-    public abstract class BaseWrapper
+    public abstract partial class BaseWrapper
     {
         protected HttpClient client;
         protected JsonSerializerSettings jsonSettings { get; set; }
@@ -25,7 +25,8 @@ namespace Facturapi.Wrappers
             this.jsonSettings = new JsonSerializerSettings
             {
                 ContractResolver = new SnakeCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore,
+                DateParseHandling = DateParseHandling.None
             };
         }
 

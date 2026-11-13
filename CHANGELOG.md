@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [8.0.0] - 2026-11-13
+
+### Breaking
+
+- Align response models with the API contract, including nullable dates and optional fields, decimal numeric values, typed nested objects, and corrected property names. See the README migration guide.
+- Retention methods return retention models; ZIP requests expose typed models; organization key and series operations return the documented lists. Receipt invoicing and email methods expose their API results.
+- Webhook signature verification returns `ApiEvent` and runs locally. Explicit remote verification preserves string or object payload responses.
+
+### Added
+
+- Typed inputs, filters and XML documentation across all public API operations, including invoice and retention downloads, signed URLs, receipt assignment and summaries, FIEL uploads, product categories, geographic and fiscal catalogs, and foreign-trade catalogs.
+- Invoice creation variants for Ingreso, Egreso, Pago, Nómina and Traslado, partial draft inputs, and cancellation inputs that require a substitution document when applicable.
+- Typed complements for payments, payroll, Carta Porte, foreign trade and fiscal legends, preserving custom XML and open JSON values.
+- Typed API error details through `FacturapiException.ErrorDetails`, retaining the original `Errors` JSON.
+- `OneOf` alternatives with implicit conversions and response inspection, and input dates accepting ISO strings, `DateTime` or `DateTimeOffset`.
+
+### Fixed
+
+- Preserve omitted fields versus explicit nulls and serialize boolean, numeric and date query values using their wire formats.
+- Decode webhook event objects according to their declared resource type without making an HTTP request for local signature verification.
+
 ## [7.1.0] - 2026-10-07
 
 ### Added
