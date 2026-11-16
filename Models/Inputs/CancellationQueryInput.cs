@@ -17,7 +17,6 @@ namespace Facturapi
         /// motive
         /// Valores: "01", "04", "02", "03".
         /// Opcional.
-        /// Admite null.
         /// </summary>
         [JsonIgnore]
         public string? Motive
@@ -29,7 +28,6 @@ namespace Facturapi
         /// <summary>
         /// ID de Facturapi o UUID del documento sustituto.
         /// Opcional.
-        /// Admite null.
         /// </summary>
         [JsonIgnore]
         public string? Substitution

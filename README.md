@@ -257,6 +257,12 @@ Los complementos concretos se pueden agregar a `List<InvoiceComplementInput>`. L
 
 `CreateAsync` también tiene sobrecargas para las variantes de cliente y factura, incluidos los borradores. Puedes usar `CreateAsync(new InvoiceIngresoDraftInput())` o conservar el helper `CreateDraftIngresoAsync`.
 
+Para nómina, `NominaPercepcionHorasExtraInput` fija `tipo_percepcion = "019"` y requiere la lista de horas extra. Es asignable a `NominaPercepcionInput`, incluida la lista de percepciones. `NominaEntidadSncfMixtaInput` fija `origen_recurso = "IM"` y requiere el monto de recursos propios; se asigna directamente a `NominaEmisorInput.EntidadSncf`.
+
+`GlobalInvoiceReceiptsInput(from, to, receipts)` requiere las fechas al seleccionar recibos explícitos. `GlobalInvoicePeriodInput` permite seleccionar por periodo sin exponer `Receipts`. Ambos tienen sobrecargas de `Receipt.CreateGlobalInvoiceAsync`, además de los helpers `CreateGlobalInvoiceFromReceiptsAsync` y `CreateGlobalInvoiceForPeriodAsync`. La respuesta es `Invoice?`: puede ser `null` cuando no quedan recibos por facturar.
+
+En retenciones, `RetentionDraftInput` selecciona el borrador y `RetentionCompleteInput` requiere los argumentos de cliente, clave, periodo y totales. Puedes usar las sobrecargas de `Retention.CreateAsync` o los helpers `CreateDraftAsync` y `CreateCompleteAsync`. Las entradas generales y de edición no agregan `status = "draft"` automáticamente.
+
 Las respuestas de factura se deserializan como `InvoiceDraft`, `InvoicePending`, `InvoiceFailed` o `InvoiceStamped`, según `status`. En una factura timbrada (`valid` o `canceled`), el subtipo expone `Uuid`, `Date` y `Stamp` como campos no anulables:
 
 ```csharp
@@ -294,6 +300,7 @@ Las llamadas con diccionarios conservan sus nombres y argumentos. Quienes sólo 
 | ZIP requests como diccionarios | Devuelven `InvoiceZipRequest`; usa `.Id`, `.Status`, etc. en lugar de indexadores. |
 | Llaves Live o series como objeto individual | `ListLiveApiKeysAsync` y las operaciones de crear, actualizar y eliminar series devuelven listas de los modelos correspondientes. `DeleteCertificateAsync` devuelve `OrganizationDeleteCerts`. |
 | Métodos que descartaban el resultado | Envíos por correo y operaciones de recibos exponen las respuestas de la API, incluidos los resultados de facturación y resúmenes. |
+| Facturación global de recibos | `CreateGlobalInvoiceAsync` devuelve `Invoice?`; comprueba `null` cuando no hay recibos que facturar. |
 | `Invoice.Currecy` y `SeriesGroup.Name` | Usa los nombres corregidos `Currency` y `Series`. |
 | Implementaciones manuales de interfaces | Actualiza los miembros y firmas de `I*Wrapper` e incorpora `ComercioExteriorCatalog` a `IFacturapiClient`. |
 | Verificación de webhook como `Webhook` | `ValidateSignatureAsync` devuelve `ApiEvent` y verifica localmente. El acceso remoto explícito conserva el payload original. |
@@ -316,3 +323,5 @@ pnpm generate:sdk:check
 El compilador de TypeScript resuelve referencias, intersecciones y variantes después de `openapi-typescript`; los renderers de C# producen modelos, métodos y documentación. Los bindings conservan nombres y firmas del SDK, formatos de descarga y variantes de conveniencia. Toda operación pública debe tener un método asociado y CI verifica que la generación esté actualizada. Las constantes y los helpers locales se mantienen aparte cuando no derivan de un contrato HTTP.
 
 El paso de mejor esfuerzo convierte uniones de respuestas en jerarquías cuando todas las alternativas tienen valores literales de string disjuntos para un discriminador común. Los subtipos conservan los campos requeridos y la nulabilidad de su alternativa, y los converters seleccionan el subtipo al leer JSON. Las uniones ambiguas mantienen su modelo amplio. Las variantes de entrada configuradas también generan sobrecargas; no se infieren reglas fiscales a partir de texto descriptivo.
+
+Consulta [el alcance y las diferencias del tipado](openapi/typing-audit.md). Los selectores de variantes pueden usar valores literales, campos requeridos y campos ausentes; deben coincidir con una sola alternativa del contrato. Las propiedades con un esquema canónico configurado se verifican por equivalencia de tipos antes de reutilizarlo en entradas anidadas.

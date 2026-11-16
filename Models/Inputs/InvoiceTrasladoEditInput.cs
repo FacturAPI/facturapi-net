@@ -19,7 +19,6 @@ namespace Facturapi
         public InvoiceTrasladoEditInput()
         {
             this["type"] = "T";
-            this["status"] = "draft";
         }
 
         /// <summary>

@@ -200,6 +200,7 @@ namespace Facturapi
         /// <summary>
         /// Cliente receptor de la factura.
         /// Opcional.
+        /// Admite null.
         /// </summary>
         [JsonIgnore]
         public OneOf<string, CustomerNationalCreateInput, CustomerForeignCreateInput, CustomerGenericCreateInput>? Customer

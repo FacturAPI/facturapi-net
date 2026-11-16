@@ -51,9 +51,9 @@ namespace Facturapi
         /// Opcional.
         /// </summary>
         [JsonIgnore]
-        public NominaEmisorInputEntidadSncf? EntidadSncf
+        public NominaEntidadSncfInput? EntidadSncf
         {
-            get => TryGetValue("entidad_sncf", out var value) ? (NominaEmisorInputEntidadSncf?)value! : default!;
+            get => TryGetValue("entidad_sncf", out var value) ? (NominaEntidadSncfInput?)value! : default!;
             set => this["entidad_sncf"] = value;
         }
 

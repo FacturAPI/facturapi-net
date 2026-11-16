@@ -141,7 +141,7 @@ namespace Facturapi.Wrappers
         /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
         /// <returns>Nuevo objeto `Invoice` creado, o `null` si no hay recibos abiertos en el periodo</returns>
         /// <see href="https://docs.facturapi.io/api/#operation/createGlobalInvoice"/>
-        Task<Invoice> CreateGlobalInvoiceAsync(JsonObject data, CancellationToken cancellationToken = default);
+        Task<Invoice?> CreateGlobalInvoiceAsync(JsonObject data, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Crear factura global
@@ -161,7 +161,47 @@ namespace Facturapi.Wrappers
         /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
         /// <returns>Nuevo objeto `Invoice` creado, o `null` si no hay recibos abiertos en el periodo</returns>
         /// <see href="https://docs.facturapi.io/api/#operation/createGlobalInvoice"/>
-        Task<Invoice> CreateGlobalInvoiceAsync(GlobalInvoiceInput data, CancellationToken cancellationToken = default);
+        Task<Invoice?> CreateGlobalInvoiceAsync(GlobalInvoiceInput data, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Crear factura global
+        ///
+        /// Crea una factura global que incluirá todos los recibos con `status = “open”` de un cierto periodo.
+        ///
+        /// La factura global se emite al cliente genérico `PUBLICO EN GENERAL`.
+        /// Los recibos incluidos quedan asociados a ese cliente y su `status`
+        /// cambia a `"invoiced_globally"`.
+        ///
+        /// Una factura global puede incluir hasta 5,000 recibos abiertos. Si el periodo
+        /// contiene más, puedes enviar `limit_to_max_receipts: true` y repetir la solicitud
+        /// con el mismo periodo hasta recibir `null`.
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite GlobalInvoiceInput.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado, o `null` si no hay recibos abiertos en el periodo</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createGlobalInvoice"/>
+        Task<Invoice?> CreateGlobalInvoiceAsync(GlobalInvoiceReceiptsInput data, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Crear factura global
+        ///
+        /// Crea una factura global que incluirá todos los recibos con `status = “open”` de un cierto periodo.
+        ///
+        /// La factura global se emite al cliente genérico `PUBLICO EN GENERAL`.
+        /// Los recibos incluidos quedan asociados a ese cliente y su `status`
+        /// cambia a `"invoiced_globally"`.
+        ///
+        /// Una factura global puede incluir hasta 5,000 recibos abiertos. Si el periodo
+        /// contiene más, puedes enviar `limit_to_max_receipts: true` y repetir la solicitud
+        /// con el mismo periodo hasta recibir `null`.
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite GlobalInvoiceInput.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado, o `null` si no hay recibos abiertos en el periodo</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createGlobalInvoice"/>
+        Task<Invoice?> CreateGlobalInvoiceAsync(GlobalInvoicePeriodInput data, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Facturar múltiples recibos
@@ -391,6 +431,46 @@ namespace Facturapi.Wrappers
         /// <returns>Objeto `Invoice` creado u objeto resumen cuando `dry_run=true`</returns>
         /// <see href="https://docs.facturapi.io/api/#operation/createToInvoiceFromReceipts"/>
         Task<ToInvoiceSummary> SummarizeToInvoiceAsync(ToInvoiceInput data, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Crear factura global
+        ///
+        /// Crea una factura global que incluirá todos los recibos con `status = “open”` de un cierto periodo.
+        ///
+        /// La factura global se emite al cliente genérico `PUBLICO EN GENERAL`.
+        /// Los recibos incluidos quedan asociados a ese cliente y su `status`
+        /// cambia a `"invoiced_globally"`.
+        ///
+        /// Una factura global puede incluir hasta 5,000 recibos abiertos. Si el periodo
+        /// contiene más, puedes enviar `limit_to_max_receipts: true` y repetir la solicitud
+        /// con el mismo periodo hasta recibir `null`.
+        ///
+        /// </summary>
+        /// <param name="data">Las fechas son opcionales al seleccionar por periodo. Al enviar receipts se requieren from y to. La periodicidad predeterminada viene de la configuración de la organización.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado, o `null` si no hay recibos abiertos en el periodo</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createGlobalInvoice"/>
+        Task<Invoice?> CreateGlobalInvoiceFromReceiptsAsync(GlobalInvoiceReceiptsInput data, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Crear factura global
+        ///
+        /// Crea una factura global que incluirá todos los recibos con `status = “open”` de un cierto periodo.
+        ///
+        /// La factura global se emite al cliente genérico `PUBLICO EN GENERAL`.
+        /// Los recibos incluidos quedan asociados a ese cliente y su `status`
+        /// cambia a `"invoiced_globally"`.
+        ///
+        /// Una factura global puede incluir hasta 5,000 recibos abiertos. Si el periodo
+        /// contiene más, puedes enviar `limit_to_max_receipts: true` y repetir la solicitud
+        /// con el mismo periodo hasta recibir `null`.
+        ///
+        /// </summary>
+        /// <param name="data">Las fechas son opcionales al seleccionar por periodo. Al enviar receipts se requieren from y to. La periodicidad predeterminada viene de la configuración de la organización.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado, o `null` si no hay recibos abiertos en el periodo</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createGlobalInvoice"/>
+        Task<Invoice?> CreateGlobalInvoiceForPeriodAsync(GlobalInvoicePeriodInput data, CancellationToken cancellationToken = default);
 
     }
 }

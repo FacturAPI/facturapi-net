@@ -37,6 +37,7 @@ namespace Facturapi
         /// Cliente opcional para renderizar la vista previa. Si lo omites,
         /// todos los recibos deben tener asignado el mismo cliente.
         /// Opcional.
+        /// Admite null.
         /// </summary>
         [JsonIgnore]
         public OneOf<string, CustomerNationalCreateInput, CustomerForeignCreateInput, CustomerGenericCreateInput>? Customer

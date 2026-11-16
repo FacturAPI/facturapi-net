@@ -192,13 +192,14 @@ test("preserves deliberately open payloads without inventing a schema", async ()
 test("represents heterogeneous alternatives without a JSON envelope", async () => {
   const spec = fixture();
   spec.components.schemas.CustomerUpdateInput.properties.variant = {
-    oneOf: [{ type: "string" }, { type: "integer" }],
+    oneOf: [{ type: "string" }, { type: "integer" }, { type: "null" }],
   };
   const contract = await compileContract(spec, binding);
   const variant = contract.models
     .find((model) => model.name === "CustomerUpdateInput")
     .properties.find((field) => field.name === "variant");
   assert.equal(variant.kind, "union");
+  assert.equal(variant.nullable, true);
   assert.deepEqual(variant.variants.map((value) => value.kind).sort(), [
     "integer",
     "string",
@@ -351,5 +352,92 @@ test("generates response hierarchies only for disjoint literal discriminators", 
   assert.equal(
     contract.models.find((model) => model.name === "Customer").responseVariants,
     undefined,
+  );
+});
+
+test("preserves required-only intersection branches and optional discriminator omission", async () => {
+  const spec = fixture();
+  spec.components.schemas.SelectionBaseInput = {
+    type: "object",
+    properties: {
+      receipts: { type: "array", items: { type: "string" } },
+      from: { type: "string" },
+      to: { type: "string" },
+      status: { type: "string", const: "draft" },
+    },
+  };
+  spec.components.schemas.SelectionInput = {
+    oneOf: [
+      {
+        allOf: [
+          { $ref: "#/components/schemas/SelectionBaseInput" },
+          { type: "object", required: ["receipts", "from", "to"] },
+        ],
+      },
+      {
+        allOf: [
+          { $ref: "#/components/schemas/SelectionBaseInput" },
+          { type: "object", properties: { receipts: false } },
+        ],
+      },
+    ],
+  };
+  const contract = await compileContract(spec, {
+    ...binding,
+    variants: {
+      ExplicitReceiptsInput: {
+        schema: "SelectionInput",
+        required: ["receipts", "from", "to"],
+        parent: true,
+      },
+      PeriodInput: { schema: "SelectionInput", absent: ["receipts"] },
+    },
+  });
+  const selected = contract.models.find(
+    (model) => model.name === "ExplicitReceiptsInput",
+  );
+  assert.equal(selected.parent, "SelectionInput");
+  for (const key of ["receipts", "from", "to"])
+    assert.equal(
+      selected.properties.find((field) => field.name === key).required,
+      true,
+    );
+  const period = contract.models.find((model) => model.name === "PeriodInput");
+  assert.equal(
+    period.properties.some((field) => field.name === "receipts"),
+    false,
+  );
+  const outputs = renderModels(contract);
+  assert.doesNotMatch(
+    outputs.get("Models/Inputs/SelectionInput.cs"),
+    /this\["status"\] = "draft"/,
+  );
+  assert.match(
+    outputs.get("Models/Inputs/ExplicitReceiptsInput.cs"),
+    /List<string> @receipts, string @from, string @to/,
+  );
+});
+
+test("canonical property bindings preserve nullable types and reject contract drift", async () => {
+  const contract = await compileContract(fixture(), {
+    ...binding,
+    propertySchemas: {
+      "CustomerUpdateInput.email": { schema: "Contact", property: "email" },
+    },
+  });
+  assert.equal(
+    contract.models
+      .find((model) => model.name === "CustomerUpdateInput")
+      .properties.find((field) => field.name === "email").nullable,
+    true,
+  );
+  await assert.rejects(
+    compileContract(fixture(), {
+      ...binding,
+      propertySchemas: {
+        "CustomerUpdateInput.email": "Base",
+      },
+    }),
+    /Property schema drift/,
   );
 });

@@ -136,7 +136,7 @@ export function renderResources(contract, config) {
         queryArgument.description = `Parámetros de consulta. Admite ${fieldType(method.query, false)}.`;
       const resultType = method.resultProperty
         ? "bool"
-        : fieldType(method.response, false).replace(/\?$/, "");
+        : fieldType(method.response, false);
       method.resultType = resultType;
       method.argumentsList = argumentsList;
       method.pathArguments = pathArguments;

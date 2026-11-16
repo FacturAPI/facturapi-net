@@ -60,6 +60,46 @@ namespace Facturapi.Wrappers
         }
 
         /// <summary>
+        /// Crear retención
+        ///
+        /// Crea una nueva Retención. Si el comprobante es creado en ambiente Live, ésta será **timbrado y enviado al SAT**.
+        ///
+        /// Para crear una retención en borrador, envía `status: "draft"`. En ese caso,
+        /// la retención se guardará sin timbrarse, no se enviará al PAC y podrá estar
+        /// incompleta. Facturapi asignará `is_ready_to_stamp: true` únicamente cuando
+        /// el borrador tenga todos los datos requeridos para timbrarse.
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite RetentionInput.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Retention` creado</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createRetention"/>
+        public Task<Retention> CreateAsync(RetentionCompleteInput data, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Retention>(HttpMethod.Post, $"retentions", null, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear retención
+        ///
+        /// Crea una nueva Retención. Si el comprobante es creado en ambiente Live, ésta será **timbrado y enviado al SAT**.
+        ///
+        /// Para crear una retención en borrador, envía `status: "draft"`. En ese caso,
+        /// la retención se guardará sin timbrarse, no se enviará al PAC y podrá estar
+        /// incompleta. Facturapi asignará `is_ready_to_stamp: true` únicamente cuando
+        /// el borrador tenga todos los datos requeridos para timbrarse.
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite RetentionInput.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Retention` creado</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createRetention"/>
+        public Task<Retention> CreateAsync(RetentionDraftInput data, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Retention>(HttpMethod.Post, $"retentions", null, data, true, cancellationToken);
+        }
+
+        /// <summary>
         /// Listar retenciones
         ///
         /// Regresa una lista paginada de todas las retenciones de una organización o realiza una búsqueda de acuerdo a parámetros
@@ -343,6 +383,46 @@ namespace Facturapi.Wrappers
         public Task<SignedDownloadUrl> DownloadZipUrlAsync(string id, CancellationToken cancellationToken = default)
         {
             return RequestAsync<SignedDownloadUrl>(HttpMethod.Get, $"retentions/{Uri.EscapeDataString(id)}/download-url/zip", null, null, false, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear retención
+        ///
+        /// Crea una nueva Retención. Si el comprobante es creado en ambiente Live, ésta será **timbrado y enviado al SAT**.
+        ///
+        /// Para crear una retención en borrador, envía `status: "draft"`. En ese caso,
+        /// la retención se guardará sin timbrarse, no se enviará al PAC y podrá estar
+        /// incompleta. Facturapi asignará `is_ready_to_stamp: true` únicamente cuando
+        /// el borrador tenga todos los datos requeridos para timbrarse.
+        ///
+        /// </summary>
+        /// <param name="data">RetentionCompleteInput</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Retention` creado</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createRetention"/>
+        public Task<Retention> CreateCompleteAsync(RetentionCompleteInput data, CancellationToken cancellationToken = default)
+        {
+            return CreateAsync(data, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear retención
+        ///
+        /// Crea una nueva Retención. Si el comprobante es creado en ambiente Live, ésta será **timbrado y enviado al SAT**.
+        ///
+        /// Para crear una retención en borrador, envía `status: "draft"`. En ese caso,
+        /// la retención se guardará sin timbrarse, no se enviará al PAC y podrá estar
+        /// incompleta. Facturapi asignará `is_ready_to_stamp: true` únicamente cuando
+        /// el borrador tenga todos los datos requeridos para timbrarse.
+        ///
+        /// </summary>
+        /// <param name="data">RetentionDraftInput</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Retention` creado</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createRetention"/>
+        public Task<Retention> CreateDraftAsync(RetentionDraftInput data, CancellationToken cancellationToken = default)
+        {
+            return CreateAsync(data, cancellationToken);
         }
 
     }

@@ -806,6 +806,26 @@
         "method": "CreateAsync",
         "schema": "InvoiceTrasladoDraftInput"
       }
+    },
+    "Receipt": {
+      "CreateGlobalInvoiceFromReceiptsAsync": {
+        "method": "CreateGlobalInvoiceAsync",
+        "schema": "GlobalInvoiceReceiptsInput"
+      },
+      "CreateGlobalInvoiceForPeriodAsync": {
+        "method": "CreateGlobalInvoiceAsync",
+        "schema": "GlobalInvoicePeriodInput"
+      }
+    },
+    "Retention": {
+      "CreateCompleteAsync": {
+        "method": "CreateAsync",
+        "schema": "RetentionCompleteInput"
+      },
+      "CreateDraftAsync": {
+        "method": "CreateAsync",
+        "schema": "RetentionDraftInput"
+      }
     }
   },
   "variants": {
@@ -850,6 +870,54 @@
         "type": "T",
         "status": "draft"
       }
+    },
+    "NominaPercepcionHorasExtraInput": {
+      "schema": "NominaPercepcionInput",
+      "match": {
+        "tipo_percepcion": "019"
+      },
+      "parent": true
+    },
+    "NominaEntidadSncfMixtaInput": {
+      "schema": "NominaEntidadSncfInput",
+      "match": {
+        "origen_recurso": "IM"
+      },
+      "parent": true
+    },
+    "GlobalInvoiceReceiptsInput": {
+      "schema": "GlobalInvoiceInput",
+      "required": ["receipts", "from", "to"],
+      "parent": true
+    },
+    "GlobalInvoicePeriodInput": {
+      "schema": "GlobalInvoiceInput",
+      "absent": ["receipts"]
+    },
+    "RetentionCompleteInput": {
+      "schema": "RetentionInput",
+      "required": ["customer", "cve_retenc", "periodo", "totales"],
+      "parent": true
+    },
+    "RetentionDraftInput": {
+      "schema": "RetentionInput",
+      "required": ["status"],
+      "parent": true
+    }
+  },
+  "propertySchemas": {
+    "NominaEmisorInput.entidad_sncf": "NominaEntidadSncfInput",
+    "RetentionInput.customer": {
+      "schema": "RetentionUpdateInput",
+      "property": "customer"
+    },
+    "RetentionCompleteInput.customer": {
+      "schema": "RetentionUpdateInput",
+      "property": "customer"
+    },
+    "RetentionDraftInput.customer": {
+      "schema": "RetentionUpdateInput",
+      "property": "customer"
     }
   }
 }

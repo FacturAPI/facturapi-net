@@ -117,18 +117,6 @@ namespace Facturapi
         }
 
         /// <summary>
-        /// Recibos a incluir en la factura global. Si se incluye este parámetro, los parámetros `from` y `to` serán requeridos y tendrán que cumplir con el campo `periodicity`.
-        /// Opcional.
-        /// Admite null.
-        /// </summary>
-        [JsonIgnore]
-        public List<string>? Receipts
-        {
-            get => TryGetValue("receipts", out var value) ? (List<string>?)value! : default!;
-            set => this["receipts"] = value;
-        }
-
-        /// <summary>
         /// Permite procesar periodos con más de 5,000 recibos abiertos. Cuando es
         /// `true`, la factura incluye como máximo 5,000 recibos y los restantes
         /// conservan el status `"open"`. Repite la solicitud con el mismo periodo
@@ -143,6 +131,17 @@ namespace Facturapi
         {
             get => TryGetValue("limit_to_max_receipts", out var value) ? (bool?)value! : default!;
             set => this["limit_to_max_receipts"] = value;
+        }
+
+        /// <summary>
+        /// Recibos a incluir en la factura global. Si se incluye este parámetro, los parámetros `from` y `to` serán requeridos y tendrán que cumplir con el campo `periodicity`.
+        /// Opcional.
+        /// </summary>
+        [JsonIgnore]
+        public List<string>? Receipts
+        {
+            get => TryGetValue("receipts", out var value) ? (List<string>?)value! : default!;
+            set => this["receipts"] = value;
         }
 
     }

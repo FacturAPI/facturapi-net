@@ -14,14 +14,6 @@ namespace Facturapi
     public class InvoiceCommonEditInput : Dictionary<string, object?>
     {
         /// <summary>
-        /// Crea InvoiceCommonEditInput.
-        /// </summary>
-        public InvoiceCommonEditInput()
-        {
-            this["status"] = "draft";
-        }
-
-        /// <summary>
         /// Estado de la factura. El valor `draft` identifica un borrador que no se ha timbrado ni enviado al SAT.
         /// Sólo es posible editar facturas con este estado; al editarlas, no se puede cambiar `status`.
         /// Valores: "draft".

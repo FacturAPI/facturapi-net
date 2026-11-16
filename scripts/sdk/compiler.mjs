@@ -25,10 +25,29 @@ export async function compileContract(spec, config) {
     }
   }
   const filename = "/contract.ts";
+  // Required-only allOf clauses constrain referenced properties too. Lift their
+  // keys so openapi-typescript retains them instead of an open empty object.
+  const typeSpec = structuredClone(spec);
+  function liftRequired(value) {
+    if (!value || typeof value !== "object") return;
+    for (const child of Object.values(value)) liftRequired(child);
+    if (Array.isArray(value.allOf)) {
+      const required = [
+        ...new Set([
+          ...(value.required || []),
+          ...value.allOf.flatMap((part) =>
+            part.properties ? [] : part.required || [],
+          ),
+        ]),
+      ];
+      if (required.length) value.required = required;
+    }
+  }
+  liftRequired(typeSpec);
   const content =
     "type Integer = number & { readonly __integer: unique symbol }; type Binary = string & { readonly __binary: unique symbol };\n" +
     astToString(
-      await openapiTS(spec, {
+      await openapiTS(typeSpec, {
         defaultNonNullable: false,
         emptyObjectsUnknown: true,
         transform(schema) {
@@ -284,22 +303,26 @@ export async function compileContract(spec, config) {
           ),
       )
     ) {
-      return merge(
-        alternatives.map((variant, index) =>
-          compile(variant, hint + "Variant" + (index + 1), input),
+      return {
+        ...merge(
+          alternatives.map((variant, index) =>
+            compile(variant, hint + "Variant" + (index + 1), input),
+          ),
         ),
-      );
+        nullable,
+      };
     }
     const properties = new Map();
     for (const variant of alternatives)
       for (const symbol of checker.getPropertiesOfType(variant)) {
         if (
           input &&
-          symbol.declarations?.some((declaration) =>
-            declaration.modifiers?.some(
-              (modifier) => modifier.kind === ts.SyntaxKind.ReadonlyKeyword,
-            ),
-          )
+          (checker.typeToString(at(symbol)) === "undefined" ||
+            symbol.declarations?.some((declaration) =>
+              declaration.modifiers?.some(
+                (modifier) => modifier.kind === ts.SyntaxKind.ReadonlyKeyword,
+              ),
+            ))
         )
           continue;
         if (!properties.has(symbol.name)) properties.set(symbol.name, []);
@@ -351,7 +374,29 @@ export async function compileContract(spec, config) {
     models.set(name, model);
     const fields = [...properties].map(([key, symbols]) => ({
       ...merge(
-        symbols.map((symbol) => compile(at(symbol), name + pascal(key), input)),
+        symbols.map((symbol) => {
+          const schema = input && config.propertySchemas?.[`${name}.${key}`];
+          const selected =
+            schema &&
+            (typeof schema === "string"
+              ? named.get(schema)
+              : property(named.get(schema.schema), schema.property));
+          if (schema) {
+            assert(selected, `Unknown property schema: ${name}.${key}`);
+            assert(
+              checker.isTypeAssignableTo(
+                checker.getNonNullableType(selected),
+                checker.getNonNullableType(at(symbol)),
+              ) &&
+                checker.isTypeAssignableTo(
+                  checker.getNonNullableType(at(symbol)),
+                  checker.getNonNullableType(selected),
+                ),
+              `Property schema drift: ${name}.${key}`,
+            );
+          }
+          return compile(selected || at(symbol), name + pascal(key), input);
+        }),
       ),
       name: key,
       required:
@@ -442,21 +487,33 @@ export async function compileContract(spec, config) {
   for (const [name, binding] of Object.entries(config.variants || {})) {
     const root = checker.getNonNullableType(named.get(binding.schema));
     assert(root.isUnion(), `Expected an input union for ${name}`);
-    const matches = root.types.filter((variant) =>
-      Object.entries(binding.match).every(([key, expected]) => {
-        const symbol = checker.getPropertyOfType(variant, key);
-        if (!symbol) return false;
-        const type = checker.getNonNullableType(at(symbol));
-        const values = (type.isUnion() ? type.types : [type]).map((type) =>
-          type.isStringLiteral() ? type.value : undefined,
-        );
-        return (
-          values.length === (Array.isArray(expected) ? expected.length : 1) &&
-          values.every((value) =>
-            (Array.isArray(expected) ? expected : [expected]).includes(value),
-          )
-        );
-      }),
+    const matches = root.types.filter(
+      (variant) =>
+        Object.entries(binding.match || {}).every(([key, expected]) => {
+          const symbol = checker.getPropertyOfType(variant, key);
+          if (!symbol) return false;
+          const type = checker.getNonNullableType(at(symbol));
+          const values = (type.isUnion() ? type.types : [type]).map((type) =>
+            type.isStringLiteral() ? type.value : undefined,
+          );
+          return (
+            values.length === (Array.isArray(expected) ? expected.length : 1) &&
+            values.every((value) =>
+              (Array.isArray(expected) ? expected : [expected]).includes(value),
+            )
+          );
+        }) &&
+        (binding.required || []).every((key) => {
+          const symbol = checker.getPropertyOfType(variant, key);
+          return symbol && !(symbol.flags & ts.SymbolFlags.Optional);
+        }) &&
+        (binding.absent || []).every((key) => {
+          const symbol = checker.getPropertyOfType(variant, key);
+          return (
+            !symbol ||
+            checker.getNonNullableType(at(symbol)).flags & ts.TypeFlags.Never
+          );
+        }),
     );
     assert.equal(
       matches.length,

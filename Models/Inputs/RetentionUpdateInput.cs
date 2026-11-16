@@ -14,14 +14,6 @@ namespace Facturapi
     public class RetentionUpdateInput : Dictionary<string, object?>
     {
         /// <summary>
-        /// Crea RetentionUpdateInput.
-        /// </summary>
-        public RetentionUpdateInput()
-        {
-            this["status"] = "draft";
-        }
-
-        /// <summary>
         /// Estado inicial de la retención. Si se envía `draft`, la retención se
         /// guardará como borrador y no se timbrará ni se enviará al SAT. También
         /// al enviar `draft`, `customer`, `cve_retenc`, `periodo` y `totales`
@@ -39,6 +31,7 @@ namespace Facturapi
         /// <summary>
         /// Cliente receptor de la factura.
         /// Opcional.
+        /// Admite null.
         /// </summary>
         [JsonIgnore]
         public OneOf<string, CustomerNationalCreateInput, CustomerForeignCreateInput, CustomerGenericCreateInput>? Customer

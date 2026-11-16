@@ -1118,6 +1118,74 @@ namespace FacturapiTest
             Assert.Equal(2, input.Keys.Count);
         }
 
+        [Fact]
+        public void PayrollConditionalInputs_AreAssignableInsideTheirNestedFamilies()
+        {
+            NominaPercepcionInput perception = new NominaPercepcionHorasExtraInput("overtime", 100m, 0m,
+                new List<NominaHorasExtraInput> { new NominaHorasExtraInput(1, "01", 2, 100m) });
+            var payroll = new NominaComplementDataInput("2026-01-01", "2026-01-15", 15m,
+                new NominaReceptorInput("CURP_FIXTURE", "01", "02", "employee_1", "04", "JAL"),
+                new NominaPercepcionesInput(new List<NominaPercepcionInput> { perception }))
+            {
+                Emisor = new NominaEmisorInput { EntidadSncf = new NominaEntidadSncfMixtaInput(250m) }
+            };
+            var json = JObject.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(new NominaComplementInput { Data = payroll }));
+            Assert.Equal("nomina", (string?)json["type"]);
+            Assert.Equal("019", (string?)json["data"]!["percepciones"]!["percepcion"]![0]!["tipo_percepcion"]);
+            Assert.Equal(2, (int?)json["data"]!["percepciones"]!["percepcion"]![0]!["horas_extra"]![0]!["horas_extra"]);
+            Assert.Equal("IM", (string?)json["data"]!["emisor"]!["entidad_sncf"]!["origen_recurso"]);
+            Assert.Equal(250m, (decimal?)json["data"]!["emisor"]!["entidad_sncf"]!["monto_recurso_propio"]);
+        }
+
+        [Fact]
+        public async Task GlobalReceiptVariants_PreserveDatesSelectionAndNullableResponse()
+        {
+            var count = 0;
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                var body = JObject.Parse(await request.Content!.ReadAsStringAsync());
+                if (++count == 1)
+                {
+                    Assert.Equal("receipt_1", (string?)body["receipts"]![0]);
+                    Assert.NotNull(body["from"]);
+                    Assert.NotNull(body["to"]);
+                }
+                else Assert.Null(body["receipts"]);
+                return JsonResponse("null");
+            });
+            IReceiptWrapper wrapper = new ReceiptWrapper("test_key", "v2", CreateHttpClient(handler));
+            Assert.Null(await wrapper.CreateGlobalInvoiceAsync(new GlobalInvoiceReceiptsInput(
+                "2026-01-01", "2026-01-31", new List<string> { "receipt_1" })));
+            Assert.Null(await wrapper.CreateGlobalInvoiceForPeriodAsync(new GlobalInvoicePeriodInput { Periodicity = "month" }));
+        }
+
+        [Fact]
+        public async Task RetentionVariants_OnlySelectDraftWhenRequested()
+        {
+            Assert.False(new RetentionInput().ContainsKey("status"));
+            Assert.False(new RetentionUpdateInput().ContainsKey("status"));
+            Assert.False(new InvoiceIngresoEditInput().ContainsKey("status"));
+            var count = 0;
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                var body = JObject.Parse(await request.Content!.ReadAsStringAsync());
+                if (++count == 1) Assert.Equal("draft", (string?)body["status"]);
+                else
+                {
+                    Assert.Null(body["status"]);
+                    Assert.Equal("customer_1", (string?)body["customer"]);
+                    Assert.NotNull(body["periodo"]);
+                    Assert.NotNull(body["totales"]);
+                }
+                return JsonResponse("{\"id\":\"retention_1\"}");
+            });
+            IRetentionWrapper wrapper = new RetentionWrapper("test_key", "v2", CreateHttpClient(handler));
+            await wrapper.CreateDraftAsync(new RetentionDraftInput());
+            await wrapper.CreateAsync(new RetentionCompleteInput("customer_1", "25",
+                new RetentionInputPeriodo(1, 1, 2026),
+                new RetentionInputTotales(100m, 0m, new List<RetentionInputTotalesImpRetenidosItem>())));
+        }
+
         private static HttpClient CreateHttpClient(HttpMessageHandler handler)
         {
             return new HttpClient(handler)

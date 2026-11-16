@@ -70,6 +70,10 @@ export function description(field) {
     .filter(Boolean)
     .join("\n");
 }
+const isFixed = (field) =>
+  field.values?.length === 1 &&
+  !field.nullable &&
+  (field.required || field.name === "type");
 export function renderModels(contract) {
   const outputs = new Map();
   for (const model of contract.models) {
@@ -111,14 +115,7 @@ export function renderModels(contract) {
         ? `    [JsonConverter(typeof(${model.name}JsonConverter))]\n`
         : "") +
       `    public class ${model.name}${model.generic ? "<T>" : ""}${model.parent ? " : " + model.parent : model.input ? " : Dictionary<string, object?>" : ""}\n    {\n`;
-    const fixed = model.input
-      ? model.properties.filter(
-          (field) =>
-            ["type", "status"].includes(field.name) &&
-            field.values?.length === 1 &&
-            !field.nullable,
-        )
-      : [];
+    const fixed = model.input ? model.properties.filter(isFixed) : [];
     const required = model.input
       ? model.properties.filter(
           (field) => field.required && !fixed.includes(field),
@@ -132,15 +129,7 @@ export function renderModels(contract) {
         parent
           ? " : base(" +
             parent.properties
-              .filter(
-                (field) =>
-                  field.required &&
-                  !(
-                    ["type", "status"].includes(field.name) &&
-                    field.values?.length === 1 &&
-                    !field.nullable
-                  ),
-              )
+              .filter((field) => field.required && !isFixed(field))
               .map((field) => {
                 const own = model.properties.find(
                   (candidate) => candidate.name === field.name,

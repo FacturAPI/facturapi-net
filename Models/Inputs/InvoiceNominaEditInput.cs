@@ -19,7 +19,6 @@ namespace Facturapi
         public InvoiceNominaEditInput()
         {
             this["type"] = "N";
-            this["status"] = "draft";
         }
 
         /// <summary>

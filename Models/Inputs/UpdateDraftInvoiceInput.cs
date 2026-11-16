@@ -14,14 +14,6 @@ namespace Facturapi
     public class UpdateDraftInvoiceInput : Dictionary<string, object?>
     {
         /// <summary>
-        /// Crea UpdateDraftInvoiceInput.
-        /// </summary>
-        public UpdateDraftInvoiceInput()
-        {
-            this["status"] = "draft";
-        }
-
-        /// <summary>
         /// Tipo de comprobante de esta variante de entrada.
         /// Valores: "I", "E", "P", "N", "T".
         /// Opcional.
@@ -337,6 +329,7 @@ namespace Facturapi
         /// <summary>
         /// Cliente receptor de la factura.
         /// Opcional.
+        /// Admite null.
         /// </summary>
         [JsonIgnore]
         public OneOf<string, CustomerNationalCreateInput, CustomerForeignCreateInput, CustomerGenericCreateInput>? Customer
