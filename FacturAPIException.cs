@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
@@ -11,6 +11,8 @@ namespace Facturapi
         public string Path { get; private set; }
         public string Location { get; private set; }
         public JArray Errors { get; private set; }
+        /// <summary>Detalles de error tipados. Errors conserva el JSON original para accesos dinámicos.</summary>
+        public IReadOnlyList<ErrorDetail> ErrorDetails => Errors?.ToObject<ErrorDetail[]>() ?? Array.Empty<ErrorDetail>();
         public string LogId { get; private set; }
         public IReadOnlyDictionary<string, string> Headers { get; private set; }
 

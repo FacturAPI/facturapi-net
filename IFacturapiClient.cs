@@ -1,4 +1,4 @@
-﻿using Facturapi.Wrappers;
+using Facturapi.Wrappers;
 using System;
 
 namespace Facturapi
@@ -14,6 +14,8 @@ namespace Facturapi
         ICatalogWrapper Catalog { get; }
         ICartaporteCatalogWrapper CartaporteCatalog { get; }
         INominaCatalogWrapper NominaCatalog { get; }
+        /// <summary>Busca claves y descripciones de fracciones arancelarias de comercio exterior.</summary>
+        IComercioExteriorCatalogWrapper ComercioExteriorCatalog { get; }
         IToolWrapper Tool { get; }
         IWebhookWrapper Webhook { get; }
     }

@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [8.0.0] - 2026-11-13
+
+### Breaking
+
+- Align response models with the API contract, including nullable dates and optional fields, decimal numeric values, typed nested objects, and corrected property names. See the README migration guide.
+- Retention methods return retention models; ZIP requests expose typed models; organization key and series operations return the documented lists. Receipt invoicing and email methods expose their API results.
+- Webhook signature verification returns `ApiEvent` and runs locally. Explicit remote verification preserves string or object payload responses.
+
+### Added
+
+- Nested payroll variants requiring overtime details for perception 019 and own-resource amounts for IM; explicit-receipt/period global invoice inputs and complete/draft retention inputs, with typed creation overloads.
+- Generated response hierarchies for disjoint discriminators, including invoice states, stamp versions, complements and events, plus creation overloads for typed input variants. Unknown discriminator values retain the base response model.
+- Typed inputs, filters and XML documentation across all public API operations, including invoice and retention downloads, signed URLs, receipt assignment and summaries, FIEL uploads, product categories, geographic and fiscal catalogs, and foreign-trade catalogs.
+- Invoice creation variants for Ingreso, Egreso, Pago, Nómina and Traslado, partial draft inputs, and cancellation inputs that require a substitution document when applicable.
+- Typed complements for payments, payroll, Carta Porte, foreign trade and fiscal legends, preserving custom XML and open JSON values.
+- Typed API error details through `FacturapiException.ErrorDetails`, retaining the original `Errors` JSON.
+- `OneOf` alternatives with implicit conversions and response inspection, and input dates accepting ISO strings, `DateTime` or `DateTimeOffset`.
+
+### Fixed
+
+- Preserve nullable operation results such as global receipt invoicing. Do not auto-select draft status on general or update inputs. Retain required fields declared in required-only `allOf` clauses when selecting input variants.
+- Select untagged object alternatives by their recognized fields instead of silently selecting the first model; reject ambiguous shapes. Keep dictionary methods accessible on typed inputs and correct documentation typos during generation.
+- Preserve omitted fields versus explicit nulls and serialize boolean, numeric and date query values using their wire formats.
+- Decode webhook event objects according to their declared resource type without making an HTTP request for local signature verification.
+
 ## [7.1.0] - 2026-10-07
 
 ### Added
