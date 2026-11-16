@@ -51,7 +51,7 @@ namespace Facturapi
         /// Opcional.
         /// </summary>
         [JsonIgnore]
-        public new List<string>? Add
+        public List<string>? AddValue
         {
             get => TryGetValue("add", out var value) ? (List<string>?)value! : default!;
             set => this["add"] = value;
@@ -62,7 +62,7 @@ namespace Facturapi
         /// Opcional.
         /// </summary>
         [JsonIgnore]
-        public new List<string>? Remove
+        public List<string>? RemoveValue
         {
             get => TryGetValue("remove", out var value) ? (List<string>?)value! : default!;
             set => this["remove"] = value;

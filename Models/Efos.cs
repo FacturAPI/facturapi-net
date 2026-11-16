@@ -24,7 +24,7 @@ namespace Facturapi
         public bool? IsValid { get; set; } = default!;
 
         /// <summary>
-        /// Objeto con el resultado de la búqueda ante el SAT.
+        /// Objeto con el resultado de la búsqueda ante el SAT.
         /// Toda la información contenida en este objeto proviene del SAT.
         /// Opcional.
         /// </summary>

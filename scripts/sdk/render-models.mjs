@@ -14,7 +14,10 @@ export function text(value = "") {
       (_, url) =>
         `](${url.startsWith("#") ? "https://docs.facturapi.io/api/" : "https://docs.facturapi.io"}${url})`,
     )
-    .replaceAll("*/", "* /");
+    .replaceAll("*/", "* /")
+    .replaceAll("diponible", "disponible")
+    .replaceAll("búqueda", "búsqueda")
+    .replaceAll("del impuestos", "del impuesto");
 }
 export function doc(value, indent = "") {
   return `${indent}/// <summary>\n${text(value)
@@ -174,36 +177,39 @@ export function renderModels(contract) {
         continue;
       content += doc(description(field), "        ");
       if (model.input) {
-        const modifier =
-          [
-            "Keys",
-            "Values",
-            "Count",
-            "Comparer",
-            "Item",
-            "Add",
-            "Remove",
-            "Clear",
-            "ContainsKey",
-            "ContainsValue",
-            "TryGetValue",
-            "GetEnumerator",
-            "CopyTo",
-            "Equals",
-            "GetHashCode",
-            "GetType",
-            "ToString",
-          ].includes(pascal(field.name)) ||
-          parent?.properties.some((property) => property.name === field.name)
-            ? "new "
-            : "";
+        const propertyName = [
+          "Keys",
+          "Values",
+          "Count",
+          "Comparer",
+          "Item",
+          "Add",
+          "Remove",
+          "Clear",
+          "ContainsKey",
+          "ContainsValue",
+          "TryGetValue",
+          "GetEnumerator",
+          "CopyTo",
+          "Equals",
+          "GetHashCode",
+          "GetType",
+          "ToString",
+        ].includes(pascal(field.name))
+          ? pascal(field.name) + "Value"
+          : pascal(field.name);
+        const modifier = parent?.properties.some(
+          (property) => property.name === field.name,
+        )
+          ? "new "
+          : "";
         const isUnion = ["union", "inputDate"].includes(field.kind);
         const getter =
           isUnion && type.endsWith("?")
             ? `TryGetValue(${JSON.stringify(field.name)}, out var value) && value != null ? ${type.slice(0, -1)}.FromValue(value) : default(${type})`
             : `TryGetValue(${JSON.stringify(field.name)}, out var value) ? ${isUnion ? type + ".FromValue(value)" : "(" + type + ")value!"} : default!`;
 
-        content += `        [JsonIgnore]\n        public ${modifier}${type} ${pascal(field.name)}\n        {\n            get => ${getter};\n            set => this[${JSON.stringify(field.name)}] = ${isUnion ? "value" + (type.endsWith("?") ? "?.Value" : ".Value") : "value"};\n        }\n\n`;
+        content += `        [JsonIgnore]\n        public ${modifier}${type} ${propertyName}\n        {\n            get => ${getter};\n            set => this[${JSON.stringify(field.name)}] = ${isUnion ? "value" + (type.endsWith("?") ? "?.Value" : ".Value") : "value"};\n        }\n\n`;
       } else {
         if (inherited) {
           const getter =

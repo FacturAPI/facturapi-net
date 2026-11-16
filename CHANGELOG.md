@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Select untagged object alternatives by their recognized fields instead of silently selecting the first model; reject ambiguous shapes. Keep dictionary methods accessible on typed inputs and correct documentation typos during generation.
 - Preserve omitted fields versus explicit nulls and serialize boolean, numeric and date query values using their wire formats.
 - Decode webhook event objects according to their declared resource type without making an HTTP request for local signature verification.
 

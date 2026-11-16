@@ -136,11 +136,33 @@ test("a new contract field flows through to source without a handwritten propert
   const spec = fixture();
   spec.components.schemas.Base.properties.new_field = {
     type: "string",
-    description: "New documented value.",
+    description: "New documented value. diponible búqueda del impuestos",
+  };
+  spec.components.schemas.CustomerUpdateInput.properties.add = {
+    type: "string",
+  };
+  spec.components.schemas.CustomerUpdateInput.properties.remove = {
+    type: "string",
   };
   const outputs = renderModels(await compileContract(spec, binding));
   assert.match([...outputs.values()].join("\n"), /New documented value/);
   assert.match([...outputs.values()].join("\n"), /new_field/);
+  assert.match(
+    outputs.get("Models/Customer.cs"),
+    /disponible búsqueda del impuesto/,
+  );
+  assert.match(
+    outputs.get("Models/Inputs/CustomerUpdateInput.cs"),
+    /public string\? AddValue/,
+  );
+  assert.match(
+    outputs.get("Models/Inputs/CustomerUpdateInput.cs"),
+    /public string\? RemoveValue/,
+  );
+  assert.doesNotMatch(
+    outputs.get("Models/Inputs/CustomerUpdateInput.cs"),
+    /public new string\? (Add|Remove)\b/,
+  );
 });
 
 test("requires a public method for every resource operation", async () => {

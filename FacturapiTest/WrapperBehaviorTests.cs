@@ -1080,6 +1080,44 @@ namespace FacturapiTest
                 Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceStamped>("{\"status\":\"draft\"}"));
         }
 
+        [Fact]
+        public void ObjectAlternatives_SelectByShapeAndRejectAmbiguousOrUnknownFields()
+        {
+            var education = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceItem>(
+                "{\"complement\":{\"nombreAlumno\":\"Alumno\",\"CURP\":\"CURP_FIXTURE\"}}");
+            Assert.True(education!.Complement!.Value.TryGet<IeduComplement>(out var school));
+            Assert.Equal("Alumno", school.NombreAlumno);
+            var json = JObject.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(education));
+            Assert.Equal("CURP_FIXTURE", (string?)json["complement"]!["CURP"]);
+            var fuel = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceItem>(
+                "{\"complement\":{\"tipo_permiso\":\"PER01\"}}");
+            Assert.True(fuel!.Complement!.Value.TryGet<HidroYPetroComplement>(out var hydrocarbons));
+            Assert.Equal("PER01", hydrocarbons.TipoPermiso);
+            Assert.Throws<Newtonsoft.Json.JsonSerializationException>(() =>
+                Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceItem>("{\"complement\":{}}"));
+            Assert.Throws<Newtonsoft.Json.JsonSerializationException>(() =>
+                Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceItem>("{\"complement\":{\"unknown\":true}}"));
+            var foreignTrade = Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceComplementProperties>(
+                "{\"type\":\"comercio_exterior\",\"data\":{}}");
+            Assert.NotNull(Assert.IsType<ComercioExteriorProperties>(foreignTrade).Data);
+        }
+
+        [Fact]
+        public void InputFieldNames_PreserveDictionaryMethodsAndJsonKeys()
+        {
+            var input = new OrganizationPermissionRoleUpdateInput
+            {
+                AddValue = new List<string> { "operation_1" },
+                RemoveValue = new List<string> { "operation_2" }
+            };
+            input.Add("name", "Role");
+            Assert.True(input.Remove("name"));
+            var json = JObject.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(input));
+            Assert.Equal("operation_1", (string?)json["add"]![0]);
+            Assert.Equal("operation_2", (string?)json["remove"]![0]);
+            Assert.Equal(2, input.Keys.Count);
+        }
+
         private static HttpClient CreateHttpClient(HttpMessageHandler handler)
         {
             return new HttpClient(handler)

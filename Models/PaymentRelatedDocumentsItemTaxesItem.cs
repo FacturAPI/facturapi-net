@@ -14,7 +14,7 @@ namespace Facturapi
     public class PaymentRelatedDocumentsItemTaxesItem
     {
         /// <summary>
-        /// Base utilizada para el cálculo del impuestos.
+        /// Base utilizada para el cálculo del impuesto.
         /// Requerido.
         /// </summary>
         [JsonProperty("base")]

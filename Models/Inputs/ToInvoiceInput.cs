@@ -27,7 +27,7 @@ namespace Facturapi
         /// Requerido.
         /// </summary>
         [JsonIgnore]
-        public new List<string> Keys
+        public List<string> KeysValue
         {
             get => TryGetValue("keys", out var value) ? (List<string>)value! : default!;
             set => this["keys"] = value;

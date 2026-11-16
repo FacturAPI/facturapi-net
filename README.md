@@ -251,6 +251,8 @@ var page = await facturapi.Invoice.ListAsync(new InvoiceListParams
 
 Cuando un campo acepta formas diferentes se usa `OneOf<...>`, por ejemplo ID de cliente u objeto de cliente, y correo individual o lista. Las conversiones implícitas permiten asignar cada alternativa; se envía su valor directamente, sin envoltura JSON. Para inspeccionar una respuesta usa `TryGet<T>(out var value)`.
 
+En uniones de objetos sin discriminador, la forma JSON debe identificar una sola alternativa sin descartar campos; si es ambigua o contiene campos que ninguna alternativa reconoce, se lanza `JsonSerializationException`. Los campos de entrada que colisionan con miembros de `Dictionary` usan el sufijo `Value`, como `AddValue`, `RemoveValue` y `KeysValue`, conservando sus claves JSON originales.
+
 Los complementos concretos se pueden agregar a `List<InvoiceComplementInput>`. Los complementos personalizados y la addenda conservan su XML como texto. Los objetos abiertos de la API mantienen sus valores dinámicos. El tipado es una ayuda: los catálogos y valores literales se documentan como strings, y las validaciones fiscales y de negocio siguen a cargo de la API.
 
 `CreateAsync` también tiene sobrecargas para las variantes de cliente y factura, incluidos los borradores. Puedes usar `CreateAsync(new InvoiceIngresoDraftInput())` o conservar el helper `CreateDraftIngresoAsync`.

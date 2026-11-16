@@ -16,7 +16,7 @@ namespace Facturapi
         /// <summary>
         /// Crea PaymentInputRelatedDocumentsItemTaxesItem.
         /// </summary>
-        /// <param name="base">Base utilizada para el cálculo del impuestos. Requerido.</param>
+        /// <param name="base">Base utilizada para el cálculo del impuesto. Requerido.</param>
         /// <param name="type">Tipo de impuesto. Valores: "IVA", "ISR", "IEPS". Requerido.</param>
         /// <param name="rate">Tasa o cuota del impuesto Requerido.</param>
         public PaymentInputRelatedDocumentsItemTaxesItem(decimal @base, string @type, decimal @rate)
@@ -27,7 +27,7 @@ namespace Facturapi
         }
 
         /// <summary>
-        /// Base utilizada para el cálculo del impuestos.
+        /// Base utilizada para el cálculo del impuesto.
         /// Requerido.
         /// </summary>
         [JsonIgnore]

@@ -14,7 +14,7 @@ namespace Facturapi
     public class DomainAvailability
     {
         /// <summary>
-        /// Indica si el dominio está diponible
+        /// Indica si el dominio está disponible
         /// Requerido.
         /// </summary>
         [JsonProperty("available")]
