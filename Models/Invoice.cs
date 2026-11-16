@@ -11,6 +11,7 @@ namespace Facturapi
     /// <summary>
     /// Invoice
     /// </summary>
+    [JsonConverter(typeof(InvoiceJsonConverter))]
     public class Invoice
     {
         /// <summary>

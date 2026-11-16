@@ -11,6 +11,7 @@ namespace Facturapi
     /// <summary>
     /// Stamp
     /// </summary>
+    [JsonConverter(typeof(StampJsonConverter))]
     public class Stamp
     {
         /// <summary>

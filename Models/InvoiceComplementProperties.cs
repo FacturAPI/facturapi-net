@@ -11,6 +11,7 @@ namespace Facturapi
     /// <summary>
     /// InvoiceComplementProperties
     /// </summary>
+    [JsonConverter(typeof(InvoiceComplementPropertiesJsonConverter))]
     public class InvoiceComplementProperties
     {
         /// <summary>

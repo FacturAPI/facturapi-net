@@ -56,6 +56,186 @@ namespace Facturapi.Wrappers
         }
 
         /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoiceIngresoInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoiceEgresoInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoicePagoInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoiceNominaInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoiceTrasladoInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoiceIngresoDraftInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoiceEgresoDraftInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoicePagoDraftInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoiceNominaDraftInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
+        /// Crear factura (CFDI 4.0)
+        ///
+        /// Crea una nueva Factura. Si la factura es creada en ambiente Live, ésta será **timbrada y enviada al SAT**.
+        ///
+        /// Revisa e infórmate sobre el [rescate de CFDI en intermitencias (Status 202)](https://docs.facturapi.io/docs/guides/invoices/intermitencias).
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite InvoiceCreateInput.</param>
+        /// <param name="options">Parámetros de consulta. Admite InvoiceCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Nuevo objeto `Invoice` creado Solicitud aceptada; Facturapi intentará recuperar el CFDI hasta cinco veces, una cada 10 minutos</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createInvoice"/>
+        public Task<Invoice> CreateAsync(InvoiceTrasladoDraftInput data, InvoiceCreateParams? options = null, CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<Invoice>(HttpMethod.Post, $"invoices", options, data, true, cancellationToken);
+        }
+
+        /// <summary>
         /// Listar facturas
         ///
         /// Regresa una lista paginada de todas las facturas de una organización o realiza una búsqueda de acuerdo a parámetros.

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Generated response hierarchies for disjoint discriminators, including invoice states, stamp versions, complements and events, plus creation overloads for typed input variants. Unknown discriminator values retain the base response model.
 - Typed inputs, filters and XML documentation across all public API operations, including invoice and retention downloads, signed URLs, receipt assignment and summaries, FIEL uploads, product categories, geographic and fiscal catalogs, and foreign-trade catalogs.
 - Invoice creation variants for Ingreso, Egreso, Pago, Nómina and Traslado, partial draft inputs, and cancellation inputs that require a substitution document when applicable.
 - Typed complements for payments, payroll, Carta Porte, foreign trade and fiscal legends, preserving custom XML and open JSON values.

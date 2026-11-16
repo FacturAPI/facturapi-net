@@ -276,3 +276,58 @@ test("retains constructor requirements while making named input variants assigna
     /: base\(@legalName\)/,
   );
 });
+
+test("generates response hierarchies only for disjoint literal discriminators", async () => {
+  const spec = fixture();
+  spec.components.schemas.Customer = {
+    oneOf: [
+      {
+        type: "object",
+        required: ["status", "uuid"],
+        properties: {
+          status: { type: "string", enum: ["valid", "canceled"] },
+          uuid: { type: "string" },
+        },
+      },
+      {
+        type: "object",
+        required: ["status"],
+        properties: {
+          status: { type: "string", const: "draft" },
+          uuid: { type: "null" },
+        },
+      },
+    ],
+  };
+  let contract = await compileContract(spec, binding);
+  const base = contract.models.find((model) => model.name === "Customer");
+  assert.equal(base.responseDiscriminator, "status");
+  assert.deepEqual(
+    base.responseVariants.map((variant) => variant.values),
+    [["valid", "canceled"], ["draft"]],
+  );
+  const stamped = contract.models.find(
+    (model) => model.name === base.responseVariants[0].ref,
+  );
+  assert.equal(stamped.parent, "Customer");
+  assert.equal(
+    stamped.properties.find((field) => field.name === "uuid").required,
+    true,
+  );
+  const outputs = renderModels(contract);
+  assert.match(
+    outputs.get(`Models/${stamped.name}.cs`),
+    /public new string Uuid/,
+  );
+  assert.match(
+    outputs.get("Models/Customer.JsonConverter.cs"),
+    /default: result = new Customer/,
+  );
+  // Overlapping alternatives cannot safely select a subtype.
+  spec.components.schemas.Customer.oneOf[1].properties.status.const = "valid";
+  contract = await compileContract(spec, binding);
+  assert.equal(
+    contract.models.find((model) => model.name === "Customer").responseVariants,
+    undefined,
+  );
+});

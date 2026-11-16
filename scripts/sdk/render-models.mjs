@@ -104,7 +104,7 @@ export function renderModels(contract) {
     );
     content +=
       doc(model.generic ? "Resultados paginados." : model.description, "    ") +
-      (discriminated.length
+      (discriminated.length || model.responseVariants
         ? `    [JsonConverter(typeof(${model.name}JsonConverter))]\n`
         : "") +
       `    public class ${model.name}${model.generic ? "<T>" : ""}${model.parent ? " : " + model.parent : model.input ? " : Dictionary<string, object?>" : ""}\n    {\n`;
@@ -167,6 +167,11 @@ export function renderModels(contract) {
         model.name === "TaxInfoValidation" && field.name === "errors"
           ? "TaxInfoError[]"
           : fieldType(field);
+      const inherited =
+        !model.input &&
+        parent?.properties.find((property) => property.name === field.name);
+      if (inherited && (fieldType(inherited) === type || field.kind === "null"))
+        continue;
       content += doc(description(field), "        ");
       if (model.input) {
         const modifier =
@@ -199,15 +204,44 @@ export function renderModels(contract) {
             : `TryGetValue(${JSON.stringify(field.name)}, out var value) ? ${isUnion ? type + ".FromValue(value)" : "(" + type + ")value!"} : default!`;
 
         content += `        [JsonIgnore]\n        public ${modifier}${type} ${pascal(field.name)}\n        {\n            get => ${getter};\n            set => this[${JSON.stringify(field.name)}] = ${isUnion ? "value" + (type.endsWith("?") ? "?.Value" : ".Value") : "value"};\n        }\n\n`;
-      } else
-        content += `        [JsonProperty(${JSON.stringify(field.name)})]\n        public ${type} ${pascal(field.name)} { get; set; } = default!;\n\n`;
+      } else {
+        if (inherited) {
+          const getter =
+            fieldType(inherited).replace(/\?$/, "") === type.replace(/\?$/, "")
+              ? `base.${pascal(field.name)}${["date", "integer", "number", "boolean"].includes(field.kind) && !type.endsWith("?") ? "!.Value" : "!"}`
+              : `(${type})base.${pascal(field.name)}${inherited.kind === "union" ? (fieldType(inherited).endsWith("?") ? "?.Value" : ".Value") : ""}!`;
+          const setter =
+            inherited.kind === "union"
+              ? `${type.endsWith("?") ? `value == null ? default(${fieldType(inherited)}) : ` : ""}${fieldType(inherited).replace(/\?$/, "")}.FromValue(value)`
+              : "value";
+          content += `        [JsonProperty(${JSON.stringify(field.name)})]\n        public new ${type} ${pascal(field.name)}\n        {\n            get => ${getter};\n            set => base.${pascal(field.name)} = ${setter};\n        }\n\n`;
+        } else
+          content += `        [JsonProperty(${JSON.stringify(field.name)})]\n        public ${type} ${pascal(field.name)} { get; set; } = default!;\n\n`;
+      }
     }
     if (!model.input && model.additional)
       content +=
         doc("Propiedades adicionales del objeto JSON.", "        ") +
         "        [JsonExtensionData]\n        public IDictionary<string, JToken>? AdditionalProperties { get; set; }\n";
     content += "    }\n}\n";
-    if (discriminated.length) {
+    if (model.responseVariants) {
+      outputs.set(
+        `Models/${model.name}.JsonConverter.cs`,
+        banner +
+          `#nullable enable\nusing System;\nusing Newtonsoft.Json;\nusing Newtonsoft.Json.Linq;\nnamespace Facturapi\n{\n    internal sealed class ${model.name}JsonConverter : JsonConverter\n    {\n        public override bool CanWrite => false;\n        public override bool CanConvert(Type type) => typeof(${model.name}).IsAssignableFrom(type);\n        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new NotSupportedException();\n        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)\n        {\n            if (reader.TokenType == JsonToken.Null) return null;\n            var dateParseHandling = reader.DateParseHandling;\n            JObject data;\n            try\n            {\n                reader.DateParseHandling = DateParseHandling.None;\n                data = JObject.Load(reader);\n            }\n            finally { reader.DateParseHandling = dateParseHandling; }\n            ${model.name} result;\n            switch ((string?)data[${JSON.stringify(model.responseDiscriminator)}])\n            {\n` +
+          model.responseVariants
+            .map(
+              (variant) =>
+                variant.values
+                  .map(
+                    (value) => `                case ${JSON.stringify(value)}:`,
+                  )
+                  .join("\n") + ` result = new ${variant.ref}(); break;\n`,
+            )
+            .join("") +
+          `                default: result = new ${model.name}(); break;\n            }\n            if (!objectType.IsInstanceOfType(result)) throw new JsonSerializationException("Response discriminator does not match the requested model.");\n            using (var content = data.CreateReader()) serializer.Populate(content, result);\n            return result;\n        }\n    }\n}\n`,
+      );
+    } else if (discriminated.length) {
       let converter =
         banner +
         "#nullable enable\nusing System;\nusing Newtonsoft.Json;\nusing Newtonsoft.Json.Linq;\nnamespace Facturapi\n{\n" +

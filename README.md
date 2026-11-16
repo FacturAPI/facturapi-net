@@ -253,6 +253,23 @@ Cuando un campo acepta formas diferentes se usa `OneOf<...>`, por ejemplo ID de 
 
 Los complementos concretos se pueden agregar a `List<InvoiceComplementInput>`. Los complementos personalizados y la addenda conservan su XML como texto. Los objetos abiertos de la API mantienen sus valores dinámicos. El tipado es una ayuda: los catálogos y valores literales se documentan como strings, y las validaciones fiscales y de negocio siguen a cargo de la API.
 
+`CreateAsync` también tiene sobrecargas para las variantes de cliente y factura, incluidos los borradores. Puedes usar `CreateAsync(new InvoiceIngresoDraftInput())` o conservar el helper `CreateDraftIngresoAsync`.
+
+Las respuestas de factura se deserializan como `InvoiceDraft`, `InvoicePending`, `InvoiceFailed` o `InvoiceStamped`, según `status`. En una factura timbrada (`valid` o `canceled`), el subtipo expone `Uuid`, `Date` y `Stamp` como campos no anulables:
+
+```csharp
+var invoice = await facturapi.Invoice.RetrieveAsync("invoice_id");
+if (invoice is InvoiceStamped stamped)
+{
+    Console.WriteLine(stamped.Uuid);
+    Console.WriteLine(stamped.Date.ToString("O"));
+    if (stamped.Stamp is StampVersion11 stamp)
+        Console.WriteLine(stamp.RfcProviderCert);
+}
+```
+
+Los timbres también distinguen `StampVersion10` y `StampVersion11`; los complementos y eventos tienen subtipos según su `type`. Puedes seguir usando los modelos base. Un discriminador desconocido conserva el modelo base para permitir nuevos valores de la API. Estas garantías describen respuestas conformes al contrato: el SDK no agrega una validación exhaustiva de sus campos.
+
 `Receipt.SummarizeToInvoiceAsync(new ToInvoiceInput(keys))` obtiene el resumen de recibos sin crear una factura. Los métodos de URL firmada devuelven `SignedDownloadUrl`; las descargas siguen devolviendo un `Stream` en memoria que debes disponer. Las cargas de certificados, FIEL y logotipo reciben streams y los disponen al terminar la solicitud.
 
 `FacturapiException.ErrorDetails` expone detalles de error tipados, con `Code`, `Source`, `Path`, `Location` y `Message`. `Errors` conserva el JSON original; no necesitas analizar los mensajes para identificar un código.
@@ -295,3 +312,5 @@ pnpm generate:sdk:check
 `openapi/source.json` fija una revisión pública del contrato de API v2. `pnpm sync:openapi [public-ref]` actualiza esa revisión; después ejecuta la generación y las pruebas de .NET. La generación lee el spec de esa revisión en memoria. Los builds y los consumidores usan los archivos generados que se incluyen en el repositorio, sin descargar el spec ni instalar Node.js.
 
 El compilador de TypeScript resuelve referencias, intersecciones y variantes después de `openapi-typescript`; los renderers de C# producen modelos, métodos y documentación. Los bindings conservan nombres y firmas del SDK, formatos de descarga y variantes de conveniencia. Toda operación pública debe tener un método asociado y CI verifica que la generación esté actualizada. Las constantes y los helpers locales se mantienen aparte cuando no derivan de un contrato HTTP.
+
+El paso de mejor esfuerzo convierte uniones de respuestas en jerarquías cuando todas las alternativas tienen valores literales de string disjuntos para un discriminador común. Los subtipos conservan los campos requeridos y la nulabilidad de su alternativa, y los converters seleccionan el subtipo al leer JSON. Las uniones ambiguas mantienen su modelo amplio. Las variantes de entrada configuradas también generan sobrecargas; no se infieren reglas fiscales a partir de texto descriptivo.

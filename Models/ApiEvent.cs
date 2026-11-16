@@ -11,6 +11,7 @@ namespace Facturapi
     /// <summary>
     /// ApiEvent
     /// </summary>
+    [JsonConverter(typeof(ApiEventJsonConverter))]
     public class ApiEvent
     {
         /// <summary>

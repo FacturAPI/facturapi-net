@@ -67,6 +67,81 @@ namespace Facturapi.Wrappers
         Task<Customer> CreateAsync(CustomerCreateInput data, CustomerCreateParams? queryParams = null, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Crear cliente
+        ///
+        /// Registra un nuevo cliente en Facturapi.
+        ///
+        /// Esta llamada valida que los datos fiscales coincidan con
+        /// los registros del SAT para ese RFC, de lo contrario, la llamada
+        /// devolverá un error indicando el problema.
+        ///
+        /// Una vez creado el cliente y obtenido un objeto de respuesta,
+        /// te recomendamos guardar el ID en tu base de datos junto a la información
+        /// de tu cliente. Posteriormente, puedes llamar al endpoint de Crear Factura
+        /// pasando el ID del cliente en lugar de repetir la información.
+        ///
+        /// Por último, ten en cuenta que los clientes que crees en ambiente _Test_ **no se
+        /// comparten** con el ambiente _Live_.
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite CustomerCreateInput.</param>
+        /// <param name="queryParams">Parámetros de consulta. Admite CustomerCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Un objeto `Customer` con la misma información ya existía Nuevo objeto `Customer` creado</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createCustomer"/>
+        Task<Customer> CreateAsync(CustomerNationalCreateInput data, CustomerCreateParams? queryParams = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Crear cliente
+        ///
+        /// Registra un nuevo cliente en Facturapi.
+        ///
+        /// Esta llamada valida que los datos fiscales coincidan con
+        /// los registros del SAT para ese RFC, de lo contrario, la llamada
+        /// devolverá un error indicando el problema.
+        ///
+        /// Una vez creado el cliente y obtenido un objeto de respuesta,
+        /// te recomendamos guardar el ID en tu base de datos junto a la información
+        /// de tu cliente. Posteriormente, puedes llamar al endpoint de Crear Factura
+        /// pasando el ID del cliente en lugar de repetir la información.
+        ///
+        /// Por último, ten en cuenta que los clientes que crees en ambiente _Test_ **no se
+        /// comparten** con el ambiente _Live_.
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite CustomerCreateInput.</param>
+        /// <param name="queryParams">Parámetros de consulta. Admite CustomerCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Un objeto `Customer` con la misma información ya existía Nuevo objeto `Customer` creado</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createCustomer"/>
+        Task<Customer> CreateAsync(CustomerForeignCreateInput data, CustomerCreateParams? queryParams = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Crear cliente
+        ///
+        /// Registra un nuevo cliente en Facturapi.
+        ///
+        /// Esta llamada valida que los datos fiscales coincidan con
+        /// los registros del SAT para ese RFC, de lo contrario, la llamada
+        /// devolverá un error indicando el problema.
+        ///
+        /// Una vez creado el cliente y obtenido un objeto de respuesta,
+        /// te recomendamos guardar el ID en tu base de datos junto a la información
+        /// de tu cliente. Posteriormente, puedes llamar al endpoint de Crear Factura
+        /// pasando el ID del cliente en lugar de repetir la información.
+        ///
+        /// Por último, ten en cuenta que los clientes que crees en ambiente _Test_ **no se
+        /// comparten** con el ambiente _Live_.
+        ///
+        /// </summary>
+        /// <param name="data">Datos de la solicitud. Admite CustomerCreateInput.</param>
+        /// <param name="queryParams">Parámetros de consulta. Admite CustomerCreateParams.</param>
+        /// <param name="cancellationToken">Permite cancelar la solicitud.</param>
+        /// <returns>Un objeto `Customer` con la misma información ya existía Nuevo objeto `Customer` creado</returns>
+        /// <see href="https://docs.facturapi.io/api/#operation/createCustomer"/>
+        Task<Customer> CreateAsync(CustomerGenericCreateInput data, CustomerCreateParams? queryParams = null, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Listar clientes
         ///
         /// Regresa una lista paginada de todos los clientes de una organización o realiza una búsqueda de acuerdo a parámetros

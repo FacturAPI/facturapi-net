@@ -400,6 +400,39 @@ export async function compileContract(spec, config) {
     }
     if (additional)
       model.additional = compile(additional, name + "Value", input);
+    // Best effort: a disjoint literal discriminator can become a C# hierarchy.
+    // Keep the broad base for unknown future values and ambiguous unions.
+    if (!input && type.isUnion() && alternatives.length > 1) {
+      for (const key of properties.keys()) {
+        const cases = alternatives.map((variant) => {
+          const symbol = checker.getPropertyOfType(variant, key);
+          if (!symbol) return null;
+          const value = checker.getNonNullableType(at(symbol));
+          const values = value.isUnion() ? value.types : [value];
+          return values.every((item) => item.isStringLiteral())
+            ? values.map((item) => item.value)
+            : null;
+        });
+        if (cases.some((values) => !values?.length)) continue;
+        if (new Set(cases.flat()).size !== cases.flat().length) continue;
+        model.responseVariants = alternatives.map((variant, index) => {
+          const result = compile(
+            variant,
+            pascal(name + "_" + key + "_" + cases[index].join("_")),
+            false,
+          );
+          assert.equal(result.kind, "model");
+          assert(
+            !models.get(result.ref).parent,
+            `Overlapping response family: ${result.ref}`,
+          );
+          models.get(result.ref).parent = name;
+          return { ref: result.ref, values: cases[index] };
+        });
+        model.responseDiscriminator = key;
+        break;
+      }
+    }
     return { ...ref, nullable };
   }
   // Compile all explicitly named input variants, including complements.

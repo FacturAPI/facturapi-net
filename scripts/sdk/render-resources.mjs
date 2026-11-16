@@ -192,7 +192,7 @@ export function renderResources(contract, config) {
         content += "        }\n\n";
       };
       emit(argumentsList);
-      // A single strongly typed overload preserves dictionary compatibility.
+      // Strongly typed overloads preserve dictionary compatibility.
       // Query-only overloads require their query argument, avoiding no-arg ambiguity.
       if (
         !method.multipart &&
@@ -219,6 +219,25 @@ export function renderResources(contract, config) {
               : argument,
         );
         emit(typed, true);
+        if (bodyArgument && method.body.kind === "model")
+          for (const schema of new Set(
+            Object.values(config.convenience?.[resource] || {})
+              .filter(
+                (binding) =>
+                  binding.method === method.name &&
+                  !binding.query &&
+                  binding.schema !== method.body.ref,
+              )
+              .map((binding) => binding.schema),
+          ))
+            emit(
+              typed.map((argument) =>
+                argument.name === bodyArgument.name
+                  ? { ...argument, type: schema }
+                  : argument,
+              ),
+              true,
+            );
       }
     }
     for (const alias of contract.methods.filter(

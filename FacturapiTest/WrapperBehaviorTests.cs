@@ -956,6 +956,7 @@ namespace FacturapiTest
             var handler = new RecordingHandler((request, cancellationToken) => throw new InvalidOperationException("Signature verification must not call HTTP."));
             var wrapper = new WebhookWrapper("test_key", "v2", CreateHttpClient(handler));
             var result = await wrapper.ValidateSignatureAsync("test_secret", signature.ToUpperInvariant(), payload);
+            Assert.IsType<CustomerEditLinkCompletedEvent>(result);
             Assert.Equal("evt_1", result.Id);
             Assert.Equal(new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), result.CreatedAt);
             Assert.True(result.Data.Object.TryGet<Customer>(out var customer));
@@ -1009,6 +1010,74 @@ namespace FacturapiTest
             Assert.Equal("draft_1", (await wrapper.CreateDraftIngresoAsync(new InvoiceIngresoDraftInput())).Id);
             Assert.Equal("inv_1", (await wrapper.CancelAsync("inv_1", new CancellationWithSubstitutionInput(
                 CancellationMotive.COMPROBANTE_EMITIDO_CON_ERRORES_CON_RELACION, "replacement_1"))).Id);
+        }
+
+        [Theory]
+        [InlineData("valid", typeof(InvoiceStamped))]
+        [InlineData("canceled", typeof(InvoiceStamped))]
+        [InlineData("draft", typeof(InvoiceDraft))]
+        [InlineData("pending", typeof(InvoicePending))]
+        [InlineData("failed", typeof(InvoiceFailed))]
+        [InlineData("future_status", typeof(Invoice))]
+        public async Task InvoiceResponses_SelectContractSubtypesAndShareBaseProperties(string status, Type expected)
+        {
+            var handler = new RecordingHandler((request, cancellationToken) => Task.FromResult(JsonResponse(
+                "{\"id\":\"inv_1\",\"status\":\"" + status + "\",\"date\":\"2026-01-02T03:04:05Z\",\"uuid\":\"uuid_1\",\"stamp\":{\"version\":\"1.1\",\"rfc_provider_cert\":\"AAA010101AAA\",\"date\":\"2026-01-02T03:04:05\",\"signature\":\"signature\",\"sat_signature\":\"sat_signature\",\"sat_cert_number\":\"cert\",\"complement_string\":\"original\"},\"complements\":[{\"type\":\"custom\",\"data\":\"<opaque />\"}]}")));
+            IInvoiceWrapper wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            var invoice = await wrapper.RetrieveAsync("inv_1");
+            Assert.IsType(expected, invoice);
+            Assert.Equal("<opaque />", Assert.IsType<CustomComplementProperties>(Assert.Single(invoice.Complements!)).Data);
+            if (invoice is InvoiceStamped stamped)
+            {
+                Assert.Equal("uuid_1", stamped.Uuid);
+                Assert.Equal(2026, stamped.Date.Year);
+                Assert.Equal("AAA010101AAA", Assert.IsType<StampVersion11>(stamped.Stamp).RfcProviderCert);
+                Assert.Equal("2026-01-02T03:04:05", stamped.Stamp.Date);
+                stamped.Uuid = "changed";
+                Assert.Equal("changed", invoice.Uuid);
+                invoice.Uuid = "updated_through_base";
+                Assert.Equal("updated_through_base", stamped.Uuid);
+                var json = JObject.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(invoice));
+                Assert.Equal("updated_through_base", (string?)json["uuid"]);
+                Assert.Equal("<opaque />", (string?)json["complements"]![0]!["data"]);
+                var pago = new PagoComplementProperties { Data = new List<Payment>() };
+                InvoiceComplementProperties complement = pago;
+                Assert.True(complement.Data!.Value.TryGet<List<Payment>>(out _));
+                pago.Data = null;
+                Assert.Null(complement.Data);
+                Assert.Null(pago.Data);
+            }
+        }
+
+        [Fact]
+        public async Task InvoiceCreateOverload_AcceptsPartialDraftWithoutDictionaryConversion()
+        {
+            var handler = new RecordingHandler(async (request, cancellationToken) =>
+            {
+                var body = JObject.Parse(await request.Content!.ReadAsStringAsync());
+                Assert.Equal("I", (string?)body["type"]);
+                Assert.Equal("draft", (string?)body["status"]);
+                Assert.Null(body["items"]);
+                return JsonResponse("{\"id\":\"draft_1\",\"status\":\"draft\"}");
+            });
+            IInvoiceWrapper wrapper = new InvoiceWrapper("test_key", "v2", CreateHttpClient(handler));
+            Assert.IsType<InvoiceDraft>(await wrapper.CreateAsync(new InvoiceIngresoDraftInput()));
+        }
+
+        [Theory]
+        [InlineData("1.0", typeof(StampVersion10))]
+        [InlineData("1.1", typeof(StampVersion11))]
+        [InlineData("future", typeof(Stamp))]
+        public void StampResponses_SelectVersionAndPreserveUnknownVersions(string version, Type expected)
+        {
+            var stamp = Newtonsoft.Json.JsonConvert.DeserializeObject<Stamp>(
+                "{\"version\":\"" + version + "\",\"rfc_provider_cert\":\"AAA010101AAA\",\"date\":\"2026-01-02T03:04:05\",\"signature\":\"signature\",\"sat_signature\":\"sat_signature\",\"sat_cert_number\":\"cert\",\"complement_string\":\"original\"}");
+            Assert.IsType(expected, stamp);
+            Assert.Equal(version, stamp!.Version);
+            Assert.Equal("2026-01-02T03:04:05", stamp.Date);
+            Assert.IsType(expected, Newtonsoft.Json.JsonConvert.DeserializeObject<Stamp>(Newtonsoft.Json.JsonConvert.SerializeObject(stamp)));
+            Assert.Throws<Newtonsoft.Json.JsonSerializationException>(() =>
+                Newtonsoft.Json.JsonConvert.DeserializeObject<InvoiceStamped>("{\"status\":\"draft\"}"));
         }
 
         private static HttpClient CreateHttpClient(HttpMessageHandler handler)
