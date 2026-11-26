@@ -65,6 +65,11 @@ namespace Facturapi
             return $"{RetrieveOrganization(id)}/certificate";
         }
 
+        public static string ManifiestoDownloadUrl(string id)
+        {
+            return $"{RetrieveOrganization(id)}/manifiesto/download-url";
+        }
+
         public static string GetTestApiKey(string id)
         {
             return $"{RetrieveOrganization(id)}/apikeys/test";

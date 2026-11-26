@@ -125,6 +125,16 @@ namespace Facturapi.Wrappers
             }
         }
 
+        public async Task<SignedDownloadUrl> DownloadManifiestoZipUrlAsync(string id, CancellationToken cancellationToken = default)
+        {
+            using (var response = await client.GetAsync(Router.ManifiestoDownloadUrl(id), cancellationToken).ConfigureAwait(false))
+            {
+                await this.ThrowIfErrorAsync(response, cancellationToken).ConfigureAwait(false);
+                var resultString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<SignedDownloadUrl>(resultString, this.jsonSettings);
+            }
+        }
+
         public async Task<Organization> UpdateLegalAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))

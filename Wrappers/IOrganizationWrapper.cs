@@ -16,6 +16,7 @@ namespace Facturapi.Wrappers
         Task<Organization> UploadLogoAsync(string id, Stream file, CancellationToken cancellationToken = default);
         Task<Organization> UploadCertificateAsync(string id, Stream cerFile, Stream keyFile, string password, CancellationToken cancellationToken = default);
         Task<Certificate> DeleteCertificateAsync(string id, CancellationToken cancellationToken = default);
+        Task<SignedDownloadUrl> DownloadManifiestoZipUrlAsync(string id, CancellationToken cancellationToken = default);
         Task<Organization> UpdateLegalAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default);
         Task<Organization> UpdateReceiptSettingsAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default);
         Task<Organization> UpdateCustomizationAsync(string id, Dictionary<string, object> data, CancellationToken cancellationToken = default);
